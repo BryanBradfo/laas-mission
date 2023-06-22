@@ -16,7 +16,7 @@ class Solver:
         self._constraints.append(constraint)
 
 
-    def solve_init(self, model):
+    def solve_init(self, model, k):
     
         # Add the constraints
         for constraint in self._constraints:
@@ -43,7 +43,7 @@ class Solver:
         # Renvoie les k premieres solutions (makespan)
 
         # return solver, status
-        return list_sol[:2], nb_solution
+        return list_sol[:k], nb_solution
         
     
     # def solve(self):

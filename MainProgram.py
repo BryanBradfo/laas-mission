@@ -6,6 +6,7 @@ from docplex.cp.model import *
 from docplex.cp.config import get_default
 import numpy as np
 from Solver import *
+from User import *
 
 #############################
 ### Main program ###
@@ -17,7 +18,7 @@ print("\n--------Main program is loading...---------")
 
 data = []
 
-with open('./test/example.data', 'r') as f:    
+with open('./example.data', 'r') as f:    
     for line in f:
         data.append(line.strip().split())
 
@@ -89,7 +90,7 @@ print("Disjunctive constraints added !")
 
 print("\nSolving the model...")
 # makespan, solver = solver.solve_init(model)
-msol, nb_solution = solver.solve_init(model)
+msol, nb_solution = solver.solve_init(model, 3)
 
 # ------------ Display the result
 
@@ -99,3 +100,21 @@ print("Model solved !")
 
 
 # # Interaction with the user
+
+user = User()
+
+user.classerSolutions(msol)
+pref = user.getPreferences()
+
+for sol in pref:
+    sol.write()
+
+print("\nPreferences : ", pref)
+
+
+# ------------- Second iteration of the solver with the preferences -------------
+
+# ------------ Add constraints to the solver
+
+print("\nAdding preferences to the solver...")
+
