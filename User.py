@@ -13,39 +13,23 @@ class User:
 
 
     def classerSolutions(self, list_sol):
-        list_obj = {}
-        i = 0
-        list_obj2={}
+        list_obj = []
+        list_temp_sol = []
         
+        #liste de max_ends
         for sol in list_sol:
-            list_obj2[i]=self.objectiveFunction(sol)
-            i=i+1
-        # return [sorted(list_obj).index(i) for i in range(len(list_obj))]
+            list_temp_sol.append(sol)
+            list_obj.append(self.objectiveFunction(sol))
 
-
-        for sol in list_sol:
-            list_obj[i] = self.objectiveFunction(sol)
-            i += 1
-
-        j = i+1
+        
         for pref in self.preferences:
-            list_sol.append(pref)
-            list_obj[j] = self.objectiveFunction(pref)
-            j += 1
+            list_temp_sol.append(pref)
+            list_obj.append(self.objectiveFunction(pref))
 
         # #Trier les ends_max par ordre croissant
-        # list_obj.sort()
-
-        # #recupérer les index des ends_max
-        # index = []
-        # for i in list_obj:
-        #     index.append(list_obj.index(i))
-        
-        # print(index)
-
-        list_obj_sorted = sorted(list_obj)
+        list_indice = sorted(range(len(list_obj)), key=lambda k: list_obj[k])
         #classer les solutions par ordre de index
-        self.preferences = [list_sol[i] for i in list_obj_sorted]
+        self.preferences = [list_temp_sol[i] for i in list_indice]
 
 
     def getPreferences(self):

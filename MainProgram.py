@@ -99,13 +99,23 @@ for sol in msol:
 print("Model solved !")
 
 
-# # Interaction with the user
+# ---------------- Interaction with the user
 
+print("\n--------Interaction with the user...---------")
+
+print("\nCreating the user...")
 user = User()
+print("User created !")
 
+print("\nClassing solutions...")	
 user.classerSolutions(msol)
-pref = user.getPreferences()
+print("Solutions classed !")
 
+print("\nCreating preferences...")
+pref = user.getPreferences()
+print("Preferences created !")
+
+print("\nDisplaying preferences...")
 for sol in pref:
     sol.write()
 

@@ -11,6 +11,8 @@ class Solver:
     def set_variables(self, variables):
         self._variables = variables
 
+    def add_variable(self, variable):
+        self._variables.append(variable)
 
     def add_constraint(self, constraint):
         self._constraints.append(constraint)
@@ -18,6 +20,8 @@ class Solver:
 
     def solve_init(self, model, k):
     
+      
+
         # Add the constraints
         for constraint in self._constraints:
             model.add(constraint)
@@ -45,22 +49,3 @@ class Solver:
         # return solver, status
         return list_sol[:k], nb_solution
         
-    
-    # def solve(self):
-
-    #     # Build the model
-    #     model = CpoModel() 
-
-    #     self.add_constraint(contrainst)
-    
-    #     # Add the constraints
-    #     for constraint in self._constraints:
-    #         model.add(constraint)
-
-    #     # Create a solver and solve the model.
-    #     solver = CpoSolver()
-    #     status = solver.Solve(model)
-
-    #     # Renvoie les k premieres solutions (makespan)
-
-    #     return solver, status
