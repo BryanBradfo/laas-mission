@@ -1,4 +1,6 @@
 from docplex.cp.model import CpoModel, CpoSolver
+from config import setup
+setup()
 
 class Solver:
 

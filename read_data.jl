@@ -24,5 +24,4 @@ function readKnaptxtInstance(filename)
     return price, weight, capacity
 end
 
-
 price, weight, capacity_max = readKnaptxtInstance(filename)
