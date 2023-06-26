@@ -121,8 +121,7 @@ for sol in pref:
 
 print("\nPreferences : ", pref)
 
-
-# ------------- Second iteration of the solver with the preferences -------------
+# ------------- Second iteration of the solver with the preferences
 
 # ------------ Add constraints to the solver
 
