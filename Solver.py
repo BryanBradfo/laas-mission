@@ -13,6 +13,9 @@ class Solver:
     def set_variables(self, variables):
         self._variables = variables
 
+    def get_variables(self):
+        return self._variables
+
     def add_variable(self, variable):
         self._variables.append(variable)
 
@@ -20,11 +23,7 @@ class Solver:
         self._constraints.append(constraint)
 
 
-    def solve(self, k, n, m, T_machine, T_duration, duration):
-
-        model = CpoModel() 
-
-        tps1 = time.time()
+    def create_variables(self, model, n, m, duration):
 
         # --------- Create the model variables 
         print("\nCreating the model variables...")
@@ -39,6 +38,16 @@ class Solver:
         # ------------ Add variables to the solver
         self.set_variables(variables)
         print("Model variables created !")
+
+
+    def solve(self, model, k, n, m, T_machine, duration):
+
+        tps1 = time.time()
+
+        # --------- Create the model variables
+        self.create_variables(model, n, m, duration)
+        list_variables = self.get_variables()
+        variables = list_variables[0]
 
         # ------------ Add constraints to the solver
 
