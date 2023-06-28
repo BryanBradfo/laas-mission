@@ -36,16 +36,16 @@ class Solver:
                 variables[i][j] = model.interval_var(size=int(duration[i][j]), name="T{}-{}".format(i,j))
 
         # ------------ Add variables to the solver
-        self.set_variables(variables)
+        self.add_variable(variables)
         print("Model variables created !")
 
 
-    def solve(self, model, k, n, m, T_machine, duration):
+
+
+    def solve(self, model, k, n, m, T_machine):
 
         tps1 = time.time()
 
-        # --------- Create the model variables
-        self.create_variables(model, n, m, duration)
         list_variables = self.get_variables()
         variables = list_variables[0]
 
