@@ -41,3 +41,4 @@ class User:
 
     def getPreferences(self):
         return self.preferences
+    
