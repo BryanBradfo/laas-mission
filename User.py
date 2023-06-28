@@ -34,7 +34,7 @@ class User:
         
         list_equal = []
         for i in range(len(self.preferences) -1):
-            list_equal.append(self.objectiveFunction(pref[i]) == self.objectiveFunction(pref[i+1]))
+            list_equal.append(self.objectiveFunction(self.preferences[i]) == self.objectiveFunction(self.preferences[i+1]))
 
         return list_indice, list_equal
 
