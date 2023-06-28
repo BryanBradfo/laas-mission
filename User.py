@@ -42,3 +42,45 @@ class User:
     def getPreferences(self):
         return self.preferences
     
+
+    def matrix_pref(self, n , m, variables, bool):
+        pref = self.getPreferences()
+        l = len(pref[0].get_all_var_solutions())
+        matrix = [[None for j in range(l)] for i in range(len(pref))]
+
+        for k in range (len(pref)):
+            for i in range(n):
+                for j in range(m):
+                    var_sol = pref[k][variables[i][j]]
+            
+                    matrix[k][i*m + j] = var_sol.start
+        
+        if bool:
+            print("Matrice des start des préférences : ")
+            for i in range (len(matrix)):
+                print("starts sol ", i, " : ", matrix[i])
+        
+        return matrix
+    
+    #Vérifier que deux solutions qui se suivent respectent bien l'ordre
+    def test_preferences(self, list_sols, list_indices_pref):
+        for j in range(len(list_indices_pref) - 1):
+            if (self.objectiveFunction(list_sols[list_indices_pref[j]]) > self.objectiveFunction(list_sols[list_indices_pref[j+1]])):
+               return False
+        return True
+    
+    #Vérifier que les solutions proposées lors d'une itération sont différentes de celles de l'itération précédente
+    def test_differences_sol(self, matrix):
+
+        for i in range(len(matrix)):
+            for k in range(i+1,len(matrix)):
+                list = []
+                for j in range(len(matrix[i])):
+                    list.append(0 if (matrix[i][j] == matrix[k][j]) else 1)
+                    
+                value = sum(list)
+                if value == 0:
+                    return False, [matrix[i], matrix[k]], k, value
+                
+        return True
+
