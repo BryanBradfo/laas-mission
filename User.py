@@ -47,14 +47,46 @@ class User:
         pref = self.getPreferences()
         l = len(pref[0].get_all_var_solutions())
         matrix = [[None for j in range(l)] for i in range(len(pref))]
+        
+        print("Matrice des start des préférences : ")
+        print("0000000000000000000000000000000000000000000000000000000000000000000000000000000000")
+        # print(pref[1].get_all_var_solutions())
+        for s in pref[1].get_all_var_solutions():
+            print(s.get_value())
+        # for k in range (len(pref)):
+        #     print("-----------------")
+        #     for i in range(n):
+        #         for j in range(m):
+        #             # print(variables[i][j])
+        #             var_sol = pref[k][variables[i][j]]
+            
+        #             matrix[k][i*m + j] = var_sol.start
+        #             # var_sol = pref[k].get_all_var_solutions()[i*m + j]
+            
+        #             # matrix[k][j] = var_sol.get_start()
+        
+        # for k in range (len(pref)):
+        #     print("-----------------")
+        #     matrix.append([])
+        #     sol = pref[k].get_all_var_solutions()
+        #     for j in range(len(sol)):
+        #             matrix[k].append(sol[j].get_start())
+        #             #matrix[k][j] = sol[j].get_start()
+        #             # var_sol = pref[k].get_all_var_solutions()[i*m + j]
+            
+        #             # matrix[k][j] = var_sol.get_start()
+        
 
-        for k in range (len(pref)):
+        for sol in pref:
+            var_sol = []
             for i in range(n):
                 for j in range(m):
-                    var_sol = pref[k][variables[i][j]]
+                    
+                    var_sol.append( sol.get_all_var_solutions()[i*m + j].get_start())
+            print("000000000000000000000000000000000000000000000000000000000000000000000000")
+            matrix.append(var_sol)
+            print(len(var_sol))
             
-                    matrix[k][i*m + j] = var_sol.start
-        
         if bool:
             print("Matrice des start des préférences : ")
             for i in range (len(matrix)):
