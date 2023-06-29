@@ -29,6 +29,9 @@ def create_layers(list_equal, data_pref):
     
     return data_pref_layer
 
+
+# ----------------- Code clustering de Brenda --------------------
+
 def clustAggloDist(data, dist_deb, dist_max, pas):
     dist = dist_deb
     silhouette_scores = []
@@ -64,7 +67,7 @@ def clustAggloDist(data, dist_deb, dist_max, pas):
         dist+=pas#Se fixer sur 1 data
     return silhouette_scores, davies_bouldin_scores, number_clusters, runtimes, iterations
 
-def myPlot(x, silhouette_scores, davies_bouldin_scores):
+def myPlot(x, silhouette_scores, davies_bouldin_scores, number_cluster):
     # create plot
     y = silhouette_scores
     plt.subplot(2, 1, 1)
@@ -76,7 +79,7 @@ def myPlot(x, silhouette_scores, davies_bouldin_scores):
     plt.show()
     #Afficher le pic de la courbe de silhouette
     print("Le pic de la courbe de silhouette est : ", max(silhouette_scores))
-    print("Le nombre de clusters correspondant est : ", silhouette_scores.index(max(silhouette_scores))+2)
+    print("Le nombre de clusters correspondant est : ", number_cluster[silhouette_scores.index(max(silhouette_scores))])
     print("")
     
     y = davies_bouldin_scores
@@ -100,16 +103,62 @@ def clustering(data_pref_layer,d_deb, d_max, pas):
     i = 0
     silhouette_scores = []
     davies_bouldin_scores = []
+    number_clusters = []
     for data in data_pref_layer:
-        silhouette_scores_data, davies_bouldin_scores_data, number_clusters, runtimes, iterations = clustAggloDist(data, d_deb, d_max, pas)
+        silhouette_scores_data, davies_bouldin_scores_data, number_clusters_data, runtimes, iterations = clustAggloDist(data, d_deb, d_max, pas)
         silhouette_scores.append(silhouette_scores_data)
         davies_bouldin_scores.append(davies_bouldin_scores_data)
+        number_clusters.append(number_clusters_data)
         i+=1
 
     for i in range(0, len(data_pref_layer)):
         print("Jeu de donnees ", i)
         x = [i/100 for i in range(d_deb*100, d_max*100, pas*100)]
-        myPlot(x, silhouette_scores[i], davies_bouldin_scores[i])
+        myPlot(x, silhouette_scores[i], davies_bouldin_scores[i], number_clusters[i])
+
+
+# ----------------- Code clustering de Alice --------------------
+
+
+def my_agglo_threshold( datanp , threshold, linkage):
+       tps1 = time.time()
+       model = cluster.AgglomerativeClustering(distance_threshold = threshold ,
+                                                 linkage =linkage, n_clusters = None )
+       model = model.fit( datanp )
+
+       tps2 = time.time()
+       labels = model.labels_
+       k = model.n_clusters_
+       leaves = model.n_leaves_
+
+       return k , leaves , labels, tps2 - tps1
+
+
+
+# indice de silhouette
+
+def silhouette(datanp, r1, r2):
+    list = []
+    listk = []
+    listleaves = []
+    for d in range (r1,r2):
+
+        k, leaves, labels, runtime = my_agglo_threshold(datanp, d, 'single')
+            
+        listk.append(k)
+        listleaves.append(leaves)
+
+        silhouette_avg = silhouette_score(datanp, labels)
+        list.append(silhouette_avg)
+
+    maxd = np.max(list)
+    indice = list.index(maxd)
+
+    plt.plot([0.1*d for d in range(r1,r2)], list, marker='o')
+    plt.title("Silhouette")
+
+    return list, listk[indice], listleaves[indice], runtime
+
     
 
 
