@@ -44,6 +44,7 @@ def clustAggloDist(data, dist_deb, dist_max, pas):
         print("______________________________________dist = ", dist)
         tps1 = time.time()
         model = cluster.AgglomerativeClustering(distance_threshold =dist , linkage ='single', n_clusters = None )
+        print(data)
         model = model.fit(data)
         tps2 = time.time()
         labels = model.labels_
@@ -148,14 +149,20 @@ def silhouette(datanp, r1, r2):
         listk.append(k)
         listleaves.append(leaves)
 
-        silhouette_avg = silhouette_score(datanp, labels)
+        if k>1 and k<len(datanp)-1:
+            silhouette_avg = silhouette_score(datanp, labels)
+        else:
+            silhouette_avg = -1
         list.append(silhouette_avg)
 
     maxd = np.max(list)
     indice = list.index(maxd)
 
-    plt.plot([0.1*d for d in range(r1,r2)], list, marker='o')
+    plt.plot([d for d in range(r1,r2)], list, marker='o')
     plt.title("Silhouette")
+    plt.xlabel("Distance")
+    plt.ylabel("Silhouette")
+    plt.show()
 
     return list, listk[indice], listleaves[indice], runtime
 
