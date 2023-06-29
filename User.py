@@ -42,6 +42,26 @@ class User:
     def getPreferences(self):
         return self.preferences
     
+    
+    def start_pref(self, n , m, variables, bool):
+
+        pref = self.getPreferences()
+        starts = []
+
+        for k in range(len(pref)):
+            for i in range(n):
+                for j in range(m):
+                    var_sol = pref[k].get_value("T{}-{}".format(i,j))
+                    starts.append(var_sol.get_start())
+
+            if bool:
+                # print("Matrice des start des préférences : ")
+                print(starts[k*n*m : k*n*m+n*m])
+
+        return starts
+
+
+    
 
     def matrix_pref(self, n , m, variables, bool):
 
@@ -57,38 +77,11 @@ class User:
             # print("-----------------")
             for i in range(n):
                 for j in range(m):
-                    print(variables[i][j])
-                    var_sol = sol[variables[i][j]]
-                    print(sol)
-            
+                    var_sol = sol.get_value("T{}-{}".format(i,j))
+                    
                     matrix[k][i*m + j] = var_sol.start
-                    # var_sol = pref[k].get_all_var_solutions()[i*m + j]
-            
-                    # matrix[k][j] = var_sol.get_start()
 
             k+=1
-
-        # for k in range (len(pref)):
-        #     print("-----------------")
-        #     matrix.append([])
-        #     sol = pref[k].get_all_var_solutions()
-        #     for j in range(len(sol)):
-        #             matrix[k].append(sol[j].get_start())
-        #             #matrix[k][j] = sol[j].get_start()
-        #             # var_sol = pref[k].get_all_var_solutions()[i*m + j]
-            
-        #             # matrix[k][j] = var_sol.get_start()
-        
-
-        # for sol in pref:
-        #     var_sol = []
-        #     for i in range(n):
-        #         for j in range(m):
-                    
-        #             var_sol.append( sol.get_all_var_solutions()[i*m + j].get_start())
-        #     print("000000000000000000000000000000000000000000000000000000000000000000000000")
-        #     matrix.append(var_sol)
-        #     print(len(var_sol))
             
         if bool:
             print("Matrice des start des préférences : ")
@@ -97,6 +90,7 @@ class User:
         
         return matrix
     
+
     #Vérifier que deux solutions qui se suivent respectent bien l'ordre
     def test_preferences(self, list_sols, list_indices_pref):
         for j in range(len(list_indices_pref) - 1):
@@ -104,6 +98,7 @@ class User:
                return False
         return True
     
+
     #Vérifier que les solutions proposées lors d'une itération sont différentes de celles de l'itération précédente
     def test_differences_sol(self, matrix):
 
