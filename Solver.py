@@ -39,10 +39,7 @@ class Solver:
         self.add_variable(variables)
         print("Model variables created !")
 
-
-
-
-    def solve(self, model, k, n, m, T_machine):
+    def solve(self, model, k, n, m, T_machine, optimalval):
 
         tps1 = time.time()
 
@@ -65,6 +62,10 @@ class Solver:
         for machine in range(m):
             self.add_constraint(no_overlap([variables[i][machine] for i in range(n)]))
         print("Disjunctive constraints added !")
+
+        # Add constraints that makespan < 2*optimalval
+        makespan = max([end_of(variables[i][T_machine[i*m + m -1]]) for i in range(n)])
+        self.add_constraint(makespan <= 2*optimalval)
 
         # Add the constraints
         for constraint in self._constraints:
