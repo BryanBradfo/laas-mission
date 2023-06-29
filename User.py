@@ -63,7 +63,7 @@ class User:
 
     
 
-    def matrix_pref(self, n , m, variables, bool):
+    def matrix_pref(self, n , m, bool):
 
         pref = self.getPreferences()
         l = len(pref[0].get_all_var_solutions())
