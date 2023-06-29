@@ -42,7 +42,7 @@ class User:
     def getPreferences(self):
         return self.preferences
     
-    
+
     def start_pref(self, n , m, variables, bool):
 
         pref = self.getPreferences()
@@ -52,7 +52,7 @@ class User:
             for i in range(n):
                 for j in range(m):
                     var_sol = pref[k].get_value("T{}-{}".format(i,j))
-                    starts.append(var_sol.get_start())
+                    starts.append(var_sol.start)
 
             if bool:
                 # print("Matrice des start des préférences : ")
@@ -66,23 +66,16 @@ class User:
     def matrix_pref(self, n , m, variables, bool):
 
         pref = self.getPreferences()
-        print(pref)
         l = len(pref[0].get_all_var_solutions())
         matrix = [[None for j in range(l)] for i in range(len(pref))]
-        
-        print("Matrice des start des préférences : ")
     
-        k=0
-        for sol in pref:
-            # print("-----------------")
+        for k in range(len(pref)):
             for i in range(n):
                 for j in range(m):
-                    var_sol = sol.get_value("T{}-{}".format(i,j))
+                    var_sol = pref[k].get_value("T{}-{}".format(i,j))
                     
                     matrix[k][i*m + j] = var_sol.start
-
-            k+=1
-            
+                    
         if bool:
             print("Matrice des start des préférences : ")
             for i in range (len(matrix)):
@@ -92,9 +85,9 @@ class User:
     
 
     #Vérifier que deux solutions qui se suivent respectent bien l'ordre
-    def test_preferences(self, list_sols, list_indices_pref):
-        for j in range(len(list_indices_pref) - 1):
-            if (self.objectiveFunction(list_sols[list_indices_pref[j]]) > self.objectiveFunction(list_sols[list_indices_pref[j+1]])):
+    def test_preferences(self, list_sols):
+        for i in range(len(list_sols) - 1):
+            if (self.objectiveFunction(list_sols[i]) > self.objectiveFunction(list_sols[i+1])):
                return False
         return True
     
