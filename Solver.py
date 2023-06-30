@@ -64,8 +64,8 @@ class Solver:
         print("Disjunctive constraints added !")
 
         # Add constraints that makespan < 2*optimalval
-        makespan = max([end_of(variables[i][T_machine[i*m + m -1]]) for i in range(n)])
-        self.add_constraint(makespan <= 2*optimalval)
+        # makespan = max([end_of(variables[i][T_machine[i*m + m -1]]) for i in range(n)])
+        # self.add_constraint(makespan <= 2*optimalval)
 
         # Add the constraints
         for constraint in self._constraints:
