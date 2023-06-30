@@ -39,6 +39,7 @@ def clustAggloDist(data, dist_deb, dist_max, pas):
     number_clusters = []
     runtimes = []
     iterations = []
+    distances = []
     while dist<dist_max:
         # set distance_threshold (0 ensures we compute the full tree )
         print("______________________________________dist = ", dist)
@@ -51,11 +52,15 @@ def clustAggloDist(data, dist_deb, dist_max, pas):
         k = model.n_clusters_
         leaves = model.n_leaves_
         
-        if k>1 and k<len(data)-1:
-                #Methode coefficient de silhouette
-                silhouette_scores.append(silhouette_score(data, labels))
-                #Methode coefficient de Davies-Bouldin
-                davies_bouldin_scores.append(davies_bouldin_score(data, labels))
+        if k>1:
+                if k<len(data)-1:
+                    #Methode coefficient de silhouette
+                    silhouette_scores.append(silhouette_score(data, labels))
+                    #Methode coefficient de Davies-Bouldin
+                    davies_bouldin_scores.append(davies_bouldin_score(data, labels))
+                else:
+                    silhouette_scores.append(-2)
+                    davies_bouldin_scores.append(2)
         else:
             silhouette_scores.append(-1)
             davies_bouldin_scores.append(1)
@@ -63,39 +68,42 @@ def clustAggloDist(data, dist_deb, dist_max, pas):
         runtime = round (( tps2 - tps1 )*1000 ,2)
         runtimes.append(runtime)
         number_clusters.append(k)
+        distances.append(dist)
 
         print("nb clusters =",k,", nb feuilles = ", leaves , " runtime = ", runtime ,"ms dist = ", dist )
         dist+=pas#Se fixer sur 1 data
-    return silhouette_scores, davies_bouldin_scores, number_clusters, runtimes, iterations
+    return silhouette_scores, davies_bouldin_scores, number_clusters, runtimes, iterations, distances
 
-def myPlot(x, silhouette_scores, davies_bouldin_scores, number_cluster):
+def myPlot(x, silhouette_scores, davies_bouldin_scores, number_cluster, distance):
     # create plot
     y = silhouette_scores
     plt.subplot(2, 1, 1)
-    plt.plot(x, y, label="Silhouette Score")
-    plt.xlabel("Nombre de clusters")
+    plt.plot(x, y, label="Silhouette Score", marker='o')
+    plt.xlabel("Distance")
     plt.ylabel("Scores")
-    plt.title("Scores par nombre de clusters")
+    plt.title("Scores en fonction de la distance")
     plt.legend()
     plt.show()
     #Afficher le pic de la courbe de silhouette
     print("Le pic de la courbe de silhouette est : ", max(silhouette_scores))
     print("Le nombre de clusters correspondant est : ", number_cluster[silhouette_scores.index(max(silhouette_scores))])
+    print("La distance correspondante est : ", distance[silhouette_scores.index(max(silhouette_scores))])
     print("")
     
     y = davies_bouldin_scores
     plt.subplot(2, 1, 1)
-    plt.plot(x, y, label="davies_bouldin Scores")
-    plt.xlabel("Nombre de clusters")
+    plt.plot(x, y, label="davies_bouldin Scores", marker='o')
+    plt.xlabel("Distance")
     plt.ylabel("Scores")
-    plt.title("Scores par nombre de clusters")
+    plt.title("Scores en fonction de la distance")
     plt.legend()
     plt.show()
     
        
     #Afficher le pic de la courbe de davies_bouldin
     print("Le pic de la courbe de davies_bouldin est : ", min(davies_bouldin_scores))
-    print("Le nombre de clusters correspondant est : ", davies_bouldin_scores.index(min(davies_bouldin_scores))+2)
+    print("Le nombre de clusters correspondant est : ", davies_bouldin_scores.index(min(davies_bouldin_scores)))
+    print("La distance correspondante est : ", distance[davies_bouldin_scores.index(min(davies_bouldin_scores))])
     print("")
 
 
@@ -105,17 +113,19 @@ def clustering(data_pref_layer,d_deb, d_max, pas):
     silhouette_scores = []
     davies_bouldin_scores = []
     number_clusters = []
+    distances = []
     for data in data_pref_layer:
-        silhouette_scores_data, davies_bouldin_scores_data, number_clusters_data, runtimes, iterations = clustAggloDist(data, d_deb, d_max, pas)
+        silhouette_scores_data, davies_bouldin_scores_data, number_clusters_data, runtimes, iterations, distances_data = clustAggloDist(data, d_deb, d_max, pas)
         silhouette_scores.append(silhouette_scores_data)
         davies_bouldin_scores.append(davies_bouldin_scores_data)
         number_clusters.append(number_clusters_data)
+        distances.append(distances_data)
         i+=1
 
     for i in range(0, len(data_pref_layer)):
         print("Jeu de donnees ", i)
         x = [i/100 for i in range(d_deb*100, d_max*100, pas*100)]
-        myPlot(x, silhouette_scores[i], davies_bouldin_scores[i], number_clusters[i])
+        myPlot(x, silhouette_scores[i], davies_bouldin_scores[i], number_clusters[i], distances[i])
 
 
 # ----------------- Code clustering de Alice --------------------
