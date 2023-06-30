@@ -236,5 +236,3 @@ print("\nAdding preferences to the solver...")
 # print(len(pref))
 
 # print("\n--------End of the interaction with the user...---------")
-
-hello 
