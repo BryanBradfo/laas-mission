@@ -81,28 +81,27 @@ def clustAggloDist(data, dist_deb, dist_max, pas):
 def myPlot(x, silhouette_scores, davies_bouldin_scores, number_cluster, distance):
     # create plot
     y = silhouette_scores
-    plt.subplot(2, 1, 1)
+    plt.subplot(1, 2, 1)
     plt.plot(x, y, label="Silhouette Score", marker='o')
     plt.xlabel("Distance")
     plt.ylabel("Scores")
     plt.title("Scores en fonction de la distance")
     plt.legend()
-    plt.show()
-    #Afficher le pic de la courbe de silhouette
-    print("Le pic de la courbe de silhouette est : ", max(silhouette_scores))
-    print("Le nombre de clusters correspondant est : ", number_cluster[silhouette_scores.index(max(silhouette_scores))])
-    print("La distance correspondante est : ", distance[silhouette_scores.index(max(silhouette_scores))])
-    print("")
     
     y = davies_bouldin_scores
-    plt.subplot(2, 1, 1)
+    plt.subplot(1, 2, 2)
     plt.plot(x, y, label="davies_bouldin Scores", marker='o')
     plt.xlabel("Distance")
     plt.ylabel("Scores")
     plt.title("Scores en fonction de la distance")
     plt.legend()
     plt.show()
-    
+
+    #Afficher le pic de la courbe de silhouette
+    print("Le pic de la courbe de silhouette est : ", max(silhouette_scores))
+    print("Le nombre de clusters correspondant est : ", number_cluster[silhouette_scores.index(max(silhouette_scores))])
+    print("La distance correspondante est : ", distance[silhouette_scores.index(max(silhouette_scores))])
+    print("")    
        
     #Afficher le pic de la courbe de davies_bouldin
     print("Le pic de la courbe de davies_bouldin est : ", min(davies_bouldin_scores))
