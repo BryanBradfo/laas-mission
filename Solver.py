@@ -2,6 +2,7 @@ from docplex.cp.model import *
 from docplex.cp.config import get_default
 import time
 import random
+import numpy as np
 
 class Solver:
 
@@ -101,4 +102,10 @@ class Solver:
         solutions_aleatoires = random.sample(list_sol, k)
 
         return solutions_aleatoires, nb_solution, tps2 - tps1
+    
+
+    def manhattan_distance(self, sol1, sol2):
+        np.sum(np.abs(sol1 - sol2))
+    
+            
         
