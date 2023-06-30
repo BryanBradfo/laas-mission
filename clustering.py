@@ -42,10 +42,10 @@ def clustAggloDist(data, dist_deb, dist_max, pas):
     distances = []
     while dist<dist_max:
         # set distance_threshold (0 ensures we compute the full tree )
-        print("______________________________________dist = ", dist)
+        #print("______________________________________dist = ", dist)
         tps1 = time.time()
         model = cluster.AgglomerativeClustering(distance_threshold =dist , linkage ='single', n_clusters = None )
-        print(data)
+        #print(data)
         model = model.fit(data)
         tps2 = time.time()
         labels = model.labels_
@@ -70,7 +70,7 @@ def clustAggloDist(data, dist_deb, dist_max, pas):
         number_clusters.append(k)
         distances.append(dist)
 
-        print("nb clusters =",k,", nb feuilles = ", leaves , " runtime = ", runtime ,"ms dist = ", dist )
+        #print("nb clusters =",k,", nb feuilles = ", leaves , " runtime = ", runtime ,"ms dist = ", dist )
         dist+=pas#Se fixer sur 1 data
     return silhouette_scores, davies_bouldin_scores, number_clusters, runtimes, iterations, distances
 
@@ -124,7 +124,7 @@ def clustering(data_pref_layer,d_deb, d_max, pas):
 
     for i in range(0, len(data_pref_layer)):
         print("Jeu de donnees ", i)
-        x = [i/100 for i in range(d_deb*100, d_max*100, pas*100)]
+        x = [i for i in np.arange(d_deb, d_max, pas)]
         myPlot(x, silhouette_scores[i], davies_bouldin_scores[i], number_clusters[i], distances[i])
 
 
