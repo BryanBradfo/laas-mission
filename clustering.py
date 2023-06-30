@@ -102,7 +102,7 @@ def myPlot(x, silhouette_scores, davies_bouldin_scores, number_cluster, distance
        
     #Afficher le pic de la courbe de davies_bouldin
     print("Le pic de la courbe de davies_bouldin est : ", min(davies_bouldin_scores))
-    print("Le nombre de clusters correspondant est : ", davies_bouldin_scores.index(min(davies_bouldin_scores)))
+    print("Le nombre de clusters correspondant est : ", number_cluster[davies_bouldin_scores.index(min(davies_bouldin_scores))])
     print("La distance correspondante est : ", distance[davies_bouldin_scores.index(min(davies_bouldin_scores))])
     print("")
 
