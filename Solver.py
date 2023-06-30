@@ -1,6 +1,7 @@
 from docplex.cp.model import *
 from docplex.cp.config import get_default
 import time
+import random
 
 class Solver:
 
@@ -94,5 +95,10 @@ class Solver:
         # Renvoie les k premieres solutions (makespan)
 
         # return solver, status
-        return list_sol[:k], nb_solution, tps2 - tps1
+        if k > len(list_sol):
+            raise ValueError("Le nombre de solutions demandé est supérieur à la taille de la liste.")
+
+        solutions_aleatoires = random.sample(list_sol, k)
+
+        return solutions_aleatoires, nb_solution, tps2 - tps1
         
