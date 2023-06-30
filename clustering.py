@@ -33,14 +33,14 @@ def create_layers(list_equal, data_pref):
 # ----------------- Code clustering de Brenda --------------------
 
 def clustAggloDist(data, dist_deb, dist_max, pas):
-    dist = dist_deb
+    
     silhouette_scores = []
     davies_bouldin_scores = []
     number_clusters = []
     runtimes = []
     iterations = []
     distances = []
-    while dist<dist_max:
+    for dist in np.arange(dist_deb, dist_max, pas):
         # set distance_threshold (0 ensures we compute the full tree )
         #print("______________________________________dist = ", dist)
         tps1 = time.time()
@@ -51,19 +51,23 @@ def clustAggloDist(data, dist_deb, dist_max, pas):
         labels = model.labels_
         k = model.n_clusters_
         leaves = model.n_leaves_
-        
-        if k>1:
-                if k<len(data)-1:
-                    #Methode coefficient de silhouette
-                    silhouette_scores.append(silhouette_score(data, labels))
-                    #Methode coefficient de Davies-Bouldin
-                    davies_bouldin_scores.append(davies_bouldin_score(data, labels))
-                else:
-                    silhouette_scores.append(-2)
-                    davies_bouldin_scores.append(2)
+        data_lenght = len(data)
+        if data_lenght > 2:
+            if k>1:
+                    if k<data_lenght-1:
+                        #Methode coefficient de silhouette
+                        silhouette_scores.append(silhouette_score(data, labels))
+                        #Methode coefficient de Davies-Bouldin
+                        davies_bouldin_scores.append(davies_bouldin_score(data, labels))
+                    else:
+                        silhouette_scores.append(-2)
+                        davies_bouldin_scores.append(2)
+            else:
+                silhouette_scores.append(-1)
+                davies_bouldin_scores.append(1)
         else:
-            silhouette_scores.append(-1)
-            davies_bouldin_scores.append(1)
+            silhouette_scores.append(-3)
+            davies_bouldin_scores.append(3)
         
         runtime = round (( tps2 - tps1 )*1000 ,2)
         runtimes.append(runtime)
@@ -71,7 +75,7 @@ def clustAggloDist(data, dist_deb, dist_max, pas):
         distances.append(dist)
 
         #print("nb clusters =",k,", nb feuilles = ", leaves , " runtime = ", runtime ,"ms dist = ", dist )
-        dist+=pas#Se fixer sur 1 data
+        #Se fixer sur 1 data
     return silhouette_scores, davies_bouldin_scores, number_clusters, runtimes, iterations, distances
 
 def myPlot(x, silhouette_scores, davies_bouldin_scores, number_cluster, distance):
@@ -123,10 +127,11 @@ def clustering(data_pref_layer,d_deb, d_max, pas):
         i+=1
 
     for i in range(0, len(data_pref_layer)):
-        print("Jeu de donnees ", i)
+        print("--------------Layer", i, "-----------------")
+        print(len(data_pref_layer[i]))
         x = [i for i in np.arange(d_deb, d_max, pas)]
         myPlot(x, silhouette_scores[i], davies_bouldin_scores[i], number_clusters[i], distances[i])
-
+        print("__________________________________________________________")
 
 # ----------------- Code clustering de Alice --------------------
 
