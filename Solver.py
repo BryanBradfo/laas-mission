@@ -104,8 +104,7 @@ class Solver:
         return solutions_aleatoires, nb_solution, tps2 - tps1
     
 
-    def manhattan_distance(self, sol1, sol2):
-        np.sum(np.abs(sol1 - sol2))
+
     
             
         
