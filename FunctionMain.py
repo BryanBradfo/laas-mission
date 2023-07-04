@@ -67,6 +67,7 @@ def constraintNewOldSolutionDifferent(n, m, pref, model, solver):
         b = (b!=0)
         bb = bb * b
     solver.add_constraint(bb==1)
+    return variables
 #--------------------------------------------------------------------------
 
 #------------Calcul de la distance de manhattan-------------------------
@@ -171,7 +172,7 @@ def definirNbClusters(layers):
     nb_clusters = []
     for i in range(len(layers)):
         data = layers[i]
-        print("-------------- Layer", i, "-----------------")
+        print("-------------- Layer for clustering", i, "-----------------")
         # print(len(data))
         
         if len(data) > 2:
