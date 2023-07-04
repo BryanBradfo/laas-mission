@@ -196,11 +196,11 @@ def silhouette(datanp):
     maxd = np.max(list)
     indice = list.index(maxd)
 
-    plt.plot([k for k in range(2, len(datanp))], list, marker='o')
-    plt.title("Silhouette")
-    plt.xlabel("Distance")
-    plt.ylabel("Silhouette")
-    plt.show()
+    # plt.plot([k for k in range(2, len(datanp))], list, marker='o')
+    # plt.title("Silhouette")
+    # plt.xlabel("Distance")
+    # plt.ylabel("Silhouette")
+    # plt.show()
 
     return list, listk[indice], listleaves[indice], runtime
 
