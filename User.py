@@ -12,9 +12,10 @@ class User:
         return max(list_ends)
 
 
-    def classerSolutions(self, list_sol):
+    def classerSolutions(self, nbLayer, optimalVal, list_sol):
         list_obj = []
         list_temp_sol = []
+        list_layers_fixed = [[] for i in range(nbLayer)]
         
         #liste de max_ends
         for sol in list_sol:
@@ -32,11 +33,21 @@ class User:
         #classer les solutions par ordre de index
         self.preferences = [list_temp_sol[i] for i in list_indice]
         
+        for sol in self.preferences:
+            for i in range(0, nbLayer-1):
+                obj_sol = self.objectiveFunction(sol)
+                if (obj_sol >= optimalVal + (i*optimalVal/nbLayer) and obj_sol < optimalVal + (i+1)*optimalVal/nbLayer):
+                    list_layers_fixed[i].append(sol)
+                
+
+
+
+
         list_equal = []
         for i in range(len(self.preferences) -1):
             list_equal.append(self.objectiveFunction(self.preferences[i]) == self.objectiveFunction(self.preferences[i+1]))
 
-        return list_indice, list_equal, list_obj
+        return list_indice, list_equal, list_obj, list_layers_fixed
 
 
     def getPreferences(self):
