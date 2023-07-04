@@ -6,8 +6,13 @@ from docplex.cp.config import get_default
 import numpy as np
 from Solver import *
 from User import *
-#---------------------Lecture des données--------------------------------
-def lire_fichier(file):
+
+
+
+#--------------------- Read the data --------------------------------
+
+def get_data_from_file(file):
+
     optimalval = -1
 
     data = []
@@ -36,8 +41,74 @@ def lire_fichier(file):
         for j in range(m):
             ind_machine = int(T_machine[i*m + j])
             duration[i][ind_machine] = T_duration[i*m + j]
+
     return n, m, data, T_machine, T_duration, duration, optimalval
-#--------------------------------------------------------------------------
+
+
+#--------------------- Initialize the solver --------------------------------
+
+def initialize_solver(data, n, m, duration):
+
+    solver = Solver(data)
+    model = CpoModel() 
+
+    # --------- Create the model variables ---------
+    solver.create_variables(model, n, m, duration)
+
+    print("\nSolver initialized !")
+
+    return model, solver
+
+
+# --------------------- Display solution --------------------------------
+
+def display_solution(msol, bool_display):
+    if bool_display:
+        for sol in msol:
+            sol.write()
+
+
+# ___________________Interaction with the user___________________________
+
+# --------------------- User preferences --------------------------------
+
+def user_preferences(msol, user, nbLayer, optimalval):
+
+    print("\nClassing solutions...")	
+    list_indice, list_equal, list_obj, list_layer = user.classerSolutions(nbLayer, optimalval, msol)
+    print(list_obj)
+    # print(list_indice)
+    # print(list_equal)
+    # print(list_indice)
+    print("Solutions classed !")
+
+    print("\nCreating preferences...")
+    pref = user.getPreferences()
+    print("Preferences created !")
+
+    return list_indice, list_equal, list_obj, pref
+
+
+#---------------------- Tests on preferences---------------------------
+
+def test(n, m, user):
+
+    print("\nTesting order of preferences...")
+    pref = user.getPreferences()
+    if user.test_preferences(pref):
+        print("\tL'ordre des préférences est cohérente")
+    else:
+        print("\tL'ordre des préférences n'est pas cohérente")
+
+    print("\nTesting differences between solutions...")
+    matrix = user.matrix_pref(n, m, False)
+    if user.test_differences_sol(matrix):
+        print("\tToutes les solutions sont différentes")
+    else:
+        print("\tLes solutions ne sont pas toutes différentes")
+
+#---------------------------------------------------------------------
+
 #---------------------Solutions à trouver différentes des anciennes----------------------------------
 def constraintNewOldSolutionDifferent(n, m, pref, model, solver):
      
@@ -113,49 +184,9 @@ def theOnes(n, m, data, nb_cluster):
             
 #___________________________________________________________________________________________________________________________________________________________________
 
-#------------Interaction with the user-------------------------
 
-#----------------------Test Ordre Preferences---------------------------
-def testOrderPreferences(user):
-    print("\nTesting order of preferences...")
-    pref = user.getPreferences()
-    if user.test_preferences(pref):
-        print("\tL'ordre des préférences est cohérente")
-    else:
-        print("\tL'ordre des préférences n'est pas cohérente")
-#---------------------------------------------------------------------
-#----------------------Conditions d'arrêt---------------------------
-def testDifferentSolutions(n, m, user):
-    print("\nTesting differences between solutions...")
-    matrix = user.matrix_pref(n, m, False)
-    if user.test_differences_sol(matrix):
-        print("\tToutes les solutions sont différentes")
-    else:
-        print("\tLes solutions ne sont pas toutes différentes")
-#---------------------------------------------------------------------
 
-def interactionUtilisateur(n, m, variables, msol, user, verbose):
-    print("\n--------Interaction with the user...---------")
 
-    print("\nClassing solutions...")	
-    list_indice, list_equal, list_obj = user.classerSolutions(msol)
-    print(list_obj)
-    # print(list_indice)
-    print(list_equal)
-    # print(list_indice)
-    print("Solutions classed !")
-
-    print("\nCreating preferences...")
-    pref = user.getPreferences()
-    print("Preferences created !")
-
-    print("\nDisplaying preferences...")
-
-    starts = user.start_pref(n, m, variables, verbose)
-
-    matrix = user.matrix_pref(n, m, verbose)
-
-    return starts, matrix, list_indice, list_equal, list_obj, pref
 #---------------------------------------------------------------------
 
 

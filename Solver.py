@@ -7,7 +7,6 @@ import numpy as np
 class Solver:
 
     def __init__(self, data):
-        print("\nSolver initialized !")
         self._variables = []
         self._constraints = []
         self._instance = data
