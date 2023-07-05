@@ -107,11 +107,10 @@ def test(n, m, user):
     else:
         print("\tLes solutions ne sont pas toutes différentes")
 
-#---------------------------------------------------------------------
 
 #---------------------Solutions à trouver différentes des anciennes----------------------------------
-def constraintNewOldSolutionDifferent(n, m, pref, model, solver):
-     
+
+def update_variables_new_constraint(n, m, pref, model, solver):
 
     # stop = int(input("Do you want to continue ? True(1) or False(0)"))
 
@@ -138,72 +137,15 @@ def constraintNewOldSolutionDifferent(n, m, pref, model, solver):
         b = (b!=0)
         bb = bb * b
     solver.add_constraint(bb==1)
+
     return variables
-#--------------------------------------------------------------------------
-
-#------------Calcul de la distance de manhattan-------------------------
-def abs_int(x,y):
-    return max(x-y,y-x)
-def abs_(L1,L2):
-    L=[]
-    for i in range(len(L1)):
-        L.append(abs_int(L1[i],L2[i]))
-    return L
-def sum_(L):
-    s=0
-    for i in range(len(L)):
-        s+=L[i]
-    return s
-def manhattan_distance(sol1, sol2):
-    sol1np=np.array(sol1)
-    sol2np=np.array(sol2)
-    return sum_(abs_(sol1np,sol2np))
-
-def theOnes(n, m, data, nb_cluster):
-        if(len(data)==1):
-            return data[0]
-        k = nb_cluster
-
-        k , leaves , labels, runtime = cl.my_agglo_k(data, k, 'single')
-
-        avg=[[0 for i in range(len(data[0]))] for i in range(k)]
-        card=[0 for i in range(k) ]
-
-        for i in range(len(data)):
-            card[labels[i]]+=1
-            avg[labels[i]]=[avg[labels[i]][k]+data[i][k] for k in range(len(data[i]))]
-        
-        for i in range(k):
-            avg[i]=[avg[i][k]/card[i] for k in range(len(data[0]))]
-        
-        the_ones=[None for i in range(k)]
-        for i in range(len(data)):
-            if(the_ones[labels[i]]==None or manhattan_distance(data[i],avg[labels[i]])<manhattan_distance(the_ones[labels[i]],avg[labels[i]])):
-                    the_ones[labels[i]]=data[i]
-        return the_ones
-            
-#___________________________________________________________________________________________________________________________________________________________________
 
 
-
-
-#---------------------------------------------------------------------
-
-
-#----------------------Conditions d'arrêt---------------------------
-def stopCondition(it, it_max, tps, tps_max):
-    if (it == it_max):
-        print("The user has reached the maximum number of iterations !")
-    elif (tps >= tps_max):
-        print("The user has reached the maximum time !")
-#---------------------------------------------------------------------
-
-
-def definirNbClusters(layers):
+def choose_best_clusters(layers):
     nb_clusters = []
     for i in range(len(layers)):
         data = layers[i]
-        print("-------------- Layer for clustering", i, "-----------------")
+        # print("-------------- Layer for clustering", i, "-----------------")
         # print(len(data))
         
         if len(data) > 2:
@@ -211,14 +153,76 @@ def definirNbClusters(layers):
             nb_clusters.append(k_max)
 
             # print(len(data))
-            print("D'après l'indice de silhouette, nb clusters =", k_max ,", nb feuilles = ", leaves_max , 
-                " runtime = ", runtime ,"s \n")
+            # print("D'après l'indice de silhouette, nb clusters =", k_max ,", nb feuilles = ", leaves_max , 
+            #     " runtime = ", runtime ,"s \n")
             
         else:
-            print("Pas assez de données pour faire un clustering : On a juste ", len(data), " données")
-            print("numbre de clusters = ", len(data),"\n")
+            # print("Pas assez de données pour faire un clustering : On a juste ", len(data), " données")
+            # print("numbre de clusters = ", len(data),"\n")
             nb_clusters.append(len(data))
     return nb_clusters
+
+
+#------------Calcul de la distance de manhattan-------------------------
+
+def abs_int(x,y):
+    return max(x-y,y-x)
+
+def abs_(L1,L2):
+    L=[]
+    for i in range(len(L1)):
+        L.append(abs_int(L1[i],L2[i]))
+    return L
+
+def sum_(L):
+    s=0
+    for i in range(len(L)):
+        s+=L[i]
+    return s
+
+def manhattan_distance(sol1, sol2):
+    sol1np=np.array(sol1)
+    sol2np=np.array(sol2)
+    return sum_(abs_(sol1np,sol2np))
+
+
+def average_computation(data, nb_cluster):
+        
+    k , leaves , labels, runtime = cl.my_agglo_k(data, nb_cluster, 'single')
+
+    avg=[[0 for i in range(len(data[0]))] for i in range(k)]
+    card=[0 for i in range(k) ]
+
+    for i in range(len(data)):
+        card[labels[i]]+=1
+        avg[labels[i]]=[avg[labels[i]][k]+data[i][k] for k in range(len(data[i]))]
+    
+    for i in range(k):
+        avg[i]=[avg[i][k]/card[i] for k in range(len(data[0]))]
+
+    return k, avg, labels
+        
+
+def solution_average(k, data, labels, avg):
+    the_ones=[None for i in range(k)]
+    for i in range(len(data)):
+        if(the_ones[labels[i]]==None or manhattan_distance(data[i],avg[labels[i]])<manhattan_distance(the_ones[labels[i]],avg[labels[i]])):
+                the_ones[labels[i]]=data[i]
+    return the_ones
+
+
+            
+#___________________________________________________________________________________________________________________________________________________________________
+
+
+#----------------------Conditions d'arrêt---------------------------
+
+def stopCondition(it, it_max, tps, tps_max):
+    if (it == it_max):
+        print("The user has reached the maximum number of iterations !")
+    elif (tps >= tps_max):
+        print("The user has reached the maximum time !")
+
 
 
     
