@@ -78,7 +78,7 @@ class Solver:
 
         # msol = model.start_search(SearchType="DepthFirst", TimeLimit=10)
 
-        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit=10)
+        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit= 20)
 
         nb_solution = 0
         for sol in msol:

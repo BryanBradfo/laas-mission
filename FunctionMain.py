@@ -75,7 +75,8 @@ def display_solution(msol, bool_display):
 def user_preferences(msol, user, nbLayer, optimalval):
 
     print("\nClassing solutions...")	
-    list_indice, list_equal, list_obj, list_layer = user.classerSolutions(nbLayer, optimalval, msol)
+    # list_indice, list_obj, list_layer, list_equal = user.classerSolutions(nbLayer, optimalval, msol)
+    list_indice, list_obj, list_layer, list_equal = user.classerSolution_min_max(nbLayer, msol)
     print(list_obj)
     # print(list_indice)
     # print(list_equal)
@@ -86,7 +87,7 @@ def user_preferences(msol, user, nbLayer, optimalval):
     pref = user.getPreferences()
     print("Preferences created !")
 
-    return list_indice, list_equal, list_obj, pref
+    return list_indice, list_obj, pref, list_layer, list_equal
 
 
 #---------------------- Tests on preferences---------------------------
@@ -184,6 +185,12 @@ def manhattan_distance(sol1, sol2):
     sol1np=np.array(sol1)
     sol2np=np.array(sol2)
     return sum_(abs_(sol1np,sol2np))
+
+def rayon_cluster(avg, list_sol):
+    rayon = 0
+    for sol in list_sol:
+        rayon = max(rayon, manhattan_distance(avg, sol))
+    return rayon
 
 
 def average_computation(data, nb_cluster):

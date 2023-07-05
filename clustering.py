@@ -15,16 +15,16 @@ def create_layers(list_equal, data_pref):
     # print(data_pref)
 
     data_pref_layer = []
-    layer_1 = [data_pref[0]]
+    layer_1 = []
     data_pref_layer.append(layer_1)
     k=0
     for i in range(len(list_equal)):
         if list_equal[i] == True:
-            data_pref_layer[k].append(data_pref[i+1])
+            data_pref_layer[k].append(data_pref[i])
         else:
             k+=1
             layer = []
-            layer.append(data_pref[i+1])
+            layer.append(data_pref[i])
             data_pref_layer.append(layer)
     
     return data_pref_layer

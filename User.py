@@ -10,12 +10,12 @@ class User:
         for i in range(len(list_sol) - 1):
                 list_ends.append(list_sol[i].get_end())
         return max(list_ends)
-
-
-    def classerSolutions(self, nbLayer, optimalVal, list_sol):
+    
+    def classerSolution_min_max(self, nbLayer, list_sol):
         list_obj = []
         list_temp_sol = []
         list_layers_fixed = [[] for i in range(nbLayer)]
+        
         
         #liste de max_ends
         for sol in list_sol:
@@ -27,6 +27,50 @@ class User:
             list_temp_sol.append(pref)
             list_obj.append(self.objectiveFunction(pref))
 
+        # #Trier les ends_max par ordre croissant
+        list_indice = sorted(range(len(list_obj)), key=lambda k: list_obj[k])
+        #classer les solutions par ordre de index
+        self.preferences = [list_temp_sol[i] for i in list_indice]
+
+        min_obj = min(list_obj)
+        max_obj = max(list_obj)
+        
+        for sol in self.preferences:
+            for i in range(0, nbLayer-1):
+                obj_sol = self.objectiveFunction(sol)
+                if (obj_sol >= min_obj + (i*(max_obj-min_obj)/nbLayer) and obj_sol < min_obj + (i+1)*(max_obj-min_obj)/nbLayer):
+                    list_layers_fixed[i].append(sol)
+                    
+        list_equal = []
+        k = 0
+        for j in range(nbLayer):
+            for i in range(k, len(self.preferences)):
+                flag = self.preferences[i] in list_layers_fixed[j]
+                list_equal.append(flag)
+                k = i+1
+                if not flag:
+                    break
+                    
+
+        return list_indice, list_obj, list_layers_fixed, list_equal
+
+
+
+    def classerSolutions(self, nbLayer, optimalVal, list_sol):
+        list_obj = []
+        list_temp_sol = []
+        list_layers_fixed = [[] for i in range(nbLayer)]
+        
+        
+        #liste de max_ends
+        for sol in list_sol:
+            list_temp_sol.append(sol)
+            list_obj.append(self.objectiveFunction(sol))
+
+        
+        for pref in self.preferences:
+            list_temp_sol.append(pref)
+            list_obj.append(self.objectiveFunction(pref))
 
         # #Trier les ends_max par ordre croissant
         list_indice = sorted(range(len(list_obj)), key=lambda k: list_obj[k])
@@ -38,16 +82,19 @@ class User:
                 obj_sol = self.objectiveFunction(sol)
                 if (obj_sol >= optimalVal + (i*optimalVal/nbLayer) and obj_sol < optimalVal + (i+1)*optimalVal/nbLayer):
                     list_layers_fixed[i].append(sol)
-                
-
-
-
-
+                    
         list_equal = []
-        for i in range(len(self.preferences) -1):
-            list_equal.append(self.objectiveFunction(self.preferences[i]) == self.objectiveFunction(self.preferences[i+1]))
+        k = 0
+        for j in range(nbLayer):
+            for i in range(k, len(self.preferences)):
+                flag = self.preferences[i] in list_layers_fixed[j]
+                list_equal.append(flag)
+                k = i+1
+                if not flag:
+                    break
+                    
 
-        return list_indice, list_equal, list_obj, list_layers_fixed
+        return list_indice, list_obj, list_layers_fixed, list_equal
 
 
     def getPreferences(self):
