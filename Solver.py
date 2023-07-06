@@ -40,7 +40,7 @@ class Solver:
         self.add_variable(variables)
         print("Model variables created !")
 
-    def solve(self, model, k, n, m, T_machine, optimalval):
+    def solve(self, model, k, n, m, ind, T_machine, optimalval):
 
         tps1 = time.time()
 
@@ -78,7 +78,7 @@ class Solver:
 
         # msol = model.start_search(SearchType="DepthFirst", TimeLimit=10)
 
-        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit= 20)
+        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", SolutionLimit=3*k, MultiPointNumberOfSearchPoints=30 +2*ind, RandomSeed = 1, DefaultInferenceLevel='Basic', OptimalityTolerance=6)
 
         nb_solution = 0
         for sol in msol:
@@ -97,8 +97,8 @@ class Solver:
         # return solver, status
         if k > len(list_sol):
             raise ValueError("Le nombre de solutions demandé est supérieur à la taille de la liste.")
-
-        solutions_aleatoires = random.sample(list_sol, k)
+        #récupérer les k dernières solutions
+        solutions_aleatoires = list_sol[-k:]  #random.sample(list_sol, k)
 
         return solutions_aleatoires, nb_solution, tps2 - tps1
     
