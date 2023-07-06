@@ -115,7 +115,7 @@ def update_variables_new_constraint(n, m, pref, model, solver):
 
     # stop = int(input("Do you want to continue ? True(1) or False(0)"))
 
-    bb = integer_var(0,1)
+    bb = model.integer_var(0,1)
     solver.add_variable(bb)
     bb=1
 
@@ -123,7 +123,7 @@ def update_variables_new_constraint(n, m, pref, model, solver):
     variables = list_variables[0]
 
     for sol in pref:
-        b = integer_var(0,1)
+        b = model.integer_var(0,1)
         solver.add_variable(b)
         b=0
 
