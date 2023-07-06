@@ -20,8 +20,10 @@ class Solver:
     def add_variable(self, variable):
         self._variables.append(variable)
 
-    def add_constraint(self, constraint):
+    def add_constraint(self, model, constraint):
         self._constraints.append(constraint)
+        model.add(constraint)
+
 
 
     def create_variables(self, model, n, m, duration):
@@ -55,22 +57,23 @@ class Solver:
             for j in range(1,m):
                 # print(variables[i][T_machine[i*m + j-1]])
                 # print(variables[i][T_machine[i*m + j]])
-                self.add_constraint(end_before_start(variables[i][T_machine[i*m + j-1]], variables[i][T_machine[i*m + j]]))
+                self.add_constraint(model, end_before_start(variables[i][T_machine[i*m + j-1]], variables[i][T_machine[i*m + j]]))
         print("Precedence constraints added !")
 
         print("\nAdding disjunctive constraints to the solver...")
         # Add disjunctive constraints 
         for machine in range(m):
-            self.add_constraint(no_overlap([variables[i][machine] for i in range(n)]))
+            self.add_constraint(model, no_overlap([variables[i][machine] for i in range(n)]))
         print("Disjunctive constraints added !")
 
         # Add constraints that makespan < 2*optimalval
         makespan = max([end_of(variables[i][T_machine[i*m + m -1]]) for i in range(n)])
-        self.add_constraint(makespan <= 2*optimalval)
+        self.add_constraint(model, makespan <= 2*optimalval)
+        # self.add_constraint(model, makespan < 691)
 
-        # Add the constraints
-        for constraint in self._constraints:
-            model.add(constraint)
+        # # Add the constraints
+        # for constraint in self._constraints:
+        #     model.add(constraint)
 
         # Create a solver and solve the model.
         # solver = CpoSolver()
@@ -78,7 +81,8 @@ class Solver:
 
         # msol = model.start_search(SearchType="DepthFirst", TimeLimit=10)
 
-        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", SolutionLimit=3*k, MultiPointNumberOfSearchPoints=30 +2*ind, RandomSeed = 1, DefaultInferenceLevel='Basic', OptimalityTolerance=6)
+        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", SolutionLimit=k, RandomSeed = 5, DefaultInferenceLevel='Extended')
+        # SolutionLimit=3*k, MultiPointNumberOfSearchPoints=30 +2*ind, RandomSeed = 5, DefaultInferenceLevel='Extended', OptimalityTolerance=6
 
         nb_solution = 0
         for sol in msol:
@@ -98,9 +102,10 @@ class Solver:
         if k > len(list_sol):
             raise ValueError("Le nombre de solutions demandé est supérieur à la taille de la liste.")
         #récupérer les k dernières solutions
-        solutions_aleatoires = list_sol[-k:]  #random.sample(list_sol, k)
+        # solutions_aleatoires = random.sample(list_sol, k)
+        # solutions_aleatoires = list_sol[:k]
 
-        return solutions_aleatoires, nb_solution, tps2 - tps1
+        return list_sol, nb_solution, tps2 - tps1
     
 
 

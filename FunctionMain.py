@@ -72,7 +72,7 @@ def display_solution(msol, bool_display):
 
 # --------------------- User preferences --------------------------------
 
-def user_preferences(msol, user, nbLayer, optimalval):
+def user_preferences(msol, user, nbLayer):
 
     print("\nClassing solutions...")	
     # list_indice, list_obj, list_layer, list_equal = user.classerSolutions(nbLayer, optimalval, msol)
@@ -137,7 +137,7 @@ def update_variables_new_constraint(n, m, pref, model, solver):
                 b =max(b,logical_or(var_sol.start != model.start_of(variables[i][j]), var_sol.end != model.end_of(variables[i][j])))
         b = (b!=0)
         bb = bb * b
-    solver.add_constraint(bb==1)
+    solver.add_constraint(model, bb==1)
 
     return variables
 
@@ -149,7 +149,7 @@ def choose_best_clusters(layers):
         # print("-------------- Layer for clustering", i, "-----------------")
         # print(len(data))
         
-        if len(data) > 2:
+        if len(data) > 2: 
             list, k_max, leaves_max, runtime = cl.silhouette(data)
             nb_clusters.append(k_max)
 
