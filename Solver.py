@@ -42,73 +42,137 @@ class Solver:
         self.add_variable(variables)
         print("Model variables created !")
 
-    def solve(self, model, k, n, m, ind, T_machine, optimalval):
+    def solve(self, model, k, n, m, ind, T_machine, optimalval, s_type = "a"):
 
-        tps1 = time.time()
+        if s_type == "a":
+            tps1 = time.time()
 
-        list_variables = self.get_variables()
-        variables = list_variables[0]
+            list_variables = self.get_variables()
+            variables = list_variables[0]
 
-        # ------------ Add constraints to the solver
+            # ------------ Add constraints to the solver
 
-        print("\nAdding precedence constraints to the solver...")
-        # Add precedence constraints
-        for i in range(n):
-            for j in range(1,m):
-                # print(variables[i][T_machine[i*m + j-1]])
-                # print(variables[i][T_machine[i*m + j]])
-                self.add_constraint(model, end_before_start(variables[i][T_machine[i*m + j-1]], variables[i][T_machine[i*m + j]]))
-        print("Precedence constraints added !")
+            print("\nAdding precedence constraints to the solver...")
+            # Add precedence constraints
+            for i in range(n):
+                for j in range(1,m):
+                    # print(variables[i][T_machine[i*m + j-1]])
+                    # print(variables[i][T_machine[i*m + j]])
+                    self.add_constraint(model, end_before_start(variables[i][T_machine[i*m + j-1]], variables[i][T_machine[i*m + j]]))
+            print("Precedence constraints added !")
 
-        print("\nAdding disjunctive constraints to the solver...")
-        # Add disjunctive constraints 
-        for machine in range(m):
-            self.add_constraint(model, no_overlap([variables[i][machine] for i in range(n)]))
-        print("Disjunctive constraints added !")
+            print("\nAdding disjunctive constraints to the solver...")
+            # Add disjunctive constraints 
+            for machine in range(m):
+                self.add_constraint(model, no_overlap([variables[i][machine] for i in range(n)]))
+            print("Disjunctive constraints added !")
 
-        # Add constraints that makespan < 2*optimalval
-        makespan = max([end_of(variables[i][T_machine[i*m + m -1]]) for i in range(n)])
-        self.add_constraint(model, makespan <= 2*optimalval)
-        # self.add_constraint(model, makespan < 691)
+            # Add constraints that makespan < 2*optimalval
+            makespan = max([end_of(variables[i][T_machine[i*m + m -1]]) for i in range(n)])
+            self.add_constraint(model, makespan <= 2*optimalval)
+            # self.add_constraint(model, makespan < 691)
 
-        # # Add the constraints
-        # for constraint in self._constraints:
-        #     model.add(constraint)
+            # # Add the constraints
+            # for constraint in self._constraints:
+            #     model.add(constraint)
 
-        # Create a solver and solve the model.
-        # solver = CpoSolver()
-        # status = solver.Solve(model)
+            # Create a solver and solve the model.
+            # solver = CpoSolver()
+            # status = solver.Solve(model)
 
-        # msol = model.start_search(SearchType="DepthFirst", TimeLimit=10)
+            # msol = model.start_search(SearchType="DepthFirst", TimeLimit=10)
 
-        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", SolutionLimit=k, RandomSeed = 5, DefaultInferenceLevel='Extended')
-        # SolutionLimit=3*k, MultiPointNumberOfSearchPoints=30 +2*ind, RandomSeed = 5, DefaultInferenceLevel='Extended', OptimalityTolerance=6
+            msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", SolutionLimit=k, RandomSeed = 5, DefaultInferenceLevel='Extended')
+            # SolutionLimit=3*k, MultiPointNumberOfSearchPoints=30 +2*ind, RandomSeed = 5, DefaultInferenceLevel='Extended', OptimalityTolerance=6
 
-        nb_solution = 0
-        for sol in msol:
-            nb_solution += 1
-                
-        # print(list_value_solution)
+            nb_solution = 0
+            for sol in msol:
+                nb_solution += 1
+                    
+            # print(list_value_solution)
 
-        list_sol = []
-        for sol in msol:
-            list_sol.append(sol)
+            list_sol = []
+            for sol in msol:
+                list_sol.append(sol)
 
-        tps2 = time.time()
-                
-        # Renvoie les k premieres solutions (makespan)
+            tps2 = time.time()
+                    
+            # Renvoie les k premieres solutions (makespan)
 
-        # return solver, status
-        if k > len(list_sol):
-            raise ValueError("Le nombre de solutions demandé est supérieur à la taille de la liste.")
-        #récupérer les k dernières solutions
-        # solutions_aleatoires = random.sample(list_sol, k)
-        # solutions_aleatoires = list_sol[:k]
+            # return solver, status
+            if k > len(list_sol):
+                raise ValueError("Le nombre de solutions demandé est supérieur à la taille de la liste.")
+            #récupérer les k dernières solutions
+            # solutions_aleatoires = random.sample(list_sol, k)
+            # solutions_aleatoires = list_sol[:k]
 
-        return list_sol, nb_solution, tps2 - tps1
+            return list_sol, nb_solution, tps2 - tps1
+        else :
+            tps1 = time.time()
+
+            list_variables = self.get_variables()
+            variables = list_variables[0]
+
+            # ------------ Add constraints to the solver
+
+            print("\nAdding precedence constraints to the solver...")
+            # Add precedence constraints
+            for i in range(n):
+                for j in range(1,m):
+                    # print(variables[i][T_machine[i*m + j-1]])
+                    # print(variables[i][T_machine[i*m + j]])
+                    self.add_constraint(model, end_before_start(variables[i][T_machine[i*m + j-1]], variables[i][T_machine[i*m + j]]))
+            print("Precedence constraints added !")
+
+            print("\nAdding disjunctive constraints to the solver...")
+            # Add disjunctive constraints 
+            for machine in range(m):
+                self.add_constraint(model, no_overlap([variables[i][machine] for i in range(n)]))
+            print("Disjunctive constraints added !")
+
+            # Add constraints that makespan < 2*optimalval
+            makespan = max([end_of(variables[i][T_machine[i*m + m -1]]) for i in range(n)])
+            self.add_constraint(model, makespan <= 2*optimalval)
+            # self.add_constraint(model, makespan < 691)
+
+            # # Add the constraints
+            # for constraint in self._constraints:
+            #     model.add(constraint)
+
+            # Create a solver and solve the model.
+            # solver = CpoSolver()
+            # status = solver.Solve(model)
+
+            # msol = model.start_search(SearchType="DepthFirst", TimeLimit=10)
+
+            msol = model.start_search(SearchType = s_type, LogVerbosity="Quiet", SolutionLimit=k, RandomSeed = 5, DefaultInferenceLevel='Extended')
+            # SolutionLimit=3*k, MultiPointNumberOfSearchPoints=30 +2*ind, RandomSeed = 5, DefaultInferenceLevel='Extended', OptimalityTolerance=6
+
+            nb_solution = 0
+            for sol in msol:
+                nb_solution += 1
+                    
+            # print(list_value_solution)
+
+            list_sol = []
+            for sol in msol:
+                list_sol.append(sol)
+
+            tps2 = time.time()
+                    
+            # Renvoie les k premieres solutions (makespan)
+
+            # return solver, status
+            if k > len(list_sol):
+                raise ValueError("Le nombre de solutions demandé est supérieur à la taille de la liste.")
+            #récupérer les k dernières solutions
+            # solutions_aleatoires = random.sample(list_sol, k)
+            # solutions_aleatoires = list_sol[:k]
+
+            return list_sol, nb_solution, tps2 - tps1   
     
 
 
-    
-            
+        
+                
         
