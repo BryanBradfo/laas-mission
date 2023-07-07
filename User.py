@@ -35,11 +35,19 @@ class User:
         min_obj = min(list_obj)
         max_obj = max(list_obj)
         
+        print("Le min de list_obj est", min_obj)
+        print("Le max de list_obj est", max_obj)
+        # print("List_obj :", list_obj)
+
         for sol in self.preferences:
-            for i in range(0, nbLayer-1):
+            for i in range(0, nbLayer):
                 obj_sol = self.objectiveFunction(sol)
-                if (obj_sol >= min_obj + (i*(max_obj-min_obj)/nbLayer) and obj_sol < min_obj + (i+1)*(max_obj-min_obj)/nbLayer):
+                if ((obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1) and obj_sol < min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i < nbLayer-1)
+                or (obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1)) and obj_sol <= min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i == (nbLayer-1)):
+                    # print("{} est dans la layer {}".format(obj_sol, i))
                     list_layers_fixed[i].append(sol)
+                # else:
+                    # print("{} n'est pas dans la layer {} en effet {} est pas compris entre {} et {}".format(obj_sol, i, obj_sol, min_obj + ((i)*(max_obj-min_obj)/(nbLayer-1)),  min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1)))
                     
         list_equal = []
         k = 0

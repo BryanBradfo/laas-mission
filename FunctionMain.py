@@ -7,8 +7,6 @@ import numpy as np
 from Solver import *
 from User import *
 
-
-
 #--------------------- Read the data --------------------------------
 
 def get_data_from_file(file):
@@ -196,6 +194,7 @@ def rayon_cluster(avg, list_sol):
 def average_computation(data, nb_cluster):
         
     k , leaves , labels, runtime = cl.my_agglo_k(data, nb_cluster, 'single')
+    # print("Le k dans average computation est : ",k)
 
     avg=[[0 for i in range(len(data[0]))] for i in range(k)]
     card=[0 for i in range(k) ]

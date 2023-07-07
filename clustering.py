@@ -37,12 +37,13 @@ def create_layers_fixed(list_layers_fixed):
     
     for i in range (len(list_layers_fixed)):
         for solution in list_layers_fixed[i]:
-            # print(solution.start)
-            print(solution.get_start())
-            # for j in range(len(solution)):
-            #     print("start[",j,"] = ", solution[j].get_start())
-            #     data_pref_layer[i][j].append(solution[j].get_start())
-    
+            list_sol = solution.get_all_var_solutions()
+            list_tmp = []
+            for j in range(len(list_sol)):
+                list_tmp.append(list_sol[j].get_start())
+            data_pref_layer[i].append(list_tmp)
+        
+    # print("data_pref_layer = ", data_pref_layer)
     return data_pref_layer
 
 # ----------------- Code clustering de Brenda --------------------
