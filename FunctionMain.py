@@ -132,7 +132,9 @@ def update_variables_new_constraint(n, m, pref, model, solver):
                 #a = model.interval_var(start = sol[variables[i][j]].start, end= sol[variables[i][j]].end, size=int(duration[i][j]), name="a{}{}".format(i,j))
                 #b =max(b,logical_or((model.start_of(a) != model.start_of(variables[i][j])), (model.end_of(a) != model.end_of(variables[i][j]))))
                 
-                b =max(b,logical_or(var_sol.start != model.start_of(variables[i][j]), var_sol.end != model.end_of(variables[i][j])))
+                # b =max(b,logical_or(var_sol.start != model.start_of(variables[i][j]), var_sol.end != model.end_of(variables[i][j])))
+                b =max(b,var_sol.start != model.start_of(variables[i][j]))
+
         b = (b!=0)
         bb = bb * b
     solver.add_constraint(model, bb==1)
