@@ -70,12 +70,12 @@ def display_solution(msol, bool_display):
 
 # --------------------- User preferences --------------------------------
 
-def user_preferences(msol, user, nbLayer):
+def user_preferences(msol, user, nbLayer, n, m):
 
     print("\nClassing solutions...")	
     # list_indice, list_obj, list_layer, list_equal = user.classerSolutions(nbLayer, optimalval, msol)
-    list_indice, list_obj, list_layer, list_equal = user.classerSolution_min_max(nbLayer, msol)
-    print(list_obj)
+    list_indice, list_obj, list_layer, list_equal = user.classerSolutionRegularity_min_max(nbLayer, msol, n, m)
+    # print(list_obj)
     # print(list_indice)
     # print(list_equal)
     # print(list_indice)

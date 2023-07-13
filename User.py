@@ -12,6 +12,7 @@ class User:
         return max(list_ends)
     
 
+
     def objectiveFunctionRegularity(self, sol, n, m):
         waiting_time = [[] for i in range(m)]
         machines = [[] for i in range(m)]
@@ -19,7 +20,8 @@ class User:
 
         for j in range(m):
             for i in range(n):
-                machines[j].append(sol.get_value("T{}-{}".format(i,j).start))
+                machines[j].append(sol.get_value("T{}-{}".format(i,j)))
+            print(machines[j])
             machines[j] = sorted(machines[j], key=lambda k: k.start)
         
         for j in range(m):
@@ -33,7 +35,11 @@ class User:
                     sum += abs(waiting_time[machine][j] - waiting_time[machine][i])
             list_obj.append(sum)
 
-        return list_obj
+        sum = 0
+        for i in range(len(list_obj)):
+            sum += list_obj[i]
+        
+        return sum
 
 
     def classerSolution_min_max(self, nbLayer, list_sol):
@@ -109,9 +115,6 @@ class User:
         list_indice = sorted(range(len(list_obj)), key=lambda k: list_obj[k])
         #classer les solutions par ordre de index
         self.preferences = [list_temp_sol[i] for i in list_indice]
-
-
-        
         
         for sol in self.preferences:
             for i in range(0, nbLayer-1):
@@ -133,21 +136,22 @@ class User:
         return list_indice, list_obj, list_layers_fixed, list_equal
 
 
-    def classerSolutionRegularity_min_max(self, nbLayer, list_sol):
+    def classerSolutionRegularity_min_max(self, nbLayer, list_sol, n, m):
         list_obj = []
         list_temp_sol = []
         list_layers_fixed = [[] for i in range(nbLayer)]
         
-        
+
         #liste de max_ends
         for sol in list_sol:
             list_temp_sol.append(sol)
-            list_obj.append(self.objectiveFunction(sol))
+            print(self.objectiveFunctionRegularity(sol, n, m))
+            list_obj.append(self.objectiveFunction(sol) * self.objectiveFunctionRegularity(sol, n, m))
 
         
         for pref in self.preferences:
             list_temp_sol.append(pref)
-            list_obj.append(self.objectiveFunction(pref))
+            list_obj.append(self.objectiveFunction(pref) + self.objectiveFunctionRegularity(pref, n, m))
 
         # #Trier les ends_max par ordre croissant
         list_indice = sorted(range(len(list_obj)), key=lambda k: list_obj[k])
@@ -163,7 +167,7 @@ class User:
 
         for sol in self.preferences:
             for i in range(0, nbLayer):
-                obj_sol = self.objectiveFunction(sol)
+                obj_sol = self.objectiveFunction(sol) * self.objectiveFunctionRegularity(sol, n, m)
                 if ((obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1) and obj_sol < min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i < nbLayer-1)
                 or (obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1)) and obj_sol <= min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i == (nbLayer-1)):
                     # print("{} est dans la layer {}".format(obj_sol, i))
