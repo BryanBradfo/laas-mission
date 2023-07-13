@@ -21,7 +21,7 @@ class User:
         for j in range(m):
             for i in range(n):
                 machines[j].append(sol.get_value("T{}-{}".format(i,j)))
-            print(machines[j])
+            # print(machines[j])
             machines[j] = sorted(machines[j], key=lambda k: k.start)
         
         for j in range(m):
@@ -145,13 +145,13 @@ class User:
         #liste de max_ends
         for sol in list_sol:
             list_temp_sol.append(sol)
-            print(self.objectiveFunctionRegularity(sol, n, m))
+            # print(self.objectiveFunctionRegularity(sol, n, m))
             list_obj.append(self.objectiveFunction(sol) * self.objectiveFunctionRegularity(sol, n, m))
 
         
         for pref in self.preferences:
             list_temp_sol.append(pref)
-            list_obj.append(self.objectiveFunction(pref) + self.objectiveFunctionRegularity(pref, n, m))
+            list_obj.append(self.objectiveFunction(pref) * self.objectiveFunctionRegularity(pref, n, m))
 
         # #Trier les ends_max par ordre croissant
         list_indice = sorted(range(len(list_obj)), key=lambda k: list_obj[k])
