@@ -42,7 +42,7 @@ class Solver:
         self.add_variable(variables)
         print("Model variables created !")
 
-    def solve(self, model, k, n, m, ind, T_machine, optimalval, s_type = "a"):
+    def solve(self, model, k, n, m, T_machine, optimalval, total_time, nb_iteration):
 
         tps1 = time.time()
 
@@ -79,61 +79,38 @@ class Solver:
         # solver = CpoSolver()
         # status = solver.Solve(model)
 
-        if s_type == "a":
-            msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit=10)
-            # msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", SolutionLimit = k, RandomSeed = k)
-            # SolutionLimit=3*k, MultiPointNumberOfSearchPoints=30 +2*ind, RandomSeed = 5, DefaultInferenceLevel='Extended', OptimalityTolerance=6
-
-            nb_solution = 0
-            for sol in msol:
-                nb_solution += 1
-                    
-            # print(list_value_solution)
-
-            list_sol = []
-            for sol in msol:
-                list_sol.append(sol)
-
-            tps2 = time.time()
-                    
-            # Renvoie les k premieres solutions (makespan)
-
-            # return solver, status
-            if k > len(list_sol):
-                raise ValueError("Le nombre de solutions demandé est supérieur à la taille de la liste.")
-            #récupérer les k dernières solutions
-            solutions_aleatoires = random.sample(list_sol, k)
-            # solutions_aleatoires = list_sol[:k]
-
-            return solutions_aleatoires, nb_solution, tps2 - tps1
+        SearchPhase = model.search_phase(self._variables, 
+                                            varchooser=model.select_random_var(),
+                                            valuechooser=model.select_random_value())
+        model.add_search_phase(SearchPhase)
         
-        else :
-            msol = model.start_search(SearchType = s_type, LogVerbosity="Quiet", SolutionLimit=k, RandomSeed = 5, DefaultInferenceLevel='Extended')
-            # SolutionLimit=3*k, MultiPointNumberOfSearchPoints=30 +2*ind, RandomSeed = 5, DefaultInferenceLevel='Extended', OptimalityTolerance=6
+        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit=total_time//nb_iteration)
+        # msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", SolutionLimit = k, RandomSeed = k)
+        # SolutionLimit=3*k, MultiPointNumberOfSearchPoints=30 +2*ind, RandomSeed = 5, DefaultInferenceLevel='Extended', OptimalityTolerance=6
 
-            nb_solution = 0
-            for sol in msol:
-                nb_solution += 1
-                    
-            # print(list_value_solution)
+        nb_solution = 0
+        for sol in msol:
+            nb_solution += 1
+                
+        # print(list_value_solution)
 
-            list_sol = []
-            for sol in msol:
-                list_sol.append(sol)
+        list_sol = []
+        for sol in msol:
+            list_sol.append(sol)
 
-            tps2 = time.time()
-                    
-            # Renvoie les k premieres solutions (makespan)
+        tps2 = time.time()
+                
+        # Renvoie les k premieres solutions (makespan)
 
-            # return solver, status
-            if k > len(list_sol):
-                raise ValueError("Le nombre de solutions demandé est supérieur à la taille de la liste.")
-            #récupérer les k dernières solutions
-            # solutions_aleatoires = random.sample(list_sol, k)
-            # solutions_aleatoires = list_sol[:k]
+        # return solver, status
+        if k > len(list_sol):
+            raise ValueError("Le nombre de solutions demandé est supérieur à la taille de la liste.")
+        #récupérer les k dernières solutions
+        solutions_aleatoires = random.sample(list_sol, k)
+        # solutions_aleatoires = list_sol[:k]
 
-            return list_sol, nb_solution, tps2 - tps1   
-    
+        return solutions_aleatoires, nb_solution, tps2 - tps1
+        
 
 
         
