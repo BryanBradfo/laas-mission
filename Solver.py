@@ -78,13 +78,13 @@ class Solver:
         # Create a solver and solve the model.
         # solver = CpoSolver()
         # status = solver.Solve(model)
-
-        SearchPhase = model.search_phase(self._variables, 
+        variables_s_p = [variables[i][j] for j in range(m) for i in range(n)]
+        SearchPhase = model.search_phase(variables_s_p, 
                                             varchooser=model.select_random_var(),
                                             valuechooser=model.select_random_value())
         model.add_search_phase(SearchPhase)
         
-        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit=total_time//nb_iteration)
+        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit=10) #total_time//nb_iteration
         # msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", SolutionLimit = k, RandomSeed = k)
         # SolutionLimit=3*k, MultiPointNumberOfSearchPoints=30 +2*ind, RandomSeed = 5, DefaultInferenceLevel='Extended', OptimalityTolerance=6
 
