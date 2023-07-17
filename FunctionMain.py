@@ -222,6 +222,25 @@ def solution_average(k, data, labels, avg):
             
 #___________________________________________________________________________________________________________________________________________________________________
 
+#------------Calcul de la distance de binaire-------------------------
+
+def int_diff(x,y):
+    return int(x!=y)
+
+def manhattan_binaire_distance(sol1, sol2):
+    sum = 0
+    for i in range(len(sol1)):
+        sum += int_diff(sol1[i], sol2[i])
+    return sum
+
+def rayon_binaire_cluster(sol, list_sol):
+    rayon = 0
+    for sol in list_sol:
+        rayon = max(rayon, manhattan_distance(avg, sol))
+    return rayon
+  
+#___________________________________________________________________________________________________________________________________________________________________
+
 
 #----------------------Conditions d'arrêt---------------------------
 
