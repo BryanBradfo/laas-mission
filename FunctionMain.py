@@ -51,11 +51,11 @@ def initialize_solver(data, n, m, duration):
     model = CpoModel() 
 
     # --------- Create the model variables ---------
-    solver.create_variables(model, n, m, duration)
+    tasks = solver.create_variables(model, n, m, duration)
 
     print("\nSolver initialized !")
 
-    return model, solver
+    return model, solver, tasks
 
 
 # --------------------- Display solution --------------------------------

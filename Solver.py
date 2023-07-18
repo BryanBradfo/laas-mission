@@ -32,15 +32,18 @@ class Solver:
         print("\nCreating the model variables...")
         # Create task interval variables and add them to the solver
 
-        variables = [[None for j in range(m)] for i in range(n)]
+        tasks_by_jobs = [[None for j in range(m)] for i in range(n)]
         for i in range(n):
             for j in range(m):
                 # print(duration[i][j])
-                variables[i][j] = model.interval_var(size=int(duration[i][j]), name="T{}-{}".format(i,j))
+                tasks_by_jobs[i][j] = model.interval_var(size=int(duration[i][j]), name="T{}-{}".format(i,j))
 
-        # ------------ Add variables to the solver
-        self.add_variable(variables)
-        print("Model variables created !")
+        # ------------ Add tasks_by_jobs to the solver
+        self.add_variable(tasks_by_jobs)
+        print("Model tasks_by_jobs created !")
+
+        return tasks_by_jobs
+    
 
     def solve(self, model, k, n, m, T_machine, optimalval, total_time, nb_iteration):
 
