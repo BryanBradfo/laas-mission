@@ -226,18 +226,107 @@ def solution_average(k, data, labels, avg):
 
 def int_diff(x,y):
     return int(x!=y)
+#___________________________________________________________________________________________________________________________________________________________________
 
-def manhattan_binaire_distance(sol1, sol2):
+#------------Transformation des CPOSolutionResult en liste de start-------------------------
+def start_sol(n, m, sol):
+    starts = []
+    for i in range(n):
+        for j in range(m):
+            var_sol = sol.get_value("T{}-{}".format(i,j))
+            starts.append(var_sol.start)
+    return starts
+#___________________________________________________________________________________________________________________________________________________________________
+
+#---------------------Pour chaque layer de la liste des layers,  on a pour chaque 
+# solution appartenant à ce layer, on a sa liste des starts de ses tasks---------------------
+def list_list_list_start_of_tasks(n, m, list_layers):
+    list_start_sol_layers = []
+    for i in range(len(list_layers)):
+        list_start_sol = []
+        for j in range(len(list_layers[i])):
+            list_start = start_sol(n, m, list_layers[i][j])
+            list_start_sol.append(list_start)
+        list_start_sol_layers.append(list_start_sol)
+    return list_start_sol_layers
+#___________________________________________________________________________________________________________________________________________________________________
+
+#---------------------Calcul de la distance de manhattan binaire---------------------
+def manhattan_binaire_distance(n, m, sol1, sol2):
+    # sol1 =  sol1.get_all_var_solutions()
+    # sol2 =  sol2.get_all_var_solutions()
     sum = 0
     for i in range(len(sol1)):
         sum += int_diff(sol1[i], sol2[i])
     return sum
+#___________________________________________________________________________________________________________________________________________________________________
 
-def rayon_binaire_cluster(sol, list_sol):
-    rayon = 0
-    for sol in list_sol:
-        rayon = max(rayon, manhattan_distance(avg, sol))
+#---------------------Calcul du rayon binaire de chaque solution---------------------
+def rayon_binaire_cluster(n, m, sol, list_sol):
+    
+    rayon = manhattan_binaire_distance(n, m, sol, list_sol[0])
+    for sol2 in list_sol:
+        rayon = min(rayon, manhattan_binaire_distance(n, m, sol, sol2))
+    if rayon >= 1 : return rayon - 1
     return rayon
+#___________________________________________________________________________________________________________________________________________________________________
+
+#---------------------Liste du rayon binaire de chaque solution en fonction du layer---------------------
+def list_rayon_binaire_cluster(n, m, list_layers):
+    list_rayon_layers = []
+    list_start_sol_layers = list_list_list_start_of_tasks(n, m, list_layers)
+
+    
+    for i in range(len(list_layers)):
+        #Remplissage de la liste des starts des solutions des layers différents
+        #De celui de la solution dont on calcule le rayon
+        list_other_sol = []
+        for j in range(len(list_layers)):
+            if j != i:
+                list_pas_i = list_start_sol_layers[j]
+                for sol_pas_i in list_pas_i:
+                    list_other_sol.append(sol_pas_i)
+
+        #Calcul du rayon de chaque solution du layer i et ajout dans la liste des rayons du layer i
+        list_rayon = []
+        for sol in list_start_sol_layers[i]:
+            list_rayon.append(rayon_binaire_cluster(n, m, sol, list_other_sol))
+        list_rayon_layers.append(list_rayon)
+    return list_rayon_layers
+#___________________________________________________________________________________________________________________________________________________________________
+
+#---------------------Clustering binaire---------------------
+# def my_clustering_binaire(n, m, list_rayon_layers, list_layers):
+#     list_cluster_layers = []
+#     list_start_sol_layers = list_list_list_start_of_tasks(n, m, list_layers)
+#     for i in range(len(list_layers)):
+#         list_layer = []
+#         list_cluster = []
+#         layer_sol_i = list_layers[i]
+#         if len(layer_sol_i)> 1:
+#             layer_i = list_start_sol_layers[i]
+#             for j in range(len(layer_i)):
+#                 sol1_starts = layer_i[j]
+#                 sol1 = layer_sol_i[j]
+#                 for k in range(j+1, len(layer_i)):
+#                     sol2_starts = layer_i[k]
+#                     sol2 = layer_sol_i[k]
+#                     dist = manhattan_binaire_distance(n, m, sol1_starts, sol2_starts)
+#                     if dist <= list_rayon_layers[i][j] or dist <= list_rayon_layers[i][k]:
+#                         if sol1 not in list_cluster: list_cluster.append(sol1)
+#                         if sol2 not in list_cluster: list_cluster.append(sol2)
+#             list_cluster_layers.append(list_cluster)
+#         else:
+#             list_cluster.append(layer_sol_i[0])
+#             list_cluster_layers.append(list_cluster)
+        
+            
+#     return list_cluster_layers
+
+
+
+
+
   
 #___________________________________________________________________________________________________________________________________________________________________
 
