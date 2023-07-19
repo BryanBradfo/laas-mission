@@ -44,10 +44,7 @@ class Solver:
 
         return tasks_by_jobs
     
-
-    def solve(self, model, k, n, m, T_machine, optimalval, total_time, nb_iteration):
-
-        tps1 = time.time()
+    def create_constraints(self, model, n, m, optimalval, T_machine):
 
         list_variables = self.get_variables()
         variables = list_variables[0]
@@ -71,8 +68,15 @@ class Solver:
 
         # Add constraints that makespan < 2*optimalval
         makespan = max([end_of(variables[i][T_machine[i*m + m -1]]) for i in range(n)])
-        self.add_constraint(model, makespan <= 2*optimalval)
+        self.add_constraint(model, makespan < optimalval)
         # self.add_constraint(model, makespan < 691)
+
+        return model, variables
+
+
+    def solve(self, model, k, n, m, variables):
+
+        tps1 = time.time()
 
         # # Add the constraints
         # for constraint in self._constraints:
@@ -81,20 +85,22 @@ class Solver:
         # Create a solver and solve the model.
         # solver = CpoSolver()
         # status = solver.Solve(model)
-        variables_s_p = [variables[i][j] for j in range(m) for i in range(n)]
-        SearchPhase = model.search_phase(variables_s_p, 
-                                            varchooser=model.select_random_var(),
-                                            valuechooser=model.select_random_value())
-        model.add_search_phase(SearchPhase)
+
+        # variables_s_p = [variables[i][j] for j in range(m) for i in range(n)]
+        # SearchPhase = model.search_phase(variables_s_p, 
+        #                                     varchooser=model.select_random_var(),
+        #                                     valuechooser=model.select_random_value())
+        # model.add_search_phase(SearchPhase)
         
-        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit=10) #total_time//nb_iteration
-        # msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", SolutionLimit = k, RandomSeed = k)
+        # msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit=10) #total_time//nb_iteration
+
+        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", SolutionLimit = k, RandomSeed = k)
         # SolutionLimit=3*k, MultiPointNumberOfSearchPoints=30 +2*ind, RandomSeed = 5, DefaultInferenceLevel='Extended', OptimalityTolerance=6
 
         nb_solution = 0
         for sol in msol:
             nb_solution += 1
-                
+        
         # print(list_value_solution)
 
         list_sol = []

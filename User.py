@@ -194,7 +194,7 @@ class User:
         return self.preferences
     
 
-    def start_pref(self, n , m, variables, bool):
+    def start_pref(self, n , m, bool):
 
         pref = self.getPreferences()
         starts = []
