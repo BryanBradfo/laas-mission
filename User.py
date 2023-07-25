@@ -236,9 +236,9 @@ class User:
     
 
     #Vérifier que deux solutions qui se suivent respectent bien l'ordre
-    def test_preferences(self, list_sols):
+    def test_preferences(self, list_sols, n, m):
         for i in range(len(list_sols) - 1):
-            if (self.objectiveFunction(list_sols[i]) + self.objectiveFunctionRegularity(list_sols[i]) > self.objectiveFunction(list_sols[i+1]) + self.objectiveFunctionRegularity(list_sols[i])):
+            if (self.objectiveFunction(list_sols[i]) + self.objectiveFunctionRegularity(list_sols[i], n, m) > self.objectiveFunction(list_sols[i+1]) + self.objectiveFunctionRegularity(list_sols[i], n, m)):
                return False
         return True
     

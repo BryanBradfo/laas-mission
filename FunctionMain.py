@@ -95,7 +95,7 @@ def test(n, m, user):
 
     print("\nTesting order of preferences...")
     pref = user.getPreferences()
-    if user.test_preferences(pref):
+    if user.test_preferences(pref, n, m):
         print("\tL'ordre des préférences est cohérente")
     else:
         print("\tL'ordre des préférences n'est pas cohérente")
@@ -255,30 +255,6 @@ def stopCondition(it, it_max, tps, tps_max):
         print("The user has reached the maximum time !")
 
 
-# _________________________________________________________________
-
-# a = 1 means that the order of the sol is 0 
-# a = 0 means that the order of the sol is not 0
-
-def activation_function(model, solver, input, weights, nb_hidden_layers, nb_neurons, id_layer = 0):
-
-    S = [model.integer_var(min=-len(input), max=len(input), name="S{}{}".format(id_layer, j)) for j in range(nb_neurons[id_layer])]
-    a = [model.binary_var(name="a{}{}".format(id_layer, j)) for j in range(nb_neurons[id_layer])]
-
-    output = []
-    for j in range(nb_neurons[id_layer]):
-        
-        solver.add_constraint(model, S[j] == sum(input[k] * weights[id_layer][j][k] for k in range(len(input))))
-
-        solver.add_constraint(model, a[j] == (S[j] > 0))
-
-        if id_layer == nb_hidden_layers: 
-            return a[j]
-        else: 
-            output.append(a[j])
-
-    return activation_function(model, solver, output, weights, nb_hidden_layers, nb_neurons, id_layer + 1)
-     
     
 
 
