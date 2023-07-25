@@ -13,6 +13,36 @@ To  try out the code, follow these steps:
 3. Launch the Jupyter Notebook file ITellYouWhatYouLike.ipynb.
 4. You are now ready to run and explore the project.
 
+## I Tell You What You Like with clustering
+
+If you want to run the code with clustering, you need to run the following jupyter notebook files:
+
+ITellYouWhatYouLikeClustering.ipynb: The main code for solving the Job-shop problem with user preferences and clustering.
+
+This file calls different functions from the following files:
+- Solver.py: This file contains the class Solver which is used to solve the Job-shop problem.
+- User.py: This file contains the class User which is used to create a user with his preferences.
+- FunctionMain.py: This file contains the main functions used in the code.
+- my_clustering.py: This file contains the functions used for clustering.
+
+N.B. : ITellYouWhatYouLike.ipynb is the old version of the Jupyter Notebook that contains the main code for solving the Job-shop problem with user preferences.
+
+## I Tell You What You Like with neural network
+
+* If you want to run the code with neural network, you need to run the following jupyter notebook files:
+
+NeuralNetwork.ipynb: The main code for solving the Job-shop problem with user preferences and neural network.
+In this file, the problem is solved with two neural netwoks. 
+
+This file calls different functions from the following files:
+- Solver.py: This file contains the class Solver which is used to solve the Job-shop problem.
+- User.py: This file contains the class User which is used to create a user with his preferences.
+
+* If you want to test the code with the neural network approach, you need to run the following jupyter notebook files and modify it :
+
+test_NN.ipynb: The main code for solving the Job-shop problem with user preferences and neural network.
+
+
 ## Requirements 
 
 Before running the project, make sure you have the following libraries installed:
