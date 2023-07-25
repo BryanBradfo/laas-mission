@@ -13,11 +13,19 @@ To  try out the code, follow these steps:
 3. Launch the Jupyter Notebook file ITellYouWhatYouLike.ipynb.
 4. You are now ready to run and explore the project.
 
+## How to get the objective value of regularity + makespan
+
+To get the objective value of regularity + makespan, you need to run the following jupyter notebook files:
+
+**Optimal_regularity.ipynb**
+
+N.B. : You have to possess the academic license of CPLEX to run this code.
+
 ## I Tell You What You Like with clustering
 
 If you want to run the code with clustering, you need to run the following jupyter notebook files:
 
-ITellYouWhatYouLikeClustering.ipynb: The main code for solving the Job-shop problem with user preferences and clustering.
+**ITellYouWhatYouLikeClustering.ipynb**: The main code for solving the Job-shop problem with user preferences and clustering.
 
 This file calls different functions from the following files:
 - Solver.py: This file contains the class Solver which is used to solve the Job-shop problem.
@@ -31,7 +39,7 @@ N.B. : ITellYouWhatYouLike.ipynb is the old version of the Jupyter Notebook that
 
 * If you want to run the code with neural network, you need to run the following jupyter notebook files:
 
-NeuralNetwork.ipynb: The main code for solving the Job-shop problem with user preferences and neural network.
+**NeuralNetwork.ipynb**: The main code for solving the Job-shop problem with user preferences and neural network.
 In this file, the problem is solved with two neural netwoks. 
 
 This file calls different functions from the following files:

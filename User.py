@@ -167,7 +167,7 @@ class User:
 
         for sol in self.preferences:
             for i in range(0, nbLayer):
-                obj_sol = self.objectiveFunction(sol) * self.objectiveFunctionRegularity(sol, n, m)
+                obj_sol = self.objectiveFunction(sol) + self.objectiveFunctionRegularity(sol, n, m)
                 if ((obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1) and obj_sol < min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i < nbLayer-1)
                 or (obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1)) and obj_sol <= min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i == (nbLayer-1)):
                     # print("{} est dans la layer {}".format(obj_sol, i))
@@ -238,7 +238,7 @@ class User:
     #Vérifier que deux solutions qui se suivent respectent bien l'ordre
     def test_preferences(self, list_sols):
         for i in range(len(list_sols) - 1):
-            if (self.objectiveFunction(list_sols[i]) > self.objectiveFunction(list_sols[i+1])):
+            if (self.objectiveFunction(list_sols[i]) + self.objectiveFunctionRegularity(list_sols[i]) > self.objectiveFunction(list_sols[i+1]) + self.objectiveFunctionRegularity(list_sols[i])):
                return False
         return True
     

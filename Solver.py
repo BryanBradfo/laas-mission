@@ -93,9 +93,9 @@ class Solver:
         #                                     valuechooser=model.select_random_value())
         # model.add_search_phase(SearchPhase)
         
-        # msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit=10) #total_time//nb_iteration
+        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit=10) #total_time//nb_iteration
 
-        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", SolutionLimit = k, RandomSeed = k)
+        # msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", SolutionLimit = k, RandomSeed = k)
         # SolutionLimit=3*k, MultiPointNumberOfSearchPoints=30 +2*ind, RandomSeed = 5, DefaultInferenceLevel='Extended', OptimalityTolerance=6
 
         nb_solution = 0
@@ -114,10 +114,12 @@ class Solver:
 
         # return solver, status
         if k > len(list_sol):
-            raise ValueError("Le nombre de solutions demandé est supérieur à la taille de la liste.")
-        #récupérer les k dernières solutions
-        solutions_aleatoires = random.sample(list_sol, k)
-        # solutions_aleatoires = list_sol[:k]
+            solutions_aleatoires = list_sol
+            print("Le nombre de solutions demandé est supérieur à la taille de la liste.")
+        else:
+            #récupérer les k dernières solutions
+            solutions_aleatoires = random.sample(list_sol, k)
+            # solutions_aleatoires = list_sol[:k]
 
         return solutions_aleatoires, nb_solution, tps2 - tps1
         
