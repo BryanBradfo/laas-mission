@@ -8,7 +8,10 @@ class User:
         list_ends = []
         list_sol = sol.get_all_var_solutions()
         for i in range(len(list_sol) - 1):
-                list_ends.append(list_sol[i].get_end())
+                if "T" in list_sol[i].expr.name :
+                # print("type: ", type(list_sol[i]), "value: ", list_sol[i])
+                    list_ends.append(list_sol[i].get_end())
+                
         return max(list_ends)
     
 
