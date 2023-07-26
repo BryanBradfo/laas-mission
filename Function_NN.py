@@ -31,7 +31,7 @@ def activation_function(model, solver, input, weights, nb_hidden_layers, nb_neur
      
 
 
-def find_perfect_NN(data, n, m, sol_layers, nb_hidden_layers, nb_neurons):
+def find_perfect_NN(data, n, m, sol_layers, nb_hidden_layers, nb_neurons, nb_try = 0):
 
     solver = Solver(data)
     model = CpoModel() 
@@ -44,27 +44,42 @@ def find_perfect_NN(data, n, m, sol_layers, nb_hidden_layers, nb_neurons):
     for order in range(len(sol_layers)):
         for sol in sol_layers[order]:
 
-            output_NN = fm.activation_function(model, solver, sol, weights, nb_hidden_layers, nb_neurons)
+            output_NN = activation_function(model, solver, sol, weights, nb_hidden_layers, nb_neurons)
 
             if order == 0:
                 solver.add_constraint(model, output_NN == 1)
             else:
                 solver.add_constraint(model, output_NN == 0)
 
-    msol = model.solve()
+    msol = model.solve(TimeLimit=60, LogVerbosity='Quiet')
+
+    print(msol.get_fail_status())
+    print(msol.get_solution())
+
+    
+    if msol.get_all_var_solutions() == None:
+        nb_try += 1
+        if nb_try > 5:
+            print("No solution found, increase the number of layers")
+            nb_hidden_layers += 1
+            nb_neurons = [4] + nb_neurons
+        else:
+            print("No solution found, increase the number of neurons")
+            nb_neurons[0] += 1
+        return find_perfect_NN(data, n, m, sol_layers, nb_hidden_layers, nb_neurons)
 
     return msol
 
 
-def ajust_NN(model, solver, sol_layers, weights, nb_hidden_layers, nb_neurons):
+def accurate_NN(model, solver, sol_layers, weights, nb_hidden_layers, nb_neurons):
 
     # Verify that there are fully accurate 
     for order in range(len(sol_layers)):
         for sol in sol_layers[order]:
 
-            output_NN = fm.activation_function(model, solver, sol, weights, nb_hidden_layers, nb_neurons)
+            output_NN = activation_function(model, solver, sol, weights, nb_hidden_layers, nb_neurons)
 
             if (output_NN == 0 and order == 0) or (output_NN == 1 and order != 0):
-                return True
+                return False
 
-    return False 
+    return True 
