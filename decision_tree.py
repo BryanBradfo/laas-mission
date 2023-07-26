@@ -35,9 +35,8 @@ def my_decision_tree(n, m, list_layers):
                 #prediction
                 y_pred = clf.predict(X_test)
                 score = accuracy_score(y_test, y_pred)
-                print("Score:", score)
                 if best_score < score:
-                    print("Best score: " + str(score) + " with parameters: " + str({'max_depth': max_depth, 'min_samples_split': min_samples_split, 'splitter': splitter}))
+                    # print("Best score: " + str(score) + " with parameters: " + str({'max_depth': max_depth, 'min_samples_split': min_samples_split, 'splitter': splitter}))
                     best_score = score
                     best_parameters = {'max_depth': max_depth, 'min_samples_split': min_samples_split, 'splitter': splitter}
     clf = tree.DecisionTreeClassifier(max_depth=best_parameters['max_depth'], min_samples_split=best_parameters['min_samples_split'], splitter=best_parameters['splitter'])
@@ -83,6 +82,8 @@ def parcourir_arbre(clf, feuilles_conditions, noed_actuel, profondeur, condition
 def constraint_tree(order, list_variables, feuilles_conditions):
     constraint=[]
     for feuilles in feuilles_conditions:
+        print(feuilles)
+        print(type(feuilles))
         if len(feuilles[0].split(' <= ')) == 2:
             node, condition = feuilles[0].split(' <= ')
             e1 = less_or_equal(list_variables[int(node)],float(condition))
@@ -102,7 +103,7 @@ def constraint_tree(order, list_variables, feuilles_conditions):
             # ajout des contraintes tq l'intersection de toutes les conditions donnent la classe qui est à la fin
             
         # class
-        print(feuilles[-1])
+        # print(feuilles[-1])
         constraint.append(if_then(e1, equal(order,feuilles[-1])))
     return constraint
 #______________________________________________________________________#
