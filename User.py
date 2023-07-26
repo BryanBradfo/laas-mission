@@ -146,12 +146,12 @@ class User:
         for sol in list_sol:
             list_temp_sol.append(sol)
             # print(self.objectiveFunctionRegularity(sol, n, m))
-            list_obj.append(self.objectiveFunction(sol) * self.objectiveFunctionRegularity(sol, n, m))
+            list_obj.append(self.objectiveFunction(sol) + self.objectiveFunctionRegularity(sol, n, m))
 
         
         for pref in self.preferences:
             list_temp_sol.append(pref)
-            list_obj.append(self.objectiveFunction(pref) * self.objectiveFunctionRegularity(pref, n, m))
+            list_obj.append(self.objectiveFunction(pref) + self.objectiveFunctionRegularity(pref, n, m))
 
         # #Trier les ends_max par ordre croissant
         list_indice = sorted(range(len(list_obj)), key=lambda k: list_obj[k])
