@@ -48,30 +48,8 @@ def my_decision_tree(n, m, list_layers):
     return clf, feuilles_conditions
 #______________________________________________________________________#
 
-
-#----------------------Function: extract_conditions----------------------#
-# Analysez le texte pour obtenir les conditions à chaque nœud
-
-# def extract_conditions(tree_rules):
-#     conditions = []
-#     lines = tree_rules.split('\n')
-#     i=-1
-#     for line in lines:
-#         if '|---' in line:
-#             node_id_condition = line.split('|---')[-1].strip()
-#             if node_id_condition.startswith('class'):
-#                 conditions[i].append(int(node_id_condition.split(' ')[1]))
-#                 continue
-#             i+=1
-#             if len(node_id_condition.split(' <= ')) == 2:
-#                 node, condition = node_id_condition.split(' <= ')
-#                 node_id = int(node.split('_')[1])
-#                 condition_id = float(condition)
-#                 conditions.append([node_id, condition_id, '<='])
-#             elif len(node_id_condition.split(' > ')) == 2:
-#                 node_id, condition = node_id_condition.split(' > ')
-#                 conditions.append([node_id, condition.strip(), '>'])
-#     return conditions
+#----------------------Function: parcourir_arbre----------------------#
+# Parcourir l'arbre de décision et récupérer les conditions pour chaque feuille
 
 def parcourir_arbre(clf, feuilles_conditions, noed_actuel, profondeur, conditions_actuelles):
     arbre_decision = clf.tree_
@@ -102,34 +80,30 @@ def parcourir_arbre(clf, feuilles_conditions, noed_actuel, profondeur, condition
 
 #----------------------Function: constraint_tree----------------------#
 # Créer les contraintes pour les variables du solver à partir des conditions
-def constraint_tree(list_variables, conditions):
-    constraints = []
-    for condition in conditions:
-        if len(condition) == 4:
-            if condition[2] == '<=':
-                less_or_equal(list_variables[condition[0]], condition[1])
+def constraint_tree(order, list_variables, feuilles_conditions):
+    constraint=[]
+    for feuilles in feuilles_conditions:
+        if len(feuilles[0].split(' <= ')) == 2:
+            node, condition = feuilles[0].split(' <= ')
+            e1 = less_or_equal(list_variables[int(node)],float(condition))
+        elif len(feuilles[0].split(' > ')) == 2:
+            node, condition = feuilles[0].split(' > ')
+            e1 = greater(list_variables[int(node)],float(condition))
 
-            elif condition[2] == '>':
-                greater(list_variables[condition[0]], condition[1])
-            continue
-        if condition[2] == '<=':
-            less_or_equal(list_variables[condition[0]], condition[1])
-        elif condition[2] == '>':
-            greater(list_variables[condition[0]], condition[1])
-    return constraints
-
-
-
-
-
-
-
-
-
-
-def my_decision_tree_predict(list_var_starts, clf):
-    
-    return clf.predict([list_var_starts])[0]
-
-
+        
+        # list of all the conditions which leads to the leaf
+        for i in range (1, len(feuilles)-1):
+            if len(feuilles[i].split(' <= ')) == 2:
+                node, condition = feuilles[i].split(' <= ')
+                e1 = logical_and(e1, less_or_equal(list_variables[int(node)], float(condition)))
+            elif len(feuilles[i].split(' > ')) == 2:
+                node, condition = feuilles[i].split(' > ')
+                e1 = logical_and(e1, greater(list_variables[int(node)], float(condition)))
+            # ajout des contraintes tq l'intersection de toutes les conditions donnent la classe qui est à la fin
+            
+        # class
+        print(feuilles[-1])
+        constraint.append(if_then(e1, equal(order,feuilles[-1])))
+    return constraint
 #______________________________________________________________________#
+
