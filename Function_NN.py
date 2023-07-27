@@ -41,6 +41,7 @@ def find_perfect_NN(data, n, m, sol_layers, nb_hidden_layers, nb_neurons, nb_try
 
     weights = weights0 + [[[model.integer_var(min=-1, max=1, name="w{}-{}-{}".format(i,j,k)) for k in range(nb_neurons[i-1])] for j in range(nb_neurons[i])] for i in range(1, nb_hidden_layers + 1)]
 
+
     for order in range(len(sol_layers)):
         for sol in sol_layers[order]:
 
