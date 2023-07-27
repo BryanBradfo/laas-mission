@@ -41,9 +41,9 @@ def my_decision_tree(n, m, list_layers):
                     best_parameters = {'max_depth': max_depth, 'min_samples_split': min_samples_split, 'splitter': splitter}
     clf = tree.DecisionTreeClassifier(max_depth=best_parameters['max_depth'], min_samples_split=best_parameters['min_samples_split'], splitter=best_parameters['splitter'])
     clf = clf.fit(X_train, y_train)
-    tree_rules = export_text(clf)
     feuilles_conditions = []
     parcourir_arbre(clf, feuilles_conditions, 0, 0,[])
+    print("best score: ",best_score)
     return clf, feuilles_conditions
 #______________________________________________________________________#
 
