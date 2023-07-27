@@ -20,6 +20,10 @@ class Solver:
     def add_variable(self, variable):
         self._variables.append(variable)
 
+    def add_variable_model(self, model, variable):
+        self._variables.append(variable)
+        model.add(variable)
+
     def add_constraint(self, model, constraint):
         self._constraints.append(constraint)
         model.add(constraint)
