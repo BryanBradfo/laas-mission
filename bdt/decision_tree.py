@@ -2,10 +2,11 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn import tree
-import FunctionMain as fm
-from sklearn.tree import DecisionTreeClassifier, export_text
 from docplex.cp.modeler import *
 import numpy as np
+import sys
+sys.path.append("..")
+import FunctionMain as fm
 
 #----------------------Function: my_decision_tree----------------------#     
 def my_decision_tree(n, m, list_layers):

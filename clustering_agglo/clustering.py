@@ -1,7 +1,6 @@
 #Clustering agglomératif des solutions
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy . cluster . hierarchy as shc
 
 import numpy as np
 import matplotlib.pyplot as plt

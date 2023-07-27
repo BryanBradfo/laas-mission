@@ -1,5 +1,5 @@
 
-import clustering as cl
+import clustering_agglo.clustering as cl
 import numpy as np
 from docplex.cp.model import *
 from docplex.cp.model import *
