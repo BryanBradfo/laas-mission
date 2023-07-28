@@ -90,7 +90,7 @@ def main_ca(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
 
     # ----------------- Add the preferences to the model
     while criterion :
-        it += 1
+
         print("\n--------Iteration {}---------".format(it))
 
         # --------- Call Solver constructor in Solver.py and create the variables of the model
@@ -177,34 +177,74 @@ def main_ca(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
         tps += runtime
         criterion = (tps < tps_max) and (it < it_max)
         fm.stopCondition(it, it_max, tps, tps_max)
-
+        it += 1
 
     ####################################################################
     #### Plotting the results 
     ####################################################################
 
-    plt.plot([i for i in range(it)], list_min_obj, label='min obj', marker='o')
-    plt.xlabel("Iteration")
-    plt.ylabel("objective value")
-    plt.title("Agglo clustering: Evolution of the best objective value for generate solutions")
-    plt.xticks(range(it))
-    plt.legend()
-    name = "plot_ca_"+plot_name+".png"
-    plt.savefig(name)
-    plt.close()
-    #Initialiser le plt
+    # plt.plot([i for i in range(it)], list_min_obj, label='min obj', marker='o')
+    # plt.xlabel("Iteration")
+    # plt.ylabel("objective value")
+    # plt.title("Agglo clustering: Evolution of the best objective value for generate solutions")
+    # plt.xticks(range(it))
+    # plt.legend()
+    # name = "plot_ca_"+plot_name+".png"
+    # plt.savefig(name)
+    # plt.close()
+    # #Initialiser le plt
 
-    plt.plot([i for i in range(it)], list_min_obj_global, label='min obj', marker='o')
-    plt.xlabel("Iteration")
-    plt.ylabel("objective value")
-    plt.title("Agglo clustering: Global evolution of the best objective value for every generated solutions")
-    plt.xticks(range(it))
-    plt.legend()
-    name = "plot_global_ca_"+plot_name+".png"
-    plt.savefig(name)
-    plt.close()
+    # plt.plot([i for i in range(it)], list_min_obj_global, label='min obj', marker='o')
+    # plt.xlabel("Iteration")
+    # plt.ylabel("objective value")
+    # plt.title("Agglo clustering: Global evolution of the best objective value for every generated solutions")
+    # plt.xticks(range(it))
+    # plt.legend()
+    # name = "plot_global_ca_"+plot_name+".png"
+    # plt.savefig(name)
+    # plt.close()
 
-    return list_min_obj, list_min_obj_global
+    fig1 = plt.figure()
+    ax1 = fig1.add_subplot(111)  # Un seul axe pour le premier plot
+    ax1.plot([i for i in range(it)], list_min_obj, label='min obj', marker='o')
+    ax1.set_xlabel("Iteration")
+    ax1.set_ylabel("Objective value")
+    ax1.set_title("Agglo clustering: Evolution of the best objective value for generated solutions")
+    ax1.set_xticks(range(it))
+    ax1.legend()
 
+    # Créer une deuxième figure
+    fig2 = plt.figure()
+    ax2 = fig2.add_subplot(111)  # Un seul axe pour le deuxième plot
+    ax2.plot([i for i in range(it)], list_min_obj_global, label='min obj', marker='o')
+    ax2.set_xlabel("Iteration")
+    ax2.set_ylabel("Objective value")
+    ax2.set_title("Agglo clustering: Global evolution of the best objective value for every generated solution")
+    ax2.set_xticks(range(it))
+    ax2.legend()
 
+    # Enregistrer les plots dans des fichiers distincts (facultatif)
+    name1 = "plot_ca_" + plot_name + ".png"
+    name2 = "plot_global_ca_" + plot_name + ".png"
+    plt.figure(fig1.number)  # Sélectionne la première figure
+    plt.savefig(name1)
+    plt.figure(fig2.number)  # Sélectionne la deuxième figure
+    plt.savefig(name2)
 
+    return list_min_obj, list_min_obj_global, fig1, fig2
+
+def main():
+    # Code principal du script
+    print("Début du programme")
+    list_min_obj, list_min_obj_global, fig1, fig2 = main_ca('../file_with_optimal_val/la04.txt', "test0", 2, 10, 15, 100, 10, "plus")
+    
+    # Afficher les deux plots à l'écran (optionnel)
+    plt.figure(fig1.number)
+    plt.show()
+
+    plt.figure(fig2.number)
+    plt.show()
+
+# Appeler la fonction main() si ce fichier est le point d'entrée du programme
+if __name__ == "__main__":
+    main()
