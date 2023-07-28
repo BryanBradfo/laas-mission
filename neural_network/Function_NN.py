@@ -3,6 +3,7 @@
 
 from docplex.cp.model import *
 from docplex.cp.config import get_default
+sys.path.append("..")
 from Solver import *
 import FunctionMain as fm
 
@@ -10,12 +11,16 @@ import FunctionMain as fm
 # a = 1 means that the order of the sol is 0 
 # a = 0 means that the order of the sol is not 0
 
-def activation_function(model, solver, input, weights, nb_hidden_layers, nb_neurons, id_layer = 0):
+def activation_function(model, solver, input, weights, nb_hidden_layers, nb_neurons, optimalval, id_layer = 0):
 
-    if id_layer == 0:
-        sum_input = sum(input)
+    if type(input[0])!=int and input[0].is_type(Type_IntExpr):
+        sum_input = 2*optimalval
     else:
-        sum_input = len(input)
+        if id_layer == 0:
+            sum_input = sum(input)
+        else:
+            sum_input = len(input)
+
 
     S = [model.integer_var(min=-sum_input, max=sum_input, name="S{}{}".format(id_layer, j)) for j in range(nb_neurons[id_layer])]
     a = [model.binary_var(name="a{}{}".format(id_layer, j)) for j in range(nb_neurons[id_layer])]
@@ -34,14 +39,17 @@ def activation_function(model, solver, input, weights, nb_hidden_layers, nb_neur
         else: 
             output.append(a[j])
 
-    return activation_function(model, solver, output, weights, nb_hidden_layers, nb_neurons, id_layer + 1)
+    return activation_function(model, solver, output, weights, nb_hidden_layers, nb_neurons, optimalval, id_layer + 1)
      
 
 
-def find_perfect_NN(data, n, m, sol_layers, nb_hidden_layers, nb_neurons, nb_try = 0):
+def find_perfect_NN(file, sol_layers, nb_hidden_layers, nb_neurons):
+
+    n, m, data, _, _, _, optimalval = fm.get_data_from_file(file)
 
     solver = Solver(data)
     model = CpoModel() 
+
 
     # Create the weights of the neural network
     weights0 = [[[model.integer_var(min=-1, max=1, name="w{}-{}-{}".format(0,j,k)) for k in range(n*m)] for j in range(nb_neurons[0])]]
@@ -55,40 +63,37 @@ def find_perfect_NN(data, n, m, sol_layers, nb_hidden_layers, nb_neurons, nb_try
     for order in range(len(sol_layers)):
         for sol in sol_layers[order]:
 
-            output_NN = activation_function(model, solver, sol, weights, nb_hidden_layers, nb_neurons)
-
+            output_NN = activation_function(model, solver, sol, weights, nb_hidden_layers, nb_neurons, optimalval)
             if order == 0:
                 solver.add_constraint(model, output_NN == 1)
             else:
                 solver.add_constraint(model, output_NN == 0)
 
-    msol = model.solve(TimeLimit=60, LogVerbosity='Quiet')
+    print("Searching for perfect neural networks...")
+    msol = model.solve(TimeLimit=20, LogVerbosity='Quiet')
     # msol = model.solve(TimeLimit=20)
 
-    print(model.get_statistics())  
-    msol.print_solution()
-
-    # list_sol = []
-    # for sol in msol:
-    #     list_sol.append(sol)
+    list_sol = msol.get_all_var_solutions()
+    # print(list_sol)  
+    # msol.print_solution()
 
     NN = []
 
-    if len(msol) == 0:
+    if len(list_sol) == 0:
         print("No perfect neural network found, increase the number of neurons")
         nb_neurons[0] += 1
-        return find_perfect_NN(data, n, m, sol_layers, nb_hidden_layers, nb_neurons)
+        return find_perfect_NN(file, sol_layers, nb_hidden_layers, nb_neurons)
             
     # Are the neural networks perfect ?
-    for n in range(len(msol)):
-        accuracy = accurate_NN(model, solver, sol_layers, weights, nb_hidden_layers, nb_neurons)
+    for n in range(len(list_sol)):
+        accuracy = accurate_NN(model, solver, sol_layers, weights, nb_hidden_layers, nb_neurons, optimalval)
         if accuracy:
-            NN.append(msol[n])
+            NN.append(list_sol[n])
         
     if len(NN) == 0:
         print("No perfect neural network found, increase the number of neurons")
         nb_neurons[0] += 1
-        return find_perfect_NN(data, n, m, sol_layers, nb_hidden_layers, nb_neurons)
+        return find_perfect_NN(file, sol_layers, nb_hidden_layers, nb_neurons)
     elif len(NN) == 1:
         print("Only one perfect neural network found !")
     else:
@@ -98,15 +103,15 @@ def find_perfect_NN(data, n, m, sol_layers, nb_hidden_layers, nb_neurons, nb_try
     return NN
 
 
-def accurate_NN(model, solver, sol_layers, weights, nb_hidden_layers, nb_neurons):
+def accurate_NN(model, solver, sol_layers, weights, nb_hidden_layers, nb_neurons, optimalval):
 
     # Verify that there are fully accurate 
     for order in range(len(sol_layers)):
         for sol in sol_layers[order]:
 
-            output_NN = activation_function(model, solver, sol, weights, nb_hidden_layers, nb_neurons)
+            output_NN = activation_function(model, solver, sol, weights, nb_hidden_layers, nb_neurons, optimalval)
 
-            if (output_NN == 0 and order == 0) or (output_NN == 1 and order != 0):
+            if (output_NN.equals(0) and order == 0) or (output_NN.equals(1) and order != 0):
                 return False
 
     return True 
