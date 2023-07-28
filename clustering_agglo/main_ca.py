@@ -152,6 +152,12 @@ def main_ca(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
         else:
             for sol in msol:
                 list.append(user.objectiveFunction(sol) * user.objectiveFunctionRegularity(sol, n, m))
+        
+        if len(list) == 0:
+            print("Aucune solution générée à l'itération ", it)
+            list_min_obj.append(list_min_obj[-1])
+            list_min_obj_global.append(list_min_obj_global[-1])
+            continue
 
         list_min_obj.append(min(list))
 

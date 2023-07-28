@@ -9,7 +9,7 @@ sys.path.append("..")
 import FunctionMain as fm
 
 #----------------------Function: my_decision_tree----------------------#     
-def my_decision_tree(n, m, list_layers):
+def my_decision_tree(n, m, list_layers, random_value=42):
     X_list_start_sol = []
     Y_list_layers = []
     for i in range(len(list_layers)):
@@ -23,7 +23,7 @@ def my_decision_tree(n, m, list_layers):
             else:
                 Y_list_layers.append(0)
     # nb_sols = len(X_list_start_sol)
-    X_train, X_test, y_train, y_test = train_test_split(X_list_start_sol, Y_list_layers, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X_list_start_sol, Y_list_layers, test_size=0.2, random_state=random_value)
     
     #Got best decision tree by comparison of different parameters
     parameters = {'max_depth': [i for i in range(int(n*m/5), int(n*m/2), int(n*m/5))], 'min_samples_split': [i for i in range(5, 20, 5) ], 'splitter':['best', 'random']}

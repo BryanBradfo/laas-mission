@@ -90,7 +90,6 @@ def main_dt(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
     while criterion :
         
         print("\n--------Iteration {}---------".format(it))
-        it += 1
 
         # --------- Compute decision trees---------------
         clf, feuilles_conditions = dt.my_decision_tree(n, m, list_layers)
@@ -129,6 +128,12 @@ def main_dt(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
             for sol in msol:
                 list.append(user.objectiveFunction(sol) * user.objectiveFunctionRegularity(sol, n, m))
 
+        if len(list) == 0:
+            print("Aucune solution générée à l'itération ", it)
+            list_min_obj.append(list_min_obj[-1])
+            list_min_obj_global.append(list_min_obj_global[-1])
+            continue
+
         list_min_obj.append(min(list))
         # ------------ Display the result
         fm.display_solution(msol, display_sol)
@@ -149,6 +154,7 @@ def main_dt(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
 
     #------------------ Condition d'arrêt ------------------
         tps += runtime
+        it += 1
         criterion = (tps < tps_max) and (it < it_max) 
         fm.stopCondition(it, it_max, tps, tps_max)
 
@@ -158,38 +164,85 @@ def main_dt(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
     ####################################################################
     # Implementation of the decision tree
 
-    print("\n--------Implementation of the decision tree...---------")
-    print(len(feuilles_conditions)) 
-    fig = plt.figure(figsize=(10,7))
-    _ = tree.plot_tree(clf, 
-                        class_names= ("false (0)", "true (1)" ), 
-                        filled=True)
-    name = "decision_tree_"+plot_name+".png"
-    fig.savefig(name)
-    plt.close()
+    # print("\n--------Implementation of the decision tree...---------")
+    # print(len(feuilles_conditions)) 
+    # fig = plt.figure(figsize=(10,7))
+    # _ = tree.plot_tree(clf, 
+    #                     class_names= ("false (0)", "true (1)" ), 
+    #                     filled=True)
+    # name = "decision_tree_"+plot_name+".png"
+    # fig.savefig(name)
+    # plt.close()
 
-    plt.plot([i for i in range(it)], list_min_obj, label='min obj', marker='o')
-    plt.xlabel("Iteration")
-    plt.ylabel("objective value")
-    plt.title("Decision tree: Evolution of the best objective value for generate solutions")
-    plt.xticks(range(it))
-    plt.legend()
-    name = "plot_dt_"+plot_name+".png"
-    plt.savefig(name)
-    plt.close()
-    #Initialiser le plt
+    # plt.plot([i for i in range(it)], list_min_obj, label='min obj', marker='o')
+    # plt.xlabel("Iteration")
+    # plt.ylabel("objective value")
+    # plt.title("Decision tree: Evolution of the best objective value for generate solutions")
+    # plt.xticks(range(it))
+    # plt.legend()
+    # name = "plot_dt_"+plot_name+".png"
+    # plt.savefig(name)
+    # plt.close()
+    # #Initialiser le plt
 
-    plt.plot([i for i in range(it)], list_min_obj_global, label='min obj', marker='o')
-    plt.xlabel("Iteration")
-    plt.ylabel("objective value")
-    plt.title("Decision tree: Global evolution of the best objective value for every generated solutions")
-    plt.xticks(range(it))
-    plt.legend()
-    name = "plot_global_dt_"+plot_name+".png"
-    plt.savefig(name)
-    plt.close()
+    # plt.plot([i for i in range(it)], list_min_obj_global, label='min obj', marker='o')
+    # plt.xlabel("Iteration")
+    # plt.ylabel("objective value")
+    # plt.title("Decision tree: Global evolution of the best objective value for every generated solutions")
+    # plt.xticks(range(it))
+    # plt.legend()
+    # name = "plot_global_dt_"+plot_name+".png"
+    # plt.savefig(name)
+    # plt.close()
 
-    return list_min_obj, list_min_obj_global
+    
+    fig1 = plt.figure()
+    ax1 = fig1.add_subplot(111)  # Un seul axe pour le premier plot
+    ax1.plot([i for i in range(it)], list_min_obj, label='min obj', marker='o')
+    ax1.set_xlabel("Iteration")
+    ax1.set_ylabel("Objective value")
+    ax1.set_title("Decision tree: Evolution of the best objective value for generated solutions")
+    ax1.set_xticks(range(it))
+    ax1.legend()
+
+    # Créer une deuxième figure
+    fig2 = plt.figure()
+    ax2 = fig2.add_subplot(111)  # Un seul axe pour le deuxième plot
+    ax2.plot([i for i in range(it)], list_min_obj_global, label='min obj', marker='o')
+    ax2.set_xlabel("Iteration")
+    ax2.set_ylabel("Objective value")
+    ax2.set_title("Decision tree: Global evolution of the best objective value for every generated solution")
+    ax2.set_xticks(range(it))
+    ax2.legend()
+
+    # Enregistrer les plots dans des fichiers distincts (facultatif)
+    name1 = "plot_dt_" + plot_name + ".png"
+    name2 = "plot_global_dt_" + plot_name + ".png"
+    plt.figure(fig1.number)  # Sélectionne la première figure
+    plt.savefig(name1)
+
+    plt.figure(fig2.number)  # Sélectionne la deuxième figure
+    plt.savefig(name2)
+
+    return list_min_obj, list_min_obj_global, fig1, fig2
+
+
+def main():
+    # Code principal du script
+    print("Début du programme")
+    list_min_obj, list_min_obj_global, fig1, fig2 = main_dt('../file_with_optimal_val/la04.txt', "test0", 2, 10, 15, 100, 10, "plus")
+    
+    # Afficher les deux plots à l'écran (optionnel)
+    plt.figure(fig1.number)
+    plt.show()
+
+    plt.figure(fig2.number)
+    plt.show()
+
+# Appeler la fonction main() si ce fichier est le point d'entrée du programme
+if __name__ == "__main__":
+    main()
+
 
 
 
