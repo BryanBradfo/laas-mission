@@ -38,8 +38,8 @@ def main():
         t.start()
     for t in threads:
         t.join()
-    for t in threads:
-        print(t.result)
+    # for t in threads:
+    #     print(t.result)
     
 
 
