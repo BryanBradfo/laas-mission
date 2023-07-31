@@ -25,7 +25,8 @@ from Solver import *
 from User import *
 import FunctionMain as fm
 
-def main_dt(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation, nb_trees=1, display_sol=False, display_start=False, display_matrix=False):
+
+def main_dt(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation, nb_trees=1, display_sol=False, display_start=False, display_matrix=False):
 
     #############################
     ### Main program ###
@@ -86,79 +87,6 @@ def main_dt(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
     list_min_obj_global = [min(list_obj)]
     criterion = (tps < tps_max) and (it < it_max) 
     it_final_BDT = []
-
-    # ----------------- Add the preferences to the model
-    # while criterion :
-        
-    #     print("\n--------Iteration {}---------".format(it))
-
-    #     # --------- Compute decision trees---------------
-    #     clf, feuilles_conditions = dt.my_decision_tree(n, m, list_layers)
-        
-    #     # --------- Call Solver constructor in Solver.py and create the variables of the model
-    #     model, solver, starts = fm.initialize_solver(data, n, m, duration)
-
-    #     # --------- Add the new constraints to the model (that solution must be different from the previous generated solutions)
-    #     variables = fm.update_variables_new_constraint(n, m,  pref, model, solver)
-        
-        
-        
-    #     #----------Add new variable "order" to the model---------------
-    #     order = model.binary_var(name="order")
-    #     solver.add_variable(order)
-        
-    
-    #     # --------- Add the new constraints to the model (concerning the order)
-    #     list_variables = [model.start_of(variables[i//m][i%m]) for i in range(n*m)]
-    #     constraint_list_of_tree = dt.constraint_tree(order,list_variables, feuilles_conditions)
-
-    #     for constraint in constraint_list_of_tree:
-    #         solver.add_constraint(model, constraint)
-    #     solver.add_constraint(model, equal(order, 1))
-
-
-    #     # ------------ Solve the model
-    #     model, variables = solver.create_constraints(model, n, m, optimalval, T_machine)
-    #     msol, nb_solution, runtime = solver.solve(model, k_k, n, m, variables)
-
-    #     list = []
-    #     if type_operation == "plus":
-    #         for sol in msol:
-    #             list.append(user.objectiveFunction(sol) + user.objectiveFunctionRegularity(sol, n, m))
-    #     else:
-    #         for sol in msol:
-    #             list.append(user.objectiveFunction(sol) * user.objectiveFunctionRegularity(sol, n, m))
-
-    #     if len(list) == 0:
-    #         print("Aucune solution générée à l'itération ", it)
-    #         list_min_obj.append(list_min_obj[-1])
-    #         list_min_obj_global.append(list_min_obj_global[-1])
-    #         it += 1
-    #         continue
-
-    #     list_min_obj.append(min(list))
-    #     # ------------ Display the result
-    #     fm.display_solution(msol, display_sol)
-
-    #     # ---------------- Interaction with the user
-    #     list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m)
-
-    #     list_min_obj_global.append(min(list_obj))
-
-    #     # Vector of the start time of each task of each preference
-    #     starts = user.start_pref(n, m, display_start)
-
-    #     # Matrix of the start time of each task of each preference
-    #     matrix = user.matrix_pref(n, m, display_matrix)
-
-    #     # Testing the order of preferences and the differences between solutions
-    #     fm.test(n, m, user)
-
-    # #------------------ Condition d'arrêt ------------------
-    #     tps += runtime
-    #     it += 1
-    #     criterion = (tps < tps_max) and (it < it_max) 
-    #     fm.stopCondition(it, it_max, tps, tps_max)
 
 
     while criterion :
@@ -267,7 +195,8 @@ def main_dt(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
     ax1.plot([i for i in range(it)], list_min_obj, label='min obj', marker='o')
     ax1.set_xlabel("Iteration")
     ax1.set_ylabel("Objective value")
-    ax1.set_title("Decision tree: Evolution of the best objective value for generated solutions")
+    title = "Decision tree with " + str(nb_dt)+ " trees: Evolution of the best objective value for generated solutions"
+    ax1.set_title(title)
     ax1.set_xticks(range(it))
     ax1.legend()
 
@@ -277,7 +206,8 @@ def main_dt(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
     ax2.plot([i for i in range(it)], list_min_obj_global, label='min obj', marker='o')
     ax2.set_xlabel("Iteration")
     ax2.set_ylabel("Objective value")
-    ax2.set_title("Decision tree: Global evolution of the best objective value for every generated solution")
+    title = "Decision tree with " + str(nb_dt)+ " trees: Global evolution of the best objective value for every generated solution"
+    ax2.set_title(title)
     ax2.set_xticks(range(it))
     ax2.legend()
 
@@ -290,20 +220,21 @@ def main_dt(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
     plt.figure(fig2.number)  # Sélectionne la deuxième figure
     plt.savefig(name2)
 
+    resultats_globaux.update({file: [list_min_obj, list_min_obj_global, fig1, fig2]})
     return list_min_obj, list_min_obj_global, fig1, fig2
 
 
 def main():
     # Code principal du script
     print("Début du programme")
-    list_min_obj, list_min_obj_global, fig1, fig2 = main_dt('../file_with_optimal_val/la04.txt', "test0", 2, 10, 15, 100, 10, "plus")
+    list_min_obj, list_min_obj_global, fig1, fig2 = main_dt({}, '../file_with_optimal_val/la04.txt', "test0", 2, 10, 15, 100, 10, "plus", 3)
     
-    # Afficher les deux plots à l'écran (optionnel)
-    plt.figure(fig1.number)
-    plt.show()
+    # # Afficher les deux plots à l'écran (optionnel)
+    # plt.figure(fig1.number)
+    # plt.show()
 
-    plt.figure(fig2.number)
-    plt.show()
+    # plt.figure(fig2.number)
+    # plt.show()
 
 # Appeler la fonction main() si ce fichier est le point d'entrée du programme
 if __name__ == "__main__":

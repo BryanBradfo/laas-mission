@@ -25,7 +25,7 @@ from User import *
 import FunctionMain as fm
 
 
-def main_ca(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation, display_sol=False, display_start=False, display_matrix=False):
+def main_ca(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation, display_sol=False, display_start=False, display_matrix=False):
 
     #############################
     ### Main program ###
@@ -238,19 +238,20 @@ def main_ca(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
     plt.figure(fig2.number)  # Sélectionne la deuxième figure
     plt.savefig(name2)
 
+    resultats_globaux.update({file: [list_min_obj, list_min_obj_global, fig1, fig2]})
     return list_min_obj, list_min_obj_global, fig1, fig2
 
 def main():
     # Code principal du script
     print("Début du programme")
-    list_min_obj, list_min_obj_global, fig1, fig2 = main_ca('../file_with_optimal_val/la04.txt', "test0", 2, 10, 15, 100, 10, "plus")
+    list_min_obj, list_min_obj_global, fig1, fig2 = main_ca({}, '../file_with_optimal_val/la04.txt', "test0", 2, 10, 15, 100, 10, "plus")
     
-    # Afficher les deux plots à l'écran (optionnel)
-    plt.figure(fig1.number)
-    plt.show()
+    # # Afficher les deux plots à l'écran (optionnel)
+    # plt.figure(fig1.number)
+    # plt.show()
 
-    plt.figure(fig2.number)
-    plt.show()
+    # plt.figure(fig2.number)
+    # plt.show()
 
 # Appeler la fonction main() si ce fichier est le point d'entrée du programme
 if __name__ == "__main__":

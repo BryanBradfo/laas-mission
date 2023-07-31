@@ -24,7 +24,7 @@ from User import *
 import FunctionMain as fm
 import my_clustering as my_cl
 
-def main_cb(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation, display_sol=False, display_start=False, display_matrix=False):
+def main_cb(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation, display_sol=False, display_start=False, display_matrix=False):
 
     #############################
     ### Main program ###
@@ -204,6 +204,7 @@ def main_cb(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
             print("No solution at iteration", it)
             list_min_obj.append(list_min_obj[-1])
             list_min_obj_global.append(list_min_obj_global[-1])
+            it += 1
             continue
         
         list_min_obj.append(min(list))
@@ -235,28 +236,6 @@ def main_cb(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
     #### Plotting the results 
     ####################################################################
 
-    # plt.plot([i for i in range(it)], list_min_obj, label='min obj', marker='o')
-    # plt.axvline(x=it_final_exploration, color='r', linestyle='--', label='it final exploration')
-    # plt.xlabel("Iteration")
-    # plt.ylabel("objective value")
-    # plt.title("Binary clustering: Evolution of the best objective value for generate solutions")
-    # plt.xticks(range(it))
-    # plt.legend()
-    # name = "plot_cb_"+plot_name+".png"
-    # plt.savefig(name)
-    # plt.close()
-    # #Initialiser le plt
-
-    # plt.plot([i for i in range(it)], list_min_obj_global, label='min obj', marker='o')
-    # plt.xlabel("Iteration")
-    # plt.ylabel("objective value")
-    # plt.title("Binary clustering: Global evolution of the best objective value for every generated solutions")
-    # plt.xticks(range(it))
-    # plt.legend()
-    # name = "plot_global_cb_"+plot_name+".png"
-    # plt.savefig(name)
-    # plt.close()
-
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(111)  # Un seul axe pour le premier plot
     ax1.axvline(x=it_final_exploration, color='r', linestyle='--', label='it final exploration')
@@ -286,20 +265,21 @@ def main_cb(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
     plt.figure(fig2.number)  # Sélectionne la deuxième figure
     plt.savefig(name2)
 
+    resultats_globaux.update({file: [list_min_obj, list_min_obj_global, fig1, fig2]})
     return list_min_obj, list_min_obj_global, fig1, fig2
 
 
 def main():
     # Code principal du script
     print("Début du programme")
-    list_min_obj, list_min_obj_global, fig1, fig2 = main_cb('../file_with_optimal_val/la04.txt', "test0", 2, 10, 15, 100, 10, "plus")
+    list_min_obj, list_min_obj_global, fig1, fig2 = main_cb({}, '../file_with_optimal_val/la04.txt', "test0", 2, 10, 15, 100, 10, "plus")
     
-    # Afficher les deux plots à l'écran (optionnel)
-    plt.figure(fig1.number)
-    plt.show()
+    # # Afficher les deux plots à l'écran (optionnel)
+    # plt.figure(fig1.number)
+    # plt.show()
 
-    plt.figure(fig2.number)
-    plt.show()
+    # plt.figure(fig2.number)
+    # plt.show()
 
 # Appeler la fonction main() si ce fichier est le point d'entrée du programme
 if __name__ == "__main__":
