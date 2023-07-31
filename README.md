@@ -73,7 +73,12 @@ If any of these libraries are missing, you can install them using pip, the Pytho
 
 ## Projet Structure
 
-The project repository consists of the following files:
+The project repository consists of the following files and folders:
+
+- Clustering_binaire: Solving the problem by the approach of "binary clustering", you can just execute if you would like to try this approach :
+    - main_cb.py
+- Clustering_agglo: Solving the problem by the approach of "agglomerative clustering", you can just execute if you would like to try this approach :
+    - main_ca.py 
 
 - ITellYouWhatYouLike.ipynb: This Jupyter Notebook contains the main code for solving the Job-shop problem with user preferences.
 - README.md: This file provides an overview of the project and instructions for running the code.
