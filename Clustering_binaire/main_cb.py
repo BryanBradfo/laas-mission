@@ -125,6 +125,7 @@ def main_cb(file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation,
             print("Aucune solution générée à l'itération ", it)
             list_min_obj.append(list_min_obj[-1])
             list_min_obj_global.append(list_min_obj_global[-1])
+            it += 1
             continue
 
         list_min_obj.append(min(list))

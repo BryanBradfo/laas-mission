@@ -82,6 +82,10 @@ def parcourir_arbre(clf, feuilles_conditions, noed_actuel, profondeur, condition
 # Créer les contraintes pour les variables du solver à partir des conditions
 def constraint_tree(order, list_variables, feuilles_conditions):
     constraint=[]
+    # if root is leaf
+    if len(feuilles_conditions[0]) == 1:
+        return constraint
+    
     for feuilles in feuilles_conditions:
         print(feuilles)
         print(type(feuilles))
