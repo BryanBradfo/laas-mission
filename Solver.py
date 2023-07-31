@@ -97,7 +97,7 @@ class Solver:
         #                                     valuechooser=model.select_random_value())
         # model.add_search_phase(SearchPhase)
         
-        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit=10) #total_time//nb_iteration
+        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit=20) #total_time//nb_iteration
 
         # msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", SolutionLimit = k, RandomSeed = k)
         # SolutionLimit=3*k, MultiPointNumberOfSearchPoints=30 +2*ind, RandomSeed = 5, DefaultInferenceLevel='Extended', OptimalityTolerance=6

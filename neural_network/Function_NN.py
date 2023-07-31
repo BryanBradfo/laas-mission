@@ -74,8 +74,9 @@ def find_perfect_NN(file, sol_layers, nb_hidden_layers, nb_neurons):
     # msol = model.solve(TimeLimit=20)
 
     list_sol = msol.get_all_var_solutions()
-    # print(list_sol)  
+    # print(list_sol)
     # msol.print_solution()
+    print(len(list_sol))
 
     NN = []
 
@@ -99,8 +100,10 @@ def find_perfect_NN(file, sol_layers, nb_hidden_layers, nb_neurons):
     else:
         NN = random.sample(NN, 2)
         print("2 perfect neural networks found !")
+        # print(NN)
 
     return NN
+
 
 
 def accurate_NN(model, solver, sol_layers, weights, nb_hidden_layers, nb_neurons, optimalval):
