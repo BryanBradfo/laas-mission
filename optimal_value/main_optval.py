@@ -61,8 +61,8 @@ def main_optval(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, 
 
     print("\nAdding objective function to the solver...")
 
-    # makespan = max([model.end_of(tasks[i][T_machine[i*m + m-1]]) for i in range(n)])
-    # print("Makespan = ", makespan)
+    makespan = max([model.end_of(tasks[i][T_machine[i*m + m-1]]) for i in range(n)])
+    print("Makespan = ", makespan)
 
     # Add objective function
     waiting_time = [[] for i in range(m)]
@@ -111,8 +111,12 @@ def main_optval(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, 
     for i in range(len(list_obj)):
         sum += list_obj[i]
 
-    solver.add_constraint(model, model.minimize(sum*optimalval))
-    # solver.add_constraint(model, model.minimize(sum + makespan))
+    if type_operation == "plus":
+        # solver.add_constraint(model, model.minimize(sum + optimalval))
+        solver.add_constraint(model, model.minimize(sum + makespan))
+    else:
+        # solver.add_constraint(model, model.minimize(sum * optimalval))
+        solver.add_constraint(model, model.minimize(sum + makespan))
 
     print("\nObjective function added !")
 
