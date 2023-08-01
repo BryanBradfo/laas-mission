@@ -24,7 +24,7 @@ import FunctionMain as fm
 from Solver import *
 from User import *
 
-def main_optval(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation, percent_explo = 0.8, display_sol=False, display_start=False, display_matrix=False):
+def main_optval(resultats_globaux, file, time_limit, type_operation):
     #############################
     ### Main program ###
     #############################
@@ -40,10 +40,7 @@ def main_optval(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, 
 
     # ------------ Solve the model
     print("\nSolving the model...")
-
-    # list_tasks = solver.get_tasks()
-    # tasks = list_variables[0]
-
+    
     # ------------ Add constraints to the solver
 
     print("\nAdding precedence constraints to the solver...")
@@ -116,57 +113,21 @@ def main_optval(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, 
         solver.add_constraint(model, model.minimize(sum + makespan))
     else:
         # solver.add_constraint(model, model.minimize(sum * optimalval))
-        solver.add_constraint(model, model.minimize(sum + makespan))
+        solver.add_constraint(model, model.minimize(sum * makespan))
 
     print("\nObjective function added !")
 
 
     # Solve the model.
-    msol = model.solve(TimeLimit=300, LogVerbosity="Quiet")
-    # msol = model.solve(TimeLimit=60, LogVerbosity="Quiet")
-    # print(type(msol)) #CpoSolveResult
-    # print("objective value : ", msol.get_objective_value())
-    # print("all_var_solutions : ",msol.get_all_var_solutions())
-    # print("solution : ", msol.get_solution())
-    # j=0
-    # for i in msol:
-    #     j += 1
-    #     i.write()
-    # # print(j)
-
-
-    # ------------ Display the result
-    # fm.display_solution(msol, display_sol)
+    msol = model.solve(TimeLimit=time_limit, LogVerbosity="Quiet")
     print("Model solved !")
-
-    # # ---------------- Interaction with the user
-    # print("\n--------Interaction with the user...---------")
-    # print("\nCreating the user...")
-    # user = User()
-    # print("User created !")
-
-    # #Get the tasks of the model
-    # tasks = solver.get_tasks()
-
-    # list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m)
-
-    # # Vector of the start time of each task of each preference
-    # starts = user.start_pref(n, m, tasks, display_start)
-
-    # # Matrix of the start time of each task of each preference
-    # matrix = user.matrix_pref(n, m, display_matrix)
-
-    # # Testing the order of preferences and the differences between solutions
-    # fm.test(n, m, user)
-
-    # print("list layers : ",list_layers)
-
+    resultats_globaux.update({file: [msol.get_objective_value()]})
     return msol.get_objective_value()
 
 def main():
     # Code principal du script
     print("Début du programme")
-    opt_val = main_optval({}, '../file_with_optimal_val/la04.txt', "test0", 2, 10, 15, 100, 10, "plus")
+    opt_val = main_optval({}, '../file_with_optimal_val/la04.txt', 100, "plus")
     print(f"The optimal value is : {opt_val}")
     print("Fin du programme")
 
