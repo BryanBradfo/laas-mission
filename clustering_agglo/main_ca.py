@@ -189,62 +189,40 @@ def main_ca(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, it_m
     ####################################################################
     #### Plotting the results 
     ####################################################################
+    # fig1 = plt.figure()
+    # ax1 = fig1.add_subplot(111)  # Un seul axe pour le premier plot
+    # ax1.plot([i for i in range(it)], list_min_obj, label='min obj', marker='o')
+    # ax1.set_xlabel("Iteration")
+    # ax1.set_ylabel("Objective value")
+    # ax1.set_title("Agglo clustering: Evolution of the best objective value for generated solutions")
+    # ax1.set_xticks(range(it))
+    # ax1.legend()
 
-    # plt.plot([i for i in range(it)], list_min_obj, label='min obj', marker='o')
-    # plt.xlabel("Iteration")
-    # plt.ylabel("objective value")
-    # plt.title("Agglo clustering: Evolution of the best objective value for generate solutions")
-    # plt.xticks(range(it))
-    # plt.legend()
-    # name = "plot_ca_"+plot_name+".png"
-    # plt.savefig(name)
-    # plt.close()
-    # #Initialiser le plt
+    # # Créer une deuxième figure
+    # fig2 = plt.figure()
+    # ax2 = fig2.add_subplot(111)  # Un seul axe pour le deuxième plot
+    # ax2.plot([i for i in range(it)], list_min_obj_global, label='min obj', marker='o')
+    # ax2.set_xlabel("Iteration")
+    # ax2.set_ylabel("Objective value")
+    # ax2.set_title("Agglo clustering: Global evolution of the best objective value for every generated solution")
+    # ax2.set_xticks(range(it))
+    # ax2.legend()
 
-    # plt.plot([i for i in range(it)], list_min_obj_global, label='min obj', marker='o')
-    # plt.xlabel("Iteration")
-    # plt.ylabel("objective value")
-    # plt.title("Agglo clustering: Global evolution of the best objective value for every generated solutions")
-    # plt.xticks(range(it))
-    # plt.legend()
-    # name = "plot_global_ca_"+plot_name+".png"
-    # plt.savefig(name)
-    # plt.close()
+    # # Enregistrer les plots dans des fichiers distincts (facultatif)
+    # name1 = "plot_ca_" + plot_name + ".png"
+    # name2 = "plot_global_ca_" + plot_name + ".png"
+    # plt.figure(fig1.number)  # Sélectionne la première figure
+    # plt.savefig(name1)
+    # plt.figure(fig2.number)  # Sélectionne la deuxième figure
+    # plt.savefig(name2)
 
-    fig1 = plt.figure()
-    ax1 = fig1.add_subplot(111)  # Un seul axe pour le premier plot
-    ax1.plot([i for i in range(it)], list_min_obj, label='min obj', marker='o')
-    ax1.set_xlabel("Iteration")
-    ax1.set_ylabel("Objective value")
-    ax1.set_title("Agglo clustering: Evolution of the best objective value for generated solutions")
-    ax1.set_xticks(range(it))
-    ax1.legend()
-
-    # Créer une deuxième figure
-    fig2 = plt.figure()
-    ax2 = fig2.add_subplot(111)  # Un seul axe pour le deuxième plot
-    ax2.plot([i for i in range(it)], list_min_obj_global, label='min obj', marker='o')
-    ax2.set_xlabel("Iteration")
-    ax2.set_ylabel("Objective value")
-    ax2.set_title("Agglo clustering: Global evolution of the best objective value for every generated solution")
-    ax2.set_xticks(range(it))
-    ax2.legend()
-
-    # Enregistrer les plots dans des fichiers distincts (facultatif)
-    name1 = "plot_ca_" + plot_name + ".png"
-    name2 = "plot_global_ca_" + plot_name + ".png"
-    plt.figure(fig1.number)  # Sélectionne la première figure
-    plt.savefig(name1)
-    plt.figure(fig2.number)  # Sélectionne la deuxième figure
-    plt.savefig(name2)
-
-    resultats_globaux.update({file: [list_min_obj, list_min_obj_global, fig1, fig2]})
-    return list_min_obj, list_min_obj_global, fig1, fig2
+    resultats_globaux.update({file: [list_min_obj, list_min_obj_global]})
+    return list_min_obj, list_min_obj_global
 
 def main():
     # Code principal du script
     print("Début du programme")
-    list_min_obj, list_min_obj_global, fig1, fig2 = main_ca({}, '../file_with_optimal_val/la04.txt', "test0", 2, 10, 15, 100, 10, "plus")
+    list_min_obj, list_min_obj_global = main_ca({}, '../file_with_optimal_val/la04.txt', "test0", 2, 10, 15, 100, 10, "plus")
     
     # # Afficher les deux plots à l'écran (optionnel)
     # plt.figure(fig1.number)
