@@ -24,7 +24,7 @@ from User import *
 import FunctionMain as fm
 import my_clustering as my_cl
 
-def main_cb(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation, display_sol=False, display_start=False, display_matrix=False):
+def main_cb(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation, percent_explo = 0.8, display_sol=False, display_start=False, display_matrix=False):
 
     #############################
     ### Main program ###
@@ -84,8 +84,8 @@ def main_cb(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, it_m
     tps = runtime
     list_min_obj = [min(list_obj)]
     list_min_obj_global = [min(list_obj)]
-    it_max_exploration = 0.80*it_max
-    tps_max_exploration = 0.80*tps_max
+    it_max_exploration = percent_explo*it_max
+    tps_max_exploration = percent_explo*tps_max
     criterion = (tps < tps_max_exploration) and (it < it_max_exploration) 
 
     # ----------------- Add the preferences to the model
@@ -236,43 +236,43 @@ def main_cb(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, it_m
     #### Plotting the results 
     ####################################################################
 
-    fig1 = plt.figure()
-    ax1 = fig1.add_subplot(111)  # Un seul axe pour le premier plot
-    ax1.axvline(x=it_final_exploration, color='r', linestyle='--', label='it final exploration')
-    ax1.plot([i for i in range(it)], list_min_obj, label='min obj', marker='o')
-    ax1.set_xlabel("Iteration")
-    ax1.set_ylabel("Objective value")
-    ax1.set_title("Binary clustering: Evolution of the best objective value for generated solutions")
-    ax1.set_xticks(range(it))
-    ax1.legend()
+    # fig1 = plt.figure()
+    # ax1 = fig1.add_subplot(111)  # Un seul axe pour le premier plot
+    # ax1.axvline(x=it_final_exploration, color='r', linestyle='--', label='it final exploration')
+    # ax1.plot([i for i in range(it)], list_min_obj, label='min obj', marker='o')
+    # ax1.set_xlabel("Iteration")
+    # ax1.set_ylabel("Objective value")
+    # ax1.set_title("Binary clustering: Evolution of the best objective value for generated solutions")
+    # ax1.set_xticks(range(it))
+    # ax1.legend()
 
-    # Créer une deuxième figure
-    fig2 = plt.figure()
-    ax2 = fig2.add_subplot(111)  # Un seul axe pour le deuxième plot
-    ax2.plot([i for i in range(it)], list_min_obj_global, label='min obj', marker='o')
-    ax2.set_xlabel("Iteration")
-    ax2.set_ylabel("Objective value")
-    ax2.set_title("Binary clustering: Global evolution of the best objective value for every generated solution")
-    ax2.set_xticks(range(it))
-    ax2.legend()
+    # # Créer une deuxième figure
+    # fig2 = plt.figure()
+    # ax2 = fig2.add_subplot(111)  # Un seul axe pour le deuxième plot
+    # ax2.plot([i for i in range(it)], list_min_obj_global, label='min obj', marker='o')
+    # ax2.set_xlabel("Iteration")
+    # ax2.set_ylabel("Objective value")
+    # ax2.set_title("Binary clustering: Global evolution of the best objective value for every generated solution")
+    # ax2.set_xticks(range(it))
+    # ax2.legend()
 
-    # Enregistrer les plots dans des fichiers distincts (facultatif)
-    name1 = "plot_cb_" + plot_name + ".png"
-    name2 = "plot_global_cb_" + plot_name + ".png"
-    plt.figure(fig1.number)  # Sélectionne la première figure
-    plt.savefig(name1)
+    # # Enregistrer les plots dans des fichiers distincts (facultatif)
+    # name1 = "plot_cb_" + plot_name + ".png"
+    # name2 = "plot_global_cb_" + plot_name + ".png"
+    # plt.figure(fig1.number)  # Sélectionne la première figure
+    # plt.savefig(name1)
 
-    plt.figure(fig2.number)  # Sélectionne la deuxième figure
-    plt.savefig(name2)
+    # plt.figure(fig2.number)  # Sélectionne la deuxième figure
+    # plt.savefig(name2)
 
-    resultats_globaux.update({file: [list_min_obj, list_min_obj_global, fig1, fig2]})
-    return list_min_obj, list_min_obj_global, fig1, fig2
+    resultats_globaux.update({file: [list_min_obj, list_min_obj_global]})
+    return list_min_obj, list_min_obj_global
 
 
 def main():
     # Code principal du script
     print("Début du programme")
-    list_min_obj, list_min_obj_global, fig1, fig2 = main_cb({}, '../file_with_optimal_val/la04.txt', "test0", 2, 10, 15, 100, 10, "plus")
+    list_min_obj, list_min_obj_global = main_cb({}, '../file_with_optimal_val/la04.txt', "test0", 2, 10, 15, 100, 10, "plus")
     
     # # Afficher les deux plots à l'écran (optionnel)
     # plt.figure(fig1.number)

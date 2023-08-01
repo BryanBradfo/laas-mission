@@ -13,12 +13,12 @@ resultats_globaux_files = []
 
 
 def main():
+    #-----------------------------Parameters of every methods-----------------------------#
     #Names of files must be different
     # list_files = ['../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/ft10.txt', '../file_with_optimal_val/example.data']
     list_files = ['../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la03.txt']
     list_plot_name = ['la04', 'la03', 'la02', 'ft10', 'example']
     list_nb_layers = [5, 5, 5, 5, 5]
-    list_methods = ['dt1','dt2', 'ca', 'cb'] #to change
     list_k = [20, 20, 20, 20, 20]
     list_k_k = [15, 15, 15, 15, 15]
     list_tps_max = [100, 100, 100, 100, 100]
@@ -31,8 +31,13 @@ def main():
     #Nombre d'arbre pour chaque approche decision tree
     nb_tree = [1,2]
     m = 2 + len(nb_tree)
+    list_methods = []
     for i in range(m):
         resultats_globaux_approche.append({})
+        if i < len(nb_tree):
+            list_methods.append('dt_'+str(nb_tree[i]))
+    list_methods.append('ca')
+    list_methods.append('cb')
 
     threads = []
     for i in range(3*n):
@@ -46,7 +51,7 @@ def main():
             threads.append(t)
             t.start()
         else:
-            t = threading.Thread(target=mcb.main_cb, args=(resultats_globaux_approche[-1], list_files[i-2*n], list_plot_name[i-2*n], list_nb_layers[i-2*n], list_k[i-2*n], list_k_k[i-2*n], list_tps_max[i-2*n], list_it_max[i-2*n], list_type_operation[i-2*n], list_display_sol[i-2*n], list_display_start[i-2*n], list_display_matrix[i-2*n]))
+            t = threading.Thread(target=mcb.main_cb, args=(resultats_globaux_approche[-1], list_files[i-2*n], list_plot_name[i-2*n], list_nb_layers[i-2*n], list_k[i-2*n], list_k_k[i-2*n], list_tps_max[i-2*n], list_it_max[i-2*n], list_type_operation[i-2*n], 0.9, list_display_sol[i-2*n], list_display_start[i-2*n], list_display_matrix[i-2*n]))
             threads.append(t)
             t.start()
 
@@ -59,20 +64,6 @@ def main():
         for j in range(m):
             resultats_globaux_files[i].append(resultats_globaux_approche[j][list_files[i]])
     
-    # Plot une à une les images des approches pour chaque fichier
-    # print(resultats_globaux_files)
-
-
-
-
-    # Faire un subplot des images des approches pour chaque fichier
-
-    # for i in range(n):
-    #     plt.figure(figsize=(10, 8))
-    #     for j in range(m):
-    #         plt.subplot(2, m/2+1, j+1)
-    #         plt.plot([i for i in range(len(resultats_globaux_files[i][j][0]))], resultats_globaux_files[i][j][0], label=list_plot_name[i])
-
     matrix = []
     for i in range(n):
         matrix.append([])
@@ -86,14 +77,24 @@ def main():
     for i in range(n):
         plt.figure(figsize=(10, 8))
         for j in range(m):
-            # plt.subplot(2, m/2+1, j+1)
-            plt.plot([i for i in range(len(resultats_globaux_files[i][j][1]))], resultats_globaux_files[i][j][1], label=list_methods[j])
+            plt.plot([i for i in range(len(resultats_globaux_files[i][j][1]))], resultats_globaux_files[i][j][1], label=list_methods[j], marker='o')
         plt.xlabel("Iteration")
-        plt.ylabel("Objective function")
+        plt.ylabel("resultat_globaux")
         plt.xticks(range(max_iteration_by_file[i]))
         plt.legend()
         plt.show()
-            # plt.plot([i for i in range(max_iteration_by_file[i])], resultats_globaux_files[i][j][1], label=list_plot_name[i])
+        plt.savefig("plot_resultat_globaux_"+list_plot_name[i]+".png")
+    for i in range(n):
+        plt.figure(figsize=(10, 8))
+        for j in range(m):
+            plt.plot([i for i in range(len(resultats_globaux_files[i][j][0]))], resultats_globaux_files[i][j][0], label=list_methods[j], marker='o')
+        plt.xlabel("Iteration")
+        plt.ylabel("resultat_a_chaque_iteration")
+        plt.xticks(range(max_iteration_by_file[i]))
+        plt.legend()
+        plt.show()
+        plt.savefig("plot_resultat_a_chaque_iteration_"+list_plot_name[i]+".png")
+           
 
 
 if __name__ == "__main__":
