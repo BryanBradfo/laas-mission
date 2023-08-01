@@ -26,7 +26,7 @@ from User import *
 import FunctionMain as fm
 
 
-def main_dt(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, it_max, type_operation, nb_trees=1, display_sol=False, display_start=False, display_matrix=False):
+def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_operation, nb_trees=1, display_sol=False, display_start=False, display_matrix=False):
 
     #############################
     ### Main program ###
@@ -153,7 +153,12 @@ def main_dt(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, it_m
             print("No solution at iteration", it)
             list_min_obj.append(list_min_obj[-1])
             list_min_obj_global.append(list_min_obj_global[-1])
-            it += 1
+            
+            #------------------ Condition d'arrêt ------------------
+            tps += runtime
+            it += 1            
+            criterion = (tps < tps_max) and (it < it_max) 
+            fm.stopCondition(it, it_max, tps, tps_max)
             continue
 
         list_min_obj.append(min(list))
@@ -227,7 +232,7 @@ def main_dt(resultats_globaux, file, plot_name, nb_layers, k, k_k, tps_max, it_m
 def main():
     # Code principal du script
     print("Début du programme")
-    list_min_obj, list_min_obj_global = main_dt({}, '../file_with_optimal_val/la04.txt', "test0", 2, 10, 15, 100, 10, "plus", 3)
+    list_min_obj, list_min_obj_global = main_dt({}, '../file_with_optimal_val/la04.txt', 2, 10, 15, 100, 10, "plus", 3)
     
 
 # Appeler la fonction main() si ce fichier est le point d'entrée du programme

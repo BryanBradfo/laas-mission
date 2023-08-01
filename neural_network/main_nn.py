@@ -201,7 +201,12 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
             print("Aucune solution générée à l'itération ", it)
             list_min_obj.append(list_min_obj[-1])
             list_min_obj_global.append(list_min_obj_global[-1])
-            it += 1
+            
+            #------------------ Condition d'arrêt ------------------
+            tps += runtime
+            it += 1            
+            criterion = (tps < tps_max) and (it < it_max) 
+            fm.stopCondition(it, it_max, tps, tps_max)
             continue
 
         list_min_obj.append(min(list))
@@ -230,9 +235,10 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
 
     #------------------ Condition d'arrêt ------------------
         tps += runtime
+        it += 1
         criterion = (tps < tps_max) and (it < it_max)
         fm.stopCondition(it, it_max, tps, tps_max)
-        it += 1
+        
 
 
     resultats_globaux.update({file: [list_min_obj, list_min_obj_global]})
