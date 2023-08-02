@@ -26,7 +26,7 @@ from User import *
 import FunctionMain as fm
 
 
-def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_operation, nb_trees=1, display_sol=False, display_start=False, display_matrix=False):
+def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_operation, type_user="user_reg", nb_trees=1, display_sol=False, display_start=False, display_matrix=False):
 
     #############################
     ### Main program ###
@@ -62,7 +62,7 @@ def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
     #Get the variables of the model
     variables = solver.get_variables()
 
-    list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation)
+    list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
 
     # Vector of the start time of each task of each preference
     starts = user.start_pref(n, m, display_start)
@@ -141,14 +141,22 @@ def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
         msol, nb_solution, runtime = solver.solve(model, k_k, n, m, variables)
 
         print("The number of solutions generated is :",nb_solution)
+        
+         # Adding the objective value of each solution to a list
         list = []
-        if type_operation == "plus":
-            for sol in msol:
-                list.append(user.objectiveFunction(sol) + user.objectiveFunctionRegularity(sol, n, m))
+        # User choice : reg or simple
+        if type_user == "user_reg":
+            # Distinction between type_operation = "plus" or "fois"
+            if type_operation == "plus":
+                for sol in msol:
+                    list.append(user.objectiveFunction(sol) + user.objectiveFunctionRegularity(sol, n, m))
+            else:
+                for sol in msol:
+                    list.append(user.objectiveFunction(sol) * user.objectiveFunctionRegularity(sol, n, m))
+        
         else:
             for sol in msol:
-                list.append(user.objectiveFunction(sol) * user.objectiveFunctionRegularity(sol, n, m))
-
+                list.append(user.objectiveFunction(sol))
         if len(list) == 0:
             print("No solution at iteration", it)
             list_min_obj.append(list_min_obj[-1])
@@ -169,7 +177,7 @@ def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
         print("Model solved !")
 
         # ---------------- Interaction with the user
-        list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation)
+        list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
         print("Il y a {} solution(s)".format(len(pref)))
 
         list_min_obj_global.append(min(list_obj))
@@ -194,37 +202,7 @@ def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
         fm.stopCondition(it, it_max, tps, tps_max)
     it_final_BDT.append(it)
 
-    
-    # fig1 = plt.figure()
-    # ax1 = fig1.add_subplot(111)  # Un seul axe pour le premier plot
-    # ax1.plot([i for i in range(it)], list_min_obj, label='min obj', marker='o')
-    # ax1.set_xlabel("Iteration")
-    # ax1.set_ylabel("Objective value")
-    # title = "Decision tree with " + str(nb_dt)+ " trees: Evolution of the best objective value for generated solutions"
-    # ax1.set_title(title)
-    # ax1.set_xticks(range(it))
-    # ax1.legend()
-
-    # # Créer une deuxième figure
-    # fig2 = plt.figure()
-    # ax2 = fig2.add_subplot(111)  # Un seul axe pour le deuxième plot
-    # ax2.plot([i for i in range(it)], list_min_obj_global, label='min obj', marker='o')
-    # ax2.set_xlabel("Iteration")
-    # ax2.set_ylabel("Objective value")
-    # title = "Decision tree with " + str(nb_dt)+ " trees: Global evolution of the best objective value for every generated solution"
-    # ax2.set_title(title)
-    # ax2.set_xticks(range(it))
-    # ax2.legend()
-
-    # # Enregistrer les plots dans des fichiers distincts (facultatif)
-    # name1 = "plot_dt_" + plot_name + ".png"
-    # name2 = "plot_global_dt_" + plot_name + ".png"
-    # plt.figure(fig1.number)  # Sélectionne la première figure
-    # plt.savefig(name1)
-
-    # plt.figure(fig2.number)  # Sélectionne la deuxième figure
-    # plt.savefig(name2)
-
+    #-------------------Results------------------------------
     resultats_globaux.update({file: [list_min_obj, list_min_obj_global]})
     return list_min_obj, list_min_obj_global
 
@@ -232,7 +210,9 @@ def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
 def main():
     # Code principal du script
     print("Début du programme")
-    list_min_obj, list_min_obj_global = main_dt({}, '../file_with_optimal_val/la04.txt', 2, 10, 15, 100, 10, "plus", 3)
+    list_min_obj, list_min_obj_global = main_dt({}, '../file_with_optimal_val/la04.txt', 2, 10, 15, 100, 10, "plus","other", 3)
+    print(list_min_obj)
+    print(list_min_obj_global)
     
 
 # Appeler la fonction main() si ce fichier est le point d'entrée du programme
