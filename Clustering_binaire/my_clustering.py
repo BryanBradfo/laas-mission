@@ -28,7 +28,8 @@ def manhattan_binaire_distance_contrainte(sol1, var):
 #___________________________________________________________________________________________________________________________________________________________________
 #------------ Calculating the binary radius of each solution---------------------
 def rayon_binaire_cluster(sol, list_sol):
-    
+    # print("list_sol:", list_sol)
+    # print("list_sol[0]:", list_sol[0])
     rayon = manhattan_binaire_distance(sol, list_sol[0])
     for sol2 in list_sol:
         rayon = min(rayon, manhattan_binaire_distance(sol, sol2))

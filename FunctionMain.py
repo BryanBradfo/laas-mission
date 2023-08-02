@@ -77,7 +77,7 @@ def user_preferences(msol, user, nbLayer, n, m, type_operation="plus", type_user
     if type_user == "user_reg":
         list_indice, list_obj, list_layer, list_equal = user.classerSolutionRegularity_min_max(nbLayer, msol, type_operation, n, m)
     else:
-        list_indice, list_obj, list_layer, list_equal = user.classerSolutions(nbLayer, optimalval, msol)
+        list_indice, list_obj, list_layer, list_equal = user.classerSolution_min_max(nbLayer, msol)
     
     print("Solutions classed !")
 

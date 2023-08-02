@@ -99,7 +99,7 @@ def main_cb(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
         variables = fm.update_variables_new_constraint(n, m,  pref, model, solver)
         
         # # --------- Add the constraints considering the clustering
-        
+        print(list_layers)
         list_rayon_layers, list_start_sol_layers, dict_sol_rayon  = my_cl.list_rayon_binaire_cluster(n, m, list_layers)
         list_rayon_layers_flatten = [item for sublist in list_rayon_layers[1:] for item in sublist]
         list_start_sol_layers_flatten = [item for sublist in list_start_sol_layers[1:] for item in sublist]
