@@ -38,7 +38,7 @@ def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
     # --------- Interaction with the solver
     data = []
 
-    # --------- Get essential informations from the file
+    # --------- Get essential information from the file
     n, m, data, T_machine, T_duration, duration, optimalval = fm.get_data_from_file(file)
 
     # --------- Call Solver constructor in Solver.py and create the variables of the model
