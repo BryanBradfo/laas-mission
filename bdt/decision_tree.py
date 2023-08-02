@@ -8,7 +8,8 @@ import sys
 sys.path.append("..")
 import FunctionMain as fm
 
-#----------------------Function: my_decision_tree----------------------#     
+#----------------------Function: my_decision_tree----------------------#   
+# Get the decision tree and the conditions for each leaf
 def my_decision_tree(n, m, list_layers, random_value=42):
     X_list_start_sol = []
     Y_list_layers = []
@@ -49,8 +50,7 @@ def my_decision_tree(n, m, list_layers, random_value=42):
 #______________________________________________________________________#
 
 #----------------------Function: parcourir_arbre----------------------#
-# Parcourir l'arbre de décision et récupérer les conditions pour chaque feuille
-
+# Traverse the decision tree and get conditions for each leaf
 def parcourir_arbre(clf, feuilles_conditions, noed_actuel, profondeur, conditions_actuelles):
     arbre_decision = clf.tree_
     classes = clf.classes_
@@ -79,7 +79,7 @@ def parcourir_arbre(clf, feuilles_conditions, noed_actuel, profondeur, condition
 #______________________________________________________________________#
 
 #----------------------Function: constraint_tree----------------------#
-# Créer les contraintes pour les variables du solver à partir des conditions
+# Create constraints for solver variables based on conditions
 def constraint_tree(order, list_variables, feuilles_conditions):
     constraint=[]
     # if root is leaf

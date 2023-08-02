@@ -220,6 +220,7 @@ def main():
     list_min_obj, list_min_obj_global = main_ca({}, '../file_with_optimal_val/la04.txt', 2, 10, 15, 200, 20, "plus", "other")
     print(list_min_obj)
     print(list_min_obj_global)
+    print("Fin du programme")
     # # Afficher les deux plots à l'écran (optionnel)
     # plt.figure(fig1.number)
     # plt.show()

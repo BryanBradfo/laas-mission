@@ -85,14 +85,6 @@ class Solver:
 
         tps1 = time.time()
 
-        # # Add the constraints
-        # for constraint in self._constraints:
-        #     model.add(constraint)
-
-        # Create a solver and solve the model.
-        # solver = CpoSolver()
-        # status = solver.Solve(model)
-
         variables_s_p = [variables[i][j] for j in range(m) for i in range(n)]
         SearchPhase = model.search_phase(variables_s_p, 
                                             varchooser=model.select_random_var(),       

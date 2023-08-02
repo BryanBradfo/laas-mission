@@ -4,13 +4,13 @@ import sys
 sys.path.append("..")
 import FunctionMain as fm
 
-#------------Calcul de la distance de binaire-------------------------
+#------------ Binary distance calculation -------------------------
 
 def int_diff(x,y):
     return int(x!=y)
 #___________________________________________________________________________________________________________________________________________________________________
 
-#---------------------Calcul de la distance de manhattan binaire---------------------
+#------------ Calculating the binary Manhattan distance---------------------
 def manhattan_binaire_distance(sol1, sol2):
     sol1np=np.array(sol1)
     sol2np=np.array(sol2)
@@ -19,17 +19,14 @@ def manhattan_binaire_distance(sol1, sol2):
         sum += int_diff(sol1[i], sol2[i])
     return sum
 #___________________________________________________________________________________________________________________________________________________________________
-#---------------------Calcul de la distance de manhattan binaire (solution-variable)---------------------
+#------------ Calculation of the binary Manhattan distance (solution-variable)---------------------
 def manhattan_binaire_distance_contrainte(sol1, var):
     sum = 0
     for i in range(len(sol1)):
         sum += diff(sol1[i], var[i])
     return sum
 #___________________________________________________________________________________________________________________________________________________________________
-
-
-
-#---------------------Calcul du rayon binaire de chaque solution---------------------
+#------------ Calculating the binary radius of each solution---------------------
 def rayon_binaire_cluster(sol, list_sol):
     
     rayon = manhattan_binaire_distance(sol, list_sol[0])
@@ -38,13 +35,11 @@ def rayon_binaire_cluster(sol, list_sol):
     if rayon >= 1 : return rayon - 1
     return rayon
 #___________________________________________________________________________________________________________________________________________________________________
-
-#---------------------Liste du rayon binaire de chaque solution en fonction du layer---------------------
+#------------ List of the binary radius of each solution as a function of the layer---------------------
 def list_rayon_binaire_cluster(n, m, list_layers):
     list_rayon_layers = []
     list_sol_rayon = []
     list_start_sol_layers = fm.list_list_list_start_of_tasks(n, m, list_layers)
-
     
     for i in range(len(list_layers)):
         #Remplissage de la liste des starts des solutions des layers différents
@@ -65,8 +60,7 @@ def list_rayon_binaire_cluster(n, m, list_layers):
         list_rayon_layers.append(list_rayon)
     return list_rayon_layers, list_start_sol_layers, list_sol_rayon
 #___________________________________________________________________________________________________________________________________________________________________
-
-#---------------------centroides des clusters---------------------
+#------------ Cluster Centroides---------------------
 # def centroides_clusters(n, m, list_clusters_layers, list_sol_rayon):
 
 #     list_centroides_layers = []
@@ -82,7 +76,6 @@ def list_rayon_binaire_cluster(n, m, list_layers):
 #             list_centroides.append(list_sol[list_sol_rayon.index(max(list_sol_rayon))])
 #         list_centroides_layers.append(list_centroides)
 #     return list_centroides_layers
-
 def centroides_clusters(n, m, list_clusters_layers):
 
     list_centroides_layers = []
@@ -99,7 +92,7 @@ def centroides_clusters(n, m, list_clusters_layers):
         list_centroides_layers.append(list_centroides)
     return list_centroides_layers
 #________________________________________________________________________
-  #---------------------Clustering binaire---------------------
+#------------ Binary clustering---------------------
 # def my_clustering_binaire(n, m, list_rayon_layers, list_layers):
 #     list_cluster_layers = []
 #     list_start_sol_layers = list_list_list_start_of_tasks(n, m, list_layers)
@@ -131,10 +124,10 @@ def centroides_clusters(n, m, list_clusters_layers):
 #             list_cluster_layers.append(list_layer)
 #         else:
 #             list_cluster.append(layer_sol_i[0])
-#             list_cluster_layers.append(list_cluster)
-        
-            
+#             list_cluster_layers.append(list_cluster)            
 #     return list_cluster_layers
+
+# ----------- Concatenate
 def concatener(liste_de_listes):
     resultats = []
     liste = liste_de_listes
@@ -156,7 +149,6 @@ def concatener(liste_de_listes):
                 i += 1
         resultats.append(resultat)
     return resultats
-
 
 def my_clustering_binaire(n, m, list_rayon_layers, list_layers):
     list_cluster_layers = []
@@ -181,8 +173,5 @@ def my_clustering_binaire(n, m, list_rayon_layers, list_layers):
             list_layer_temp.append(list_cluster_temp)
         list_layer = concatener(list_layer_temp)         
         list_cluster_layers.append(list_layer)
-        
-            
     return list_cluster_layers
-
 #___________________________________________________________________________________________________________________________________________________________________
