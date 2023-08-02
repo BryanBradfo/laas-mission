@@ -217,7 +217,7 @@ def main_ca(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
 def main():
     # Main program
     print("Début du programme")
-    list_min_obj, list_min_obj_global = main_ca({}, '../file_with_optimal_val/la04.txt', 2, 10, 15, 100, 10, "plus", "other")
+    list_min_obj, list_min_obj_global = main_ca({}, '../file_with_optimal_val/la04.txt', 2, 10, 15, 200, 20, "plus", "other")
     print(list_min_obj)
     print(list_min_obj_global)
     print("Fin du programme")
