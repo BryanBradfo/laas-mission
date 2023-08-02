@@ -81,6 +81,8 @@ The project repository consists of the following files and folders:
     - main_ca.py
 - bdt: Solving the problem by the approach of "binary decision tree", you can just execute if you would like to test:
     - main_dt.py
+- optimal_value : Computing the optimal objective value of a certain instance (for the different types of operations : sum between makespan and regularity, multiplication between makespan and regularity and just the optimization of makespan)
+    - main_optval.py
 
 - ITellYouWhatYouLike.ipynb: This Jupyter Notebook contains the main code for solving the Job-shop problem with user preferences.
 - README.md: This file provides an overview of the project and instructions for running the code.
