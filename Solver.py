@@ -4,6 +4,8 @@ import time
 import random
 import numpy as np
 
+random.seed(10)
+
 class Solver:
 
     def __init__(self, data):
@@ -91,14 +93,14 @@ class Solver:
         # solver = CpoSolver()
         # status = solver.Solve(model)
 
-        # variables_s_p = [variables[i][j] for j in range(m) for i in range(n)]
-        # SearchPhase = model.search_phase(variables_s_p, 
-        #                                     varchooser=model.select_random_var(),         #impact search
-        #                                     valuechooser=model.select_random_value())
-        # model.add_search_phase(SearchPhase)
+        variables_s_p = [variables[i][j] for j in range(m) for i in range(n)]
+        SearchPhase = model.search_phase(variables_s_p, 
+                                            varchooser=model.select_random_var(),       
+                                            valuechooser=model.select_random_value())
+        model.add_search_phase(SearchPhase)
         
-        # SearchType = "Restart"
-        msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit=20) #total_time//nb_iteration
+        msol = model.start_search(SearchType="Restart", LogVerbosity="Quiet", TimeLimit=20)
+        # msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit=20) 
 
         # msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", SolutionLimit = k, RandomSeed = k)
         # SolutionLimit=3*k, MultiPointNumberOfSearchPoints=30 +2*ind, RandomSeed = 5, DefaultInferenceLevel='Extended', OptimalityTolerance=6

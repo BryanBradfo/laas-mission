@@ -17,6 +17,8 @@ from User import *
 import FunctionMain as fm
 
 
+
+
 def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neurons, tps_max, it_max, type_operation, display_sol=False, display_start=False, display_matrix=False):
     #############################
     ### Main program ###
@@ -31,6 +33,7 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
     # --------- Call Solver constructor in Solver.py and create the variables of the model
     model, solver, _ = fm.initialize_solver(data, n, m, duration)
 
+    # --------- Add the scheduling constraints to the model
     model, variables = solver.create_constraints(model, n, m, optimalval, T_machine)
 
     # ------------ Solve the model
@@ -46,10 +49,9 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
     print("\nCreating the user...")
     user = User()
     print("User created !")
-
-    #Get the variables of the model
-
-    list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation)
+    
+    # Ask the user to enter his preferences and get the preferences
+    list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m)
 
     # Vector of the start time of each task of each preference
     starts = user.start_pref(n, m, display_start)
@@ -62,21 +64,27 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
 
     print("list layers : ",list_layers)
 
+    # Get the solutions into a good format
     sol_layers = fm.list_list_list_start_of_tasks(n, m, list_layers)
 
 
     #____________________ End first iteration____________________#
 
-    ##############################################################################
-    #### NOUVELLES SOLUTIONS ET NOUVEAUX RESEAUX DE NEURONES A CHAQUE ITERATION  #
-    ##############################################################################
+
+
+    #############################################
+    #### New iterations with neural network  ####
+    #############################################
 
     ###  -------------- Iteration of the solver with the preferences
     it = 1
     tps = runtime
+    # List of the objective value of the best solutions found at each iteration
     list_min_obj = [min(list_obj)]
+    # List of the objective value of the best solutions found so far
     list_min_obj_global = [min(list_obj)]
 
+    # Stopping criterion
     criterion = (tps < tps_max) and (it < it_max) 
 
 
@@ -84,8 +92,9 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
     while criterion :
         print("\n--------Iteration {}---------".format(it))
 
+        # Check if it exists at least one perfect neural networks based on the previous solutions 
+        # independently from the scheduling problem
         list_weights = nn.find_perfect_NN(file, sol_layers, nb_hidden_layers, nb_neurons)
-        print(list_weights)
 
         # --------- Call Solver constructor in Solver.py and create the variables of the model
         model, solver, _ = fm.initialize_solver(data, n, m, duration)
@@ -93,7 +102,9 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
         # --------- Add the new constraints to the model (that solution must be different from the previous generated solutions)
         variables = fm.update_variables_new_constraint(n, m,  pref, model, solver)
         
+        # --------- Add the scheduling constraints to the model
         model, variables = solver.create_constraints(model, n, m, optimalval, T_machine)
+
 
         # ---------------- Interaction with the neural network
 
@@ -101,12 +112,14 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
         weights10 = [[[model.integer_var(min=-1, max=1, name="w{}-{}-{}".format(0,j,k)) for k in range(n*m)] for j in range(nb_neurons[0])]]
         weights1 = weights10 + [[[model.integer_var(min=-1, max=1, name="w{}-{}-{}".format(i,j,k)) for k in range(nb_neurons[i-1])] for j in range(nb_neurons[i])] for i in range(1, nb_hidden_layers + 1)]
         
+        # Add the weights to the model
         for i in range(len(weights1)):
             for j in range(len(weights1[i])):
                 for k in range(len(weights1[i][j])):
                     model.add(weights1[i][j][k])
 
 
+        # Create the output variable of the neural network and add it to the model
         outputvar_NN1 = model.binary_var(name="outputvar_NN1")
         model.add(outputvar_NN1)
 
@@ -114,22 +127,25 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
         for order in range(len(sol_layers)):
             for sol in sol_layers[order]:
 
+                # Get the output of the neural network
                 output_NN1 = nn.activation_function(model, solver, sol, weights1, nb_hidden_layers, nb_neurons, optimalval)
                 if order == 0:
                     solver.add_constraint(model, output_NN1 == 1)
                 else:
                     solver.add_constraint(model, output_NN1 == 0)
 
-
-        if len(list_weights) == 2:
+        # Create the second neural network if there is still a desagreement and if a second nn exists
+        if len(list_weights) == 2 and desagreement:
             weights20 = [[[model.integer_var(min=-1, max=1, name="w{}-{}-{}".format(0,j,k)) for k in range(n*m)] for j in range(nb_neurons[0])]]
             weights2 = weights20 + [[[model.integer_var(min=-1, max=1, name="w{}-{}-{}".format(i,j,k)) for k in range(nb_neurons[i-1])] for j in range(nb_neurons[i])] for i in range(1, nb_hidden_layers + 1)]
         
+            # Add the weights to the model
             for i in range(len(weights2)):
                 for j in range(len(weights2[i])):
                     for k in range(len(weights2[i][j])):
                         model.add(weights2[i][j][k])
 
+            # Create the output variable of the neural network and add it to the model
             outputvar_NN2 = model.binary_var(name="outputvar_NN2")
             model.add(outputvar_NN2)
 
@@ -138,6 +154,7 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
             for order in range(len(sol_layers)):
                 for sol in sol_layers[order]:
 
+                    # Get the output of the neural network
                     output_NN2 = nn.activation_function(model, solver, sol, weights2, nb_hidden_layers, nb_neurons, optimalval)
                     if order == 0:
                         solver.add_constraint(model, output_NN2 == 1)
@@ -146,20 +163,24 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
 
 
         # Compare the result of 2 different neural networks for the same solution
+
+        # Get the start of each task (variable of the model)
         tasks_starts = []
         for i in range(n):
             for j in range(m):
                 tasks_starts.append(model.start_of(variables[i][j]))
 
+        # Add the constraints to the model that the output of the neural network must be equal to the output of the solver
         solver.add_constraint(model, outputvar_NN1 == nn.activation_function(model, solver, tasks_starts, weights1, nb_hidden_layers, nb_neurons, optimalval))
-        print(outputvar_NN1)
 
 
-        if len(list_weights) == 2 and desagrement:
+        if len(list_weights) == 2 and desagreement:
+            # Add the constraints to the model that the output of the neural network must be equal to the output of the solver
             solver.add_constraint(model, outputvar_NN2 == nn.activation_function(model, solver, tasks_starts, weights2, nb_hidden_layers, nb_neurons, optimalval))
-            print(outputvar_NN2)
+            # Find a solution where the 2 neural networks disagree
             solver.add_constraint(model, outputvar_NN1 != outputvar_NN2)
-        elif not desagrement:
+        elif not desagreement:
+            # Find a solution where the neural network return 1
             solver.add_constraint(model, outputvar_NN1 == 1)
         
 
@@ -168,12 +189,14 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
         msol, nb_solution, runtime = solver.solve(model, k_k, n, m, variables)
         print("The number of solutions generated is :",nb_solution)
 
+        # if no solution found, go to the next iteration and desagreement becomes 
+        # False so we use only one neural network
         if nb_solution == 0:
             print("No solution found !")
-            desagrement = False
+            desagreement = False
             continue
         else:
-            desagrement = True
+            desagreement = True
 
         list = []
         if type_operation == "plus":
@@ -202,7 +225,7 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
         print("Model solved !")
 
         # ---------------- Interaction with the user
-        list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation)
+        list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m)
         print("Il y a {} solution(s)".format(len(pref)))
 
         sol_layers = fm.list_list_list_start_of_tasks(n, m, list_layers)
