@@ -172,13 +172,15 @@ def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
             list_min_obj.append(list_min_obj[-1])
             list_min_obj_global.append(list_min_obj_global[-1])
             
-            #------------------ Condition d'arrêt ------------------
+            #------------------ Stop criterion ------------------
             tps += runtime
             it += 1            
             criterion = (tps < tps_max) and (it < it_max) 
             fm.stopCondition(it, it_max, tps, tps_max)
             continue
-
+        
+        # ------------ Adding the min of objective function among the solutions generated to 
+        # the list of objective function (for later display)
         list_min_obj.append(min(list))
         print("Objective function :", list_min_obj)
 
@@ -190,6 +192,8 @@ def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
         list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
         print("Il y a {} solution(s)".format(len(pref)))
 
+        # ------------ Adding the min of objective function among all solutions generated to 
+        # the list of objective function (for later display)
         list_min_obj_global.append(min(list_obj))
         print("Objective function global :", list_min_obj_global)
 
@@ -202,30 +206,30 @@ def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
         # Testing the order of preferences and the differences between solutions
         fm.test(n, m, user)
 
-    #------------------ Condition d'arrêt ------------------
+    #------------------ Stop criterion ------------------
         tps += runtime
         it += 1
         print("next iteration", it)
         criterion = (tps < tps_max) and (it < it_max) 
-        
-
         fm.stopCondition(it, it_max, tps, tps_max)
+
     it_final_BDT.append(it)
 
-    #-------------------Results------------------------------
+    #------------------- Results ---------------------
     resultats_globaux.update({file: [list_min_obj, list_min_obj_global]})
     return list_min_obj, list_min_obj_global
 
 
 def main():
-    # Code principal du script
+    # Main program
     print("Début du programme")
     list_min_obj, list_min_obj_global = main_dt({}, '../file_with_optimal_val/la04.txt', 2, 10, 15, 100, 10, "plus","other", 3)
     print(list_min_obj)
     print(list_min_obj_global)
+    print("Fin du programme")
     
 
-# Appeler la fonction main() si ce fichier est le point d'entrée du programme
+# Call the main() function if this file is the program's entry point
 if __name__ == "__main__":
     main()
 
