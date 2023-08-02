@@ -27,7 +27,7 @@ import FunctionMain as fm
 
 
 
-def main_ca(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_operation, display_sol=False, display_start=False, display_matrix=False):
+def main_ca(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_operation, type_user ="user_reg", display_sol=False, display_start=False, display_matrix=False):
 
     #############################
     ### Main program ###
@@ -63,7 +63,7 @@ def main_ca(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
     #Get the variables of the model
     variables = solver.get_variables()
 
-    list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation)
+    list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
 
     # Vector of the start time of each task of each preference
     starts = user.start_pref(n, m, display_start)
@@ -148,12 +148,19 @@ def main_ca(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
         # msol, nb_solution, runtime = solver.solve(model, k_k, n, m, it, T_machine, optimalval, list_search_type[it%4])
         msol, nb_solution, runtime = solver.solve(model, k_k, n, m, variables)
         list = []
-        if type_operation == "plus":
-            for sol in msol:
-                list.append(user.objectiveFunction(sol) + user.objectiveFunctionRegularity(sol, n, m))
+        #Choix du type d'utilisateur: regulier ou simple
+        if type_user == "user_reg":
+            #Choix du type_d'opération de l'approche: + ou *
+            if type_operation == "plus":
+                for sol in msol:
+                    list.append(user.objectiveFunction(sol) + user.objectiveFunctionRegularity(sol, n, m))
+            else:
+                for sol in msol:
+                    list.append(user.objectiveFunction(sol) * user.objectiveFunctionRegularity(sol, n, m))
+        
         else:
             for sol in msol:
-                list.append(user.objectiveFunction(sol) * user.objectiveFunctionRegularity(sol, n, m))
+                list.append(user.objectiveFunction(sol))
         
         if len(list) == 0:
             print("Aucune solution générée à l'itération ", it)
@@ -173,7 +180,7 @@ def main_ca(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
         fm.display_solution(msol, display_sol)
 
         # ---------------- Interaction with the user
-        list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation)
+        list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
 
         list_min_obj_global.append(min(list_obj))
 
@@ -199,8 +206,9 @@ def main_ca(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
 def main():
     # Code principal du script
     print("Début du programme")
-    list_min_obj, list_min_obj_global = main_ca({}, '../file_with_optimal_val/la04.txt', 2, 10, 15, 100, 10, "plus")
-    
+    list_min_obj, list_min_obj_global = main_ca({}, '../file_with_optimal_val/la04.txt', 2, 10, 15, 100, 10, "plus", type_user ="other")
+    print(list_min_obj)
+    print(list_min_obj_global)
     # # Afficher les deux plots à l'écran (optionnel)
     # plt.figure(fig1.number)
     # plt.show()
