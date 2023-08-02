@@ -9,6 +9,7 @@ from sklearn import cluster
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import davies_bouldin_score
 
+# Return the list of the solutions that are equal 
 def create_layers(list_equal, data_pref):
     print("Clustering ...")
     # print(data_pref)
@@ -28,6 +29,7 @@ def create_layers(list_equal, data_pref):
     
     return data_pref_layer
 
+# Return the list of the solutions that are equal for a fixed number of layers
 def create_layers_fixed(list_layers_fixed):
     print("Clustering ...")
     # print(data_pref)
@@ -45,8 +47,9 @@ def create_layers_fixed(list_layers_fixed):
     # print("data_pref_layer = ", data_pref_layer)
     return data_pref_layer
 
-# ----------------- Code clustering de Brenda --------------------
+# ----------------- Clustering --------------------
 
+# Computing the clustering with the agglomerative method
 def clustAggloDist(data, dist_deb, dist_max, pas):
     
     silhouette_scores = []
@@ -91,6 +94,7 @@ def clustAggloDist(data, dist_deb, dist_max, pas):
         
     return silhouette_scores, davies_bouldin_scores, number_clusters, runtimes, iterations, distances
 
+# Plot with the silhouette and davies_bouldin scores
 def myPlot(x, silhouette_scores, davies_bouldin_scores, number_cluster, distance):
     # create plot
     y = silhouette_scores
@@ -123,7 +127,7 @@ def myPlot(x, silhouette_scores, davies_bouldin_scores, number_cluster, distance
     # print("La distance correspondante est : ", distance[davies_bouldin_scores.index(min(davies_bouldin_scores))])
     # print("")
 
-
+# Clustering with the agglomerative method
 def clustering(data_pref_layer,d_deb, d_max, pas):
 
     i = 0
@@ -145,9 +149,6 @@ def clustering(data_pref_layer,d_deb, d_max, pas):
             number_clusters.append([])
             distances.append([])
             i+=1
-            
-        
-
     for i in range(0, len(data_pref_layer)):
         print("--------------Layer", i, "-----------------")
         print(len(data_pref_layer[i]))
@@ -160,8 +161,9 @@ def clustering(data_pref_layer,d_deb, d_max, pas):
             print("numbre de clusters = 1")
         print("_-----------------------------------------------_")
 
-# ----------------- Code clustering de Alice --------------------
 
+
+# Other tentative of clustering (by Alice)
 def my_agglo_k( datanp , k, linkage):
        tps1 = time.time()
        model = cluster.AgglomerativeClustering(linkage =linkage, n_clusters =k )
@@ -174,9 +176,7 @@ def my_agglo_k( datanp , k, linkage):
 
        return k , leaves , labels, tps2 - tps1
 
-
-
-
+# Other tentative of clustering (by Alice)
 def my_agglo_threshold( datanp , threshold, linkage):
        tps1 = time.time()
        model = cluster.AgglomerativeClustering(distance_threshold = threshold ,
@@ -190,10 +190,7 @@ def my_agglo_threshold( datanp , threshold, linkage):
 
        return k , leaves , labels, tps2 - tps1
 
-
-
-# indice de silhouette
-
+# Computation of the best silhouette score with the agglomerative
 def silhouette(datanp):
     list = []
     listk = []
