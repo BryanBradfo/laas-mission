@@ -179,10 +179,11 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
             solver.add_constraint(model, outputvar_NN2 == nn.activation_function(model, solver, tasks_starts, weights2, nb_hidden_layers, nb_neurons, optimalval))
             # Find a solution where the 2 neural networks disagree
             solver.add_constraint(model, outputvar_NN1 != outputvar_NN2)
+            print("Desagrement found")        
         elif not desagreement:
             # Find a solution where the neural network return 1
             solver.add_constraint(model, outputvar_NN1 == 1)
-        
+            print("Desagrement not found, we use one nn")
 
         # ------------ Solve the model
         print("\nSolving the model...")
@@ -194,6 +195,15 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
         if nb_solution == 0:
             print("No solution found !")
             desagreement = False
+            list_min_obj.append(list_min_obj[-1])
+            list_min_obj_global.append(min(list_obj))
+                      
+            #------------------ Condition d'arrêt ------------------
+            tps += runtime
+            it += 1            
+            criterion = (tps < tps_max) and (it < it_max) 
+            fm.stopCondition(it, it_max, tps, tps_max)
+            
             continue
         else:
             desagreement = True
@@ -214,18 +224,7 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
             for sol in msol:
                 list.append(user.objectiveFunction(sol))
         
-        if len(list) == 0:
-            print("Aucune solution générée à l'itération ", it)
-            list_min_obj.append(list_min_obj[-1])
-            list_min_obj_global.append(list_min_obj_global[-1])
-            
-            #------------------ Condition d'arrêt ------------------
-            tps += runtime
-            it += 1            
-            criterion = (tps < tps_max) and (it < it_max) 
-            fm.stopCondition(it, it_max, tps, tps_max)
-            continue
-
+  
         list_min_obj.append(min(list))
 
         # ------------ Display the result
