@@ -29,8 +29,8 @@ def main():
     list_nb_layers = [5, 5, 5, 5, 5]
     list_k = [20, 20, 20, 20, 20]
     list_k_k = [15, 15, 15, 15, 15]
-    list_tps_max = [100, 100, 100, 100, 100]
-    list_it_max = [20, 20, 20, 20, 20]
+    list_tps_max = [300, 300, 300, 100, 100]
+    list_it_max = [40, 40, 40, 40, 20]
     list_type_operation = ['fois', 'fois', 'fois', 'plus', 'plus']
     list_type_user = ["oher", "other", "oher", "other", "oher"]
     # list_type_user = ["user_reg", "user_reg", "user_reg", "user_reg", "user_reg"]
@@ -132,7 +132,7 @@ def main():
             else:
                 plt.plot([k for k in range(max_iteration_by_file[i])], [optimal_value_regularity[1][i] for k in range(max_iteration_by_file[i])], label="Opt_val_fois")
         else:
-            plt.plot([k for k in range(max_iteration_by_file[i])], [optimal_value_regularity[i] for k in range(max_iteration_by_file[i])], label="Opt_val_simple")
+            plt.plot([k for k in range(max_iteration_by_file[i])], [optimal_value_simple[i] for k in range(max_iteration_by_file[i])], label="Opt_val_simple")
 
         plt.xlabel("Iteration")
         plt.ylabel("resultat_a_chaque_iteration_"+list_plot_name[i])
@@ -154,7 +154,7 @@ def main():
             else:
                 plt.plot([k for k in range(max_iteration_by_file[i])], [optimal_value_regularity[1][i] for k in range(max_iteration_by_file[i])], label="Opt_val_fois")
         else:
-            plt.plot([k for k in range(max_iteration_by_file[i])], [optimal_value_regularity[i] for k in range(max_iteration_by_file[i])], label="Opt_val_simple")
+            plt.plot([k for k in range(max_iteration_by_file[i])], [optimal_value_simple[i] for k in range(max_iteration_by_file[i])], label="Opt_val_simple")
         plt.xlabel("Iteration")
         plt.ylabel("resultat_globaux_"+list_plot_name[i])
         plt.xticks(range(max_iteration_by_file[i]))
