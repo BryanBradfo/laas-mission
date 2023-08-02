@@ -139,24 +139,30 @@ class User:
         return list_indice, list_obj, list_layers_fixed, list_equal
 
 
-    def classerSolutionRegularity_min_max(self, nbLayer, list_sol, n, m):
+    def classerSolutionRegularity_min_max(self, nbLayer, list_sol, type_operation, n, m):
         list_obj = []
         list_temp_sol = []
         list_layers_fixed = [[] for i in range(nbLayer)]
         
 
-        #liste de max_ends
-        for sol in list_sol:
-            list_temp_sol.append(sol)
-            # print(self.objectiveFunctionRegularity(sol, n, m))
-            list_obj.append(self.objectiveFunction(sol) + self.objectiveFunctionRegularity(sol, n, m))
-            #list_obj.append(self.objectiveFunction(sol) * self.objectiveFunctionRegularity(sol, n, m))
+        if type_operation == "plus":
+            for sol in list_sol:
+                list_temp_sol.append(sol)
+                list_obj.append(self.objectiveFunction(sol) + self.objectiveFunctionRegularity(sol, n, m))
 
-        
-        for pref in self.preferences:
-            list_temp_sol.append(pref)
-            list_obj.append(self.objectiveFunction(pref) + self.objectiveFunctionRegularity(pref, n, m))
-            #list_obj.append(self.objectiveFunction(pref) * self.objectiveFunctionRegularity(pref, n, m))
+            
+            for pref in self.preferences:
+                list_temp_sol.append(pref)
+                list_obj.append(self.objectiveFunction(pref) + self.objectiveFunctionRegularity(pref, n, m))
+        else:
+            for sol in list_sol:
+                list_temp_sol.append(sol)
+                list_obj.append(self.objectiveFunction(sol) * self.objectiveFunctionRegularity(sol, n, m))
+
+            
+            for pref in self.preferences:
+                list_temp_sol.append(pref)
+                list_obj.append(self.objectiveFunction(pref) * self.objectiveFunctionRegularity(pref, n, m))
 
         # #Trier les ends_max par ordre croissant
         list_indice = sorted(range(len(list_obj)), key=lambda k: list_obj[k])
@@ -169,18 +175,22 @@ class User:
         
         print("Le min de list_obj est", min_obj)
         print("Le max de list_obj est", max_obj)
-        # print("List_obj :", list_obj)
 
-        for sol in self.preferences:
-            for i in range(0, nbLayer):
-                obj_sol = self.objectiveFunction(sol) + self.objectiveFunctionRegularity(sol, n, m)
-                if ((obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1) and obj_sol < min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i < nbLayer-1)
-                or (obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1)) and obj_sol <= min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i == (nbLayer-1)):
-                    # print("{} est dans la layer {}".format(obj_sol, i))
-                    list_layers_fixed[i].append(sol)
-                # else:
-                    # print("{} n'est pas dans la layer {} en effet {} est pas compris entre {} et {}".format(obj_sol, i, obj_sol, min_obj + ((i)*(max_obj-min_obj)/(nbLayer-1)),  min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1)))
-                    
+        if type_operation == "plus":
+            for sol in self.preferences:
+                for i in range(0, nbLayer):
+                    obj_sol = self.objectiveFunction(sol) + self.objectiveFunctionRegularity(sol, n, m)
+                    if ((obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1) and obj_sol < min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i < nbLayer-1)
+                    or (obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1)) and obj_sol <= min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i == (nbLayer-1)):
+                        list_layers_fixed[i].append(sol)
+        else:
+            for sol in self.preferences:
+                for i in range(0, nbLayer):
+                    obj_sol = self.objectiveFunction(sol) * self.objectiveFunctionRegularity(sol, n, m)
+                    if ((obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1) and obj_sol < min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i < nbLayer-1)
+                    or (obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1)) and obj_sol <= min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i == (nbLayer-1)):
+                        list_layers_fixed[i].append(sol)
+                        
         list_equal = []
         k = 0
         for j in range(nbLayer):
