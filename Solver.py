@@ -85,11 +85,11 @@ class Solver:
 
         tps1 = time.time()
 
-        variables_s_p = [variables[i][j] for j in range(m) for i in range(n)]
-        SearchPhase = model.search_phase(variables_s_p, 
-                                            varchooser=model.select_random_var(),       
-                                            valuechooser=model.select_random_value())
-        model.add_search_phase(SearchPhase)
+        # variables_s_p = [variables[i][j] for j in range(m) for i in range(n)]
+        # SearchPhase = model.search_phase(variables_s_p, 
+        #                                     varchooser=model.select_random_var(),       
+        #                                     valuechooser=model.select_random_value())
+        # model.add_search_phase(SearchPhase)
         
         msol = model.start_search(SearchType="Restart", LogVerbosity="Quiet", TimeLimit=20)
         # msol = model.start_search(SearchType="DepthFirst", LogVerbosity="Quiet", TimeLimit=20) 
