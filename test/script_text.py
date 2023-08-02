@@ -43,6 +43,7 @@ def main():
     #optimal_value_regularity[0] --> type_operation = "plus"
     #optimal_value_regularity[1] --> type_operation = "plus"
     optimal_value_regularity = [[3100, 2473, 1871], [2952432, 5052960, 3455230]]
+    optimal_value_simple = [590, 597, 655]
     #___________________________________________________________________________
 
     #-----------------------------Lengths-----------------------------#
@@ -131,7 +132,7 @@ def main():
             else:
                 plt.plot([k for k in range(max_iteration_by_file[i])], [optimal_value_regularity[1][i] for k in range(max_iteration_by_file[i])], label="Opt_val_fois")
         else:
-            plt.plot([k for k in range(max_iteration_by_file[i])], [optimal_value_regularity[0][i] for k in range(max_iteration_by_file[i])], label="Opt_val_simple")
+            plt.plot([k for k in range(max_iteration_by_file[i])], [optimal_value_regularity[i] for k in range(max_iteration_by_file[i])], label="Opt_val_simple")
 
         plt.xlabel("Iteration")
         plt.ylabel("resultat_a_chaque_iteration_"+list_plot_name[i])
@@ -153,7 +154,7 @@ def main():
             else:
                 plt.plot([k for k in range(max_iteration_by_file[i])], [optimal_value_regularity[1][i] for k in range(max_iteration_by_file[i])], label="Opt_val_fois")
         else:
-            plt.plot([k for k in range(max_iteration_by_file[i])], [optimal_value_regularity[0][i] for k in range(max_iteration_by_file[i])], label="Opt_val_simple")
+            plt.plot([k for k in range(max_iteration_by_file[i])], [optimal_value_regularity[i] for k in range(max_iteration_by_file[i])], label="Opt_val_simple")
         plt.xlabel("Iteration")
         plt.ylabel("resultat_globaux_"+list_plot_name[i])
         plt.xticks(range(max_iteration_by_file[i]))
