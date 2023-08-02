@@ -110,6 +110,16 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
         outputvar_NN1 = model.binary_var(name="outputvar_NN1")
         model.add(outputvar_NN1)
 
+        # Train the neural network
+        for order in range(len(sol_layers)):
+            for sol in sol_layers[order]:
+
+                output_NN1 = nn.activation_function(model, solver, sol, weights1, nb_hidden_layers, nb_neurons, optimalval)
+                if order == 0:
+                    solver.add_constraint(model, output_NN1 == 1)
+                else:
+                    solver.add_constraint(model, output_NN1 == 0)
+
 
         if len(list_weights) == 2:
             weights20 = [[[model.integer_var(min=-1, max=1, name="w{}-{}-{}".format(0,j,k)) for k in range(n*m)] for j in range(nb_neurons[0])]]
@@ -124,44 +134,18 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
             model.add(outputvar_NN2)
 
 
-        # Add the constraint that the weights of the neural network must be different from the previous one
-            bb = model.integer_var(0,1)
-            solver.add_variable(bb)
-            bb=1
-
-            list_variables = solver.get_variables()
-            variables = list_variables[0]
-
-            b = model.integer_var(0,1)
-            solver.add_variable(b)
-            b=0
-
-            for i in range(len(weights1)):
-                for j in range(len(weights1[i])):
-                    for k in range(len(weights1[i][j])):
-
-                        b =max(b, weights1[i][j][k] != weights2[i][j][k])
-
-            b = (b!=0)
-            bb = bb * b
-            solver.add_constraint(model, bb==1)
-
-        # Train the neural network
+            # Train the neural network
             for order in range(len(sol_layers)):
                 for sol in sol_layers[order]:
 
-                    output_NN1 = nn.activation_function(model, solver, sol, weights1, nb_hidden_layers, nb_neurons, optimalval)
                     output_NN2 = nn.activation_function(model, solver, sol, weights2, nb_hidden_layers, nb_neurons, optimalval)
                     if order == 0:
-                        solver.add_constraint(model, output_NN1 == 1)
                         solver.add_constraint(model, output_NN2 == 1)
                     else:
-                        solver.add_constraint(model, output_NN1 == 0)
                         solver.add_constraint(model, output_NN2 == 0)
 
 
         # Compare the result of 2 different neural networks for the same solution
-
         tasks_starts = []
         for i in range(n):
             for j in range(m):
@@ -170,17 +154,12 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
         solver.add_constraint(model, outputvar_NN1 == nn.activation_function(model, solver, tasks_starts, weights1, nb_hidden_layers, nb_neurons, optimalval))
         print(outputvar_NN1)
 
-        if len(list_weights) == 2:
+
+        if len(list_weights) == 2 and desagrement:
             solver.add_constraint(model, outputvar_NN2 == nn.activation_function(model, solver, tasks_starts, weights2, nb_hidden_layers, nb_neurons, optimalval))
             print(outputvar_NN2)
             solver.add_constraint(model, outputvar_NN1 != outputvar_NN2)
-
-            # if it > 5:
-            #     solver.add_constraint(model, outputvar_NN1 == 1)
-            #     solver.add_constraint(model, outputvar_NN2 == 1)
-            # else:
-            #     solver.add_constraint(model, outputvar_NN1 != outputvar_NN2)
-        else:
+        elif not desagrement:
             solver.add_constraint(model, outputvar_NN1 == 1)
         
 
@@ -188,6 +167,13 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
         print("\nSolving the model...")
         msol, nb_solution, runtime = solver.solve(model, k_k, n, m, variables)
         print("The number of solutions generated is :",nb_solution)
+
+        if nb_solution == 0:
+            print("No solution found !")
+            desagrement = False
+            continue
+        else:
+            desagrement = True
 
         list = []
         if type_operation == "plus":
