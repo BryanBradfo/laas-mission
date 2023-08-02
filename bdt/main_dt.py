@@ -62,7 +62,7 @@ def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
     #Get the variables of the model
     variables = solver.get_variables()
 
-    list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m)
+    list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation)
 
     # Vector of the start time of each task of each preference
     starts = user.start_pref(n, m, display_start)
@@ -169,7 +169,7 @@ def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
         print("Model solved !")
 
         # ---------------- Interaction with the user
-        list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m)
+        list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation)
         print("Il y a {} solution(s)".format(len(pref)))
 
         list_min_obj_global.append(min(list_obj))

@@ -12,8 +12,12 @@ import main_nn as mnn
 sys.path.append("../optimal_value")
 import main_optval as mov
 
+import random
+random.seed(10)
+
 resultats_globaux_approche = []
 resultats_globaux_files = []
+
 
 
 def main():
