@@ -71,15 +71,14 @@ def display_solution(msol, bool_display):
 
 # --------------------- User preferences --------------------------------
 # def user_preferences(msol, user, nbLayer, n, optimalval, m):
-def user_preferences(msol, user, nbLayer, n, m, type_operation="plus"):
+def user_preferences(msol, user, nbLayer, n, m, type_operation="plus", type_user="user_reg", optimalval=None):
 
     print("\nClassing solutions...")	
-    # list_indice, list_obj, list_layer, list_equal = user.classerSolutions(nbLayer, optimalval, msol)
-    list_indice, list_obj, list_layer, list_equal = user.classerSolutionRegularity_min_max(nbLayer, msol, type_operation, n, m)
-    # print(list_obj)
-    # print(list_indice)
-    # print(list_equal)
-    # print(list_indice)
+    if type_user == "user_reg":
+        list_indice, list_obj, list_layer, list_equal = user.classerSolutionRegularity_min_max(nbLayer, msol, type_operation, n, m)
+    else:
+        list_indice, list_obj, list_layer, list_equal = user.classerSolutions(nbLayer, optimalval, msol)
+    
     print("Solutions classed !")
 
     print("\nCreating preferences...")
