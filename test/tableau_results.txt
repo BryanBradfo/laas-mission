@@ -1,14 +1,11 @@
-\begin{tabular}{|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|}
    \hline 
  File & Optimal & DT & DT 2 & Agglomerative clustering & Binary clustering & NN \\ 
   \hline 
-  la01.txt & 666 & 0.9925 & 0.9925 & 0.9925 \\
-0.9925 & 0.9925 \\
+  la01.txt & 1341 & 0.6507 & 0.6507 & 0.624 & 0.6481 & 0.6507 \\
  \hline 
-  la02.txt & 655 & 0.827 & 0.8397 & 0.8067 \\
-0.7844 & 0.8323 \\
+  la02.txt & 1455 & 0.4662 & 0.4498 & 0.4887 & 0.4887 & 0.4887 \\
  \hline 
-  la03.txt & 597 & 0.8665 & 0.8578 & 0.8578 \\
-0.8578 & 0.8578 \\
+  la03.txt & 1486 & 0.3323 & 0.3699 & 0.3533 & 0.3307 & 0.3533 \\
  \hline 
 \end{tabular}

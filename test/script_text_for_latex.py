@@ -43,7 +43,7 @@ def main():
     list_tps_max = [100 for i in range (len(list_files))]
     list_it_max = [6 for i in range (len(list_files))]
     list_type_operation = ['plus' for i in range (len(list_files))]
-    list_type_user = ["other" for i in range (len(list_files))]
+    list_type_user = ["user_reg" for i in range (len(list_files))]
     # list_type_user = ["user_reg", "user_reg", "user_reg", "user_reg", "user_reg"]
     list_display_sol = [False for i in range (len(list_files))]
     list_display_start = [False for i in range (len(list_files))]
@@ -52,8 +52,8 @@ def main():
 
     #-----------------------------Waiting results-----------------------------#
     #optimal_value_regularity[0] --> type_operation = "plus"
-    #optimal_value_regularity[1] --> type_operation = "plus"
-    optimal_value_regularity = [[3100, 2473, 1871], [2952432, 5052960, 3455230]]
+    #optimal_value_regularity[1] --> type_operation = "fois"
+    optimal_value_regularity = [[1341, 1455, 1486, 1224, 737, 2811], [2952432, 5052960, 3455230]]
     optimal_value_simple = [666, 655, 597, 590, 593,
                             926, 890, 863, 951, 958,
                             1222, 1039, 1150, 1292, 1207,
