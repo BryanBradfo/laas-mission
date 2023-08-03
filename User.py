@@ -3,49 +3,57 @@ class User:
 
     def __init__(self):
         self.preferences = []
-        
-    def objectiveFunction(self,sol):
+    
+
+    # Function to compute the makespan of a solution
+    def makespan(self,sol):
         list_ends = []
         list_sol = sol.get_all_var_solutions()
         for i in range(len(list_sol) - 1):
                 if "T" in list_sol[i].expr.name :
-                # print("type: ", type(list_sol[i]), "value: ", list_sol[i])
+                    # get the tasks ends
                     list_ends.append(list_sol[i].get_end())
                 
         return max(list_ends)
     
 
-
-    def objectiveFunctionRegularity(self, sol, n, m):
+    # Function to compute the regualrity of the waiting time between tasks for each machine of a solution 
+    def regularity(self, sol, n, m):
         waiting_time = [[] for i in range(m)]
         machines = [[] for i in range(m)]
         list_obj = []
 
         for j in range(m):
             for i in range(n):
+                # Add the tasks associated to the machine j
                 machines[j].append(sol.get_value("T{}-{}".format(i,j)))
-            # print(machines[j])
+            # Sort the tasks by start time
             machines[j] = sorted(machines[j], key=lambda k: k.start)
         
         for j in range(m):
             for i in range(len(machines[j])-1):
+                # Compute and add the waiting time between the task i and the task i+1 for the machine j
                 waiting_time[j].append(machines[j][i+1].start - machines[j][i].end)
 
         for machine in range(m):
             sum = 0
             for i in range(len(waiting_time)-1):
                 for j in range(i+1, len(waiting_time[i])):
+                    # Compute the sum of the absolute value of the difference between the waiting time of 
+                    # the task i and the task j which represents the regularity of the waiting time between tasks for the machine j
                     sum += abs(waiting_time[machine][j] - waiting_time[machine][i])
             list_obj.append(sum)
 
         sum = 0
         for i in range(len(list_obj)):
+            # Compute the sum of each machine of a solution
             sum += list_obj[i]
         
         return sum
 
 
-    def classerSolution_min_max(self, nbLayer, list_sol):
+    # Function to rank the all the solutions by makespan (simulation of the user's preferences)
+    def rank_by_pref_makespan(self, nbLayer, list_sol):
         list_obj = []
         list_temp_sol = []
         list_layers_fixed = [[] for i in range(nbLayer)]
@@ -54,16 +62,18 @@ class User:
         #liste de max_ends
         for sol in list_sol:
             list_temp_sol.append(sol)
-            list_obj.append(self.objectiveFunction(sol))
+            # Compute the makespan of each solution
+            list_obj.append(self.makespan(sol))
 
         
         for pref in self.preferences:
             list_temp_sol.append(pref)
-            list_obj.append(self.objectiveFunction(pref))
+            # Compute the makespan of each preferences (previous solutions)
+            list_obj.append(self.makespan(pref))
 
-        # #Trier les ends_max par ordre croissant
+        # Sort the solutions by makespan
         list_indice = sorted(range(len(list_obj)), key=lambda k: list_obj[k])
-        #classer les solutions par ordre de index
+        # Sort the preferences and the solutions by the same order
         self.preferences = [list_temp_sol[i] for i in list_indice]
 
         min_obj = min(list_obj)
@@ -71,103 +81,48 @@ class User:
         
         print("Le min de list_obj est", min_obj)
         print("Le max de list_obj est", max_obj)
-        # print("List_obj :", list_obj)
 
         for sol in self.preferences:
             for i in range(0, nbLayer):
-                obj_sol = self.objectiveFunction(sol)
+                obj_sol = self.makespan(sol)
+                # Class the solutions in different layers depending on their makespan
                 if ((obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1) and obj_sol < min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i < nbLayer-1)
                 or (obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1)) and obj_sol <= min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i == (nbLayer-1)):
-                    # print("{} est dans la layer {}".format(obj_sol, i))
                     list_layers_fixed[i].append(sol)
-                # else:
-                    # print("{} n'est pas dans la layer {} en effet {} est pas compris entre {} et {}".format(obj_sol, i, obj_sol, min_obj + ((i)*(max_obj-min_obj)/(nbLayer-1)),  min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1)))
-                    
-        list_equal = []
-        k = 0
-        for j in range(nbLayer):
-            for i in range(k, len(self.preferences)):
-                flag = self.preferences[i] in list_layers_fixed[j]
-                list_equal.append(flag)
-                k = i+1
-                if not flag:
-                    break
                     
 
-        return list_indice, list_obj, list_layers_fixed, list_equal
+        return list_obj, list_layers_fixed
 
 
 
-    def classerSolutions(self, nbLayer, optimalVal, list_sol):
+    # Function to rank the all the solutions by regularity and makespan (simulation of the user's preferences)
+    def rank_by_pref_regularity(self, nbLayer, list_sol, type_operation, n, m):
         list_obj = []
         list_temp_sol = []
         list_layers_fixed = [[] for i in range(nbLayer)]
         
-        
-        #liste de max_ends
-        for sol in list_sol:
-            list_temp_sol.append(sol)
-            list_obj.append(self.objectiveFunction(sol))
-
-        
-        for pref in self.preferences:
-            list_temp_sol.append(pref)
-            list_obj.append(self.objectiveFunction(pref))
-
-        # #Trier les ends_max par ordre croissant
-        list_indice = sorted(range(len(list_obj)), key=lambda k: list_obj[k])
-        #classer les solutions par ordre de index
-        self.preferences = [list_temp_sol[i] for i in list_indice]
-        
-        for sol in self.preferences:
-            for i in range(0, nbLayer-1):
-                obj_sol = self.objectiveFunction(sol)
-                if (obj_sol >= optimalVal + (i*optimalVal/nbLayer) and obj_sol < optimalVal + (i+1)*optimalVal/nbLayer):
-                    list_layers_fixed[i].append(sol)
-                    
-        list_equal = []
-        k = 0
-        for j in range(nbLayer):
-            for i in range(k, len(self.preferences)):
-                flag = self.preferences[i] in list_layers_fixed[j]
-                list_equal.append(flag)
-                k = i+1
-                if not flag:
-                    break
-                    
-
-        return list_indice, list_obj, list_layers_fixed, list_equal
-
-
-    def classerSolutionRegularity_min_max(self, nbLayer, list_sol, type_operation, n, m):
-        list_obj = []
-        list_temp_sol = []
-        list_layers_fixed = [[] for i in range(nbLayer)]
-        
-
+        # Compute the regularity and the makespan of each solution
         if type_operation == "plus":
             for sol in list_sol:
                 list_temp_sol.append(sol)
-                list_obj.append(self.objectiveFunction(sol) + self.objectiveFunctionRegularity(sol, n, m))
-
+                list_obj.append(self.makespan(sol) + self.regularity(sol, n, m))
             
             for pref in self.preferences:
                 list_temp_sol.append(pref)
-                list_obj.append(self.objectiveFunction(pref) + self.objectiveFunctionRegularity(pref, n, m))
+                list_obj.append(self.makespan(pref) + self.regularity(pref, n, m))
+
         else:
             for sol in list_sol:
                 list_temp_sol.append(sol)
-                list_obj.append(self.objectiveFunction(sol) * self.objectiveFunctionRegularity(sol, n, m))
+                list_obj.append(self.makespan(sol) * self.regularity(sol, n, m))
 
-            
             for pref in self.preferences:
                 list_temp_sol.append(pref)
-                list_obj.append(self.objectiveFunction(pref) * self.objectiveFunctionRegularity(pref, n, m))
+                list_obj.append(self.makespan(pref) * self.regularity(pref, n, m))
 
-        # #Trier les ends_max par ordre croissant
+        # Sort the solutions by makespan
         list_indice = sorted(range(len(list_obj)), key=lambda k: list_obj[k])
-        
-        #classer les solutions par ordre de index
+        # Sort the preferences and the solutions by the same order
         self.preferences = [list_temp_sol[i] for i in list_indice]
 
         min_obj = min(list_obj)
@@ -179,30 +134,22 @@ class User:
         if type_operation == "plus":
             for sol in self.preferences:
                 for i in range(0, nbLayer):
-                    obj_sol = self.objectiveFunction(sol) + self.objectiveFunctionRegularity(sol, n, m)
+                    obj_sol = self.makespan(sol) + self.regularity(sol, n, m)
+                    # Class the solutions in different layers depending on their makespan + regularity
                     if ((obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1) and obj_sol < min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i < nbLayer-1)
                     or (obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1)) and obj_sol <= min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i == (nbLayer-1)):
                         list_layers_fixed[i].append(sol)
         else:
             for sol in self.preferences:
                 for i in range(0, nbLayer):
-                    obj_sol = self.objectiveFunction(sol) * self.objectiveFunctionRegularity(sol, n, m)
+                    obj_sol = self.makespan(sol) * self.regularity(sol, n, m)
+                    # Class the solutions in different layers depending on their makespan * regularity
                     if ((obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1) and obj_sol < min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i < nbLayer-1)
                     or (obj_sol >= min_obj + i*(max_obj-min_obj)/(nbLayer-1)) and obj_sol <= min_obj + (i+1)*(max_obj-min_obj)/(nbLayer-1) and i == (nbLayer-1)):
                         list_layers_fixed[i].append(sol)
-                        
-        list_equal = []
-        k = 0
-        for j in range(nbLayer):
-            for i in range(k, len(self.preferences)):
-                flag = self.preferences[i] in list_layers_fixed[j]
-                list_equal.append(flag)
-                k = i+1
-                if not flag:
-                    break
                     
 
-        return list_indice, list_obj, list_layers_fixed, list_equal
+        return list_obj, list_layers_fixed
     
 
 
@@ -229,7 +176,7 @@ class User:
 
 
     
-
+    # Function to get the matrix of the start of the preferences
     def matrix_pref(self, n , m, bool):
 
         pref = self.getPreferences()
@@ -251,15 +198,21 @@ class User:
         return matrix
     
 
-    #Vérifier que deux solutions qui se suivent respectent bien l'ordre
-    def test_preferences(self, list_sols, n, m):
-        for i in range(len(list_sols) - 1):
-            if (self.objectiveFunction(list_sols[i]) + self.objectiveFunctionRegularity(list_sols[i], n, m) > self.objectiveFunction(list_sols[i+1]) + self.objectiveFunctionRegularity(list_sols[i], n, m)):
-               return False
+    # Check if the order is coherent 
+    def test_preferences(self, list_sols, type_operation, n, m):
+
+        if type_operation == "plus":
+            for i in range(len(list_sols) - 1):
+                if (self.makespan(list_sols[i]) + self.regularity(list_sols[i], n, m) > self.makespan(list_sols[i+1]) + self.regularity(list_sols[i], n, m)):
+                    return False
+        else:
+            for i in range(len(list_sols) - 1):
+                if (self.makespan(list_sols[i]) * self.regularity(list_sols[i], n, m) > self.makespan(list_sols[i+1]) * self.regularity(list_sols[i], n, m)):
+                    return False
         return True
     
 
-    #Vérifier que les solutions proposées lors d'une itération sont différentes de celles de l'itération précédente
+    # Check that all the solutions are different
     def test_differences_sol(self, matrix):
 
         for i in range(len(matrix)):

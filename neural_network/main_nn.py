@@ -51,7 +51,7 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
     print("User created !")
     
     # Ask the user to enter his preferences and get the preferences
-    list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
+    list_obj, pref, list_layers = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
 
     # Vector of the start time of each task of each preference
     starts = user.start_pref(n, m, display_start)
@@ -232,7 +232,7 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
         print("Model solved !")
 
         # ---------------- Interaction with the user
-        list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
+        list_obj, pref, list_layers = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
         print("Il y a {} solution(s)".format(len(pref)))
 
         sol_layers = fm.list_list_list_start_of_tasks(n, m, list_layers)
@@ -247,7 +247,7 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
         matrix = user.matrix_pref(n, m, display_matrix)
 
         # Testing the order of preferences and the differences between solutions
-        fm.test(n, m, user)
+        fm.test(n, m, user, type_operation)
 
     #------------------ Condition d'arrêt ------------------
         tps += runtime

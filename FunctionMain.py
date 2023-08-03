@@ -10,6 +10,7 @@ from User import *
 
 #--------------------- Read the data --------------------------------
 
+# Function to get the main data from the file
 def get_data_from_file(file):
 
     optimalval = -1
@@ -19,6 +20,7 @@ def get_data_from_file(file):
         for line in f:
             if line.startswith('optimalval ='):
                 line_splitted = line.strip().split('=')
+                # Get the optimal value of the instance
                 optimalval = int(line_splitted[1])
             else:
                 data.append(line.strip().split())
@@ -31,6 +33,7 @@ def get_data_from_file(file):
 
     for i in range(1,n+1):
         for j in range(0, 2*m, 2):
+            # Vectors of the machines and the duration of the tasks
             T_machine.append(int(data[i][j]))
             T_duration.append(int(data[i][j+1]))
 
@@ -39,6 +42,7 @@ def get_data_from_file(file):
     for i in range(n):
         for j in range(m):
             ind_machine = int(T_machine[i*m + j])
+            # Matrix of the duration of the tasks per job
             duration[i][ind_machine] = T_duration[i*m + j]
 
     return n, m, data, T_machine, T_duration, duration, optimalval
@@ -70,14 +74,15 @@ def display_solution(msol, bool_display):
 # ___________________Interaction with the user___________________________
 
 # --------------------- User preferences --------------------------------
-# def user_preferences(msol, user, nbLayer, n, optimalval, m):
+
 def user_preferences(msol, user, nbLayer, n, m, type_operation="plus", type_user="user_reg", optimalval=None):
 
-    print("\nClassing solutions...")	
+    print("\nRanking the solutions...")	
+    # The user ranks the solutions according to their preferences
     if type_user == "user_reg":
-        list_indice, list_obj, list_layer, list_equal = user.classerSolutionRegularity_min_max(nbLayer, msol, type_operation, n, m)
+        list_obj, list_layer = user.rank_by_pref_regularity(nbLayer, msol, type_operation, n, m)
     else:
-        list_indice, list_obj, list_layer, list_equal = user.classerSolution_min_max(nbLayer, msol)
+        list_obj, list_layer = user.rank_by_pref_makespan(nbLayer, msol)
     
     print("Solutions classed !")
 
@@ -85,29 +90,30 @@ def user_preferences(msol, user, nbLayer, n, m, type_operation="plus", type_user
     pref = user.getPreferences()
     print("Preferences created !")
 
-    return list_indice, list_obj, pref, list_layer, list_equal
+    return list_obj, pref, list_layer
 
 
 #---------------------- Tests on preferences---------------------------
 
-def test(n, m, user):
+def test(n, m, user, type_operation):
 
-    print("\nTesting order of preferences...")
+    print("\nTesting the order of the preferences...")
     pref = user.getPreferences()
-    if user.test_preferences(pref, n, m):
-        print("\tL'ordre des préférences est cohérente")
+
+    if user.test_preferences(pref, type_operation, n, m):
+        print("\tThe order of the preferences is coherent")
     else:
-        print("\tL'ordre des préférences n'est pas cohérente")
+        print("\tThe order of the preferences is not coherent")
 
     print("\nTesting differences between solutions...")
     matrix = user.matrix_pref(n, m, False)
     if user.test_differences_sol(matrix):
-        print("\tToutes les solutions sont différentes")
+        print("\tAll the solutions are different")
     else:
-        print("\tLes solutions ne sont pas toutes différentes")
+        print("\tSome solutions are the same, all the solutions must be different")
 
 
-#---------------------Solutions à trouver différentes des anciennes----------------------------------
+#--------------------- Objective: find new solutions (different from the previous ones) ----------------------------------
 
 def update_variables_new_constraint(n, m, pref, model, solver):
 
@@ -129,14 +135,11 @@ def update_variables_new_constraint(n, m, pref, model, solver):
             for j in range(m):
 
                 var_sol = sol.get_value("T{}-{}".format(i,j))
-                #a = model.interval_var(start = sol[variables[i][j]].start, end= sol[variables[i][j]].end, size=int(duration[i][j]), name="a{}{}".format(i,j))
-                #b =max(b,logical_or((model.start_of(a) != model.start_of(variables[i][j])), (model.end_of(a) != model.end_of(variables[i][j]))))
-                
-                # b =max(b,logical_or(var_sol.start != model.start_of(variables[i][j]), var_sol.end != model.end_of(variables[i][j])))
                 b =max(b,var_sol.start != model.start_of(variables[i][j]))
 
         b = (b!=0)
         bb = bb * b
+    # At least one feature of each solution must be different from the previous solutions
     solver.add_constraint(model, bb==1)
 
     return variables
@@ -150,6 +153,7 @@ def choose_best_clusters(layers):
         # print(len(data))
         
         if len(data) > 2: 
+            # Compute the number of clusters with the silhouette index
             list, k_max, leaves_max, runtime = cl.silhouette(data)
             nb_clusters.append(k_max)
 
@@ -164,7 +168,7 @@ def choose_best_clusters(layers):
     return nb_clusters
 
 
-#------------Calcul de la distance de manhattan-------------------------
+#------------ Computation of the manhattan distance -------------------------
 
 def abs_int(x,y):
     return max(x-y,y-x)
@@ -195,6 +199,7 @@ def rayon_cluster(avg, list_sol):
 
 def average_computation(data, nb_cluster):
         
+    # Clustering
     k , leaves , labels, runtime = cl.my_agglo_k(data, nb_cluster, 'single')
     # print("Le k dans average computation est : ",k)
 
@@ -202,15 +207,18 @@ def average_computation(data, nb_cluster):
     card=[0 for i in range(k) ]
 
     for i in range(len(data)):
+        # Compute the cardinality of each cluster
         card[labels[i]]+=1
         avg[labels[i]]=[avg[labels[i]][k]+data[i][k] for k in range(len(data[i]))]
     
     for i in range(k):
+        # Compute the average
         avg[i]=[avg[i][k]/card[i] for k in range(len(data[0]))]
 
     return k, avg, labels
         
 
+# Return the list of the solutions that are the closest to the average of its cluster
 def solution_average(k, data, labels, avg):
     the_ones=[None for i in range(k)]
     for i in range(len(data)):
@@ -222,7 +230,7 @@ def solution_average(k, data, labels, avg):
             
 #___________________________________________________________________________________________________________________________________________________________________
 
-#------------Transformation des CPOSolutionResult en liste de start-------------------------
+#------------ Transformation of the CPOSolutionResult into a list of starts (features) -------------------------
 def start_sol(n, m, sol):
     starts = []
     for i in range(n):
@@ -232,8 +240,7 @@ def start_sol(n, m, sol):
     return starts
 #___________________________________________________________________________________________________________________________________________________________________
 
-#---------------------Pour chaque layer de la liste des layers,  on a pour chaque 
-# solution appartenant à ce layer, on a sa liste des starts de ses tasks---------------------
+# For each layer, for each solution in the layer, we have a list of starts (features)
 def list_list_list_start_of_tasks(n, m, list_layers):
     list_start_sol_layers = []
     for i in range(len(list_layers)):
@@ -245,7 +252,7 @@ def list_list_list_start_of_tasks(n, m, list_layers):
     return list_start_sol_layers
 #___________________________________________________________________________________________________________________________________________________________________
 
-#----------------------Conditions d'arrêt---------------------------
+#---------------------- Stopping condition ---------------------------
 
 def stopCondition(it, it_max, tps, tps_max):
     if (it >= it_max):

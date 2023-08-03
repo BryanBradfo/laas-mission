@@ -60,7 +60,7 @@ def main_cb(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
     #Get the variables of the model
     variables = solver.get_variables()
 
-    list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
+    list_obj, pref, list_layers = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
 
     # Vector of the start time of each task of each preference
     starts = user.start_pref(n, m, display_start)
@@ -147,7 +147,7 @@ def main_cb(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
         # ------------ Display the result
         fm.display_solution(msol, display_sol)
         # ---------------- Interaction with the user
-        list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
+        list_obj, pref, list_layers = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
         list_min_obj_global.append(min(list_obj))
 
         # Vector of the start time of each task of each preference
@@ -157,7 +157,7 @@ def main_cb(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
         matrix = user.matrix_pref(n, m, display_matrix)
 
         # Testing the order of preferences and the differences between solutions
-        fm.test(n, m, user)
+        fm.test(n, m, user, type_operation)
 
     #------------------ Condition d'arrêt ------------------
         tps += runtime
@@ -240,7 +240,7 @@ def main_cb(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
         fm.display_solution(msol, display_sol)
 
         # ---------------- Interaction with the user
-        list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
+        list_obj, pref, list_layers = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
 
         list_min_obj_global.append(min(list_obj))
 
