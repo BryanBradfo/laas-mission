@@ -120,7 +120,7 @@ def main_optval(resultats_globaux, file, time_limit=500, type_operation="plus", 
 
 
         # Solve the model.
-        msol = model.solve(TimeLimit=time_limit, LogVerbosity="Quiet")
+        msol = model.solve(TimeLimit=time_limit, LogVerbosity="Quiet", SearchType='DepthFirst')
         print("Model solved !")
         msol.get_solve_status()
         resultats_globaux.update({file: [msol.get_objective_value()]})
