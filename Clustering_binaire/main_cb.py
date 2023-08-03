@@ -69,7 +69,7 @@ def main_cb(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
     matrix = user.matrix_pref(n, m, display_matrix)
 
     # Testing the order of preferences and the differences between solutions
-    fm.test(n, m, user)
+    fm.test(n, m, user, type_operation)
     
     #____________________ End first iteration____________________#
 
@@ -121,14 +121,14 @@ def main_cb(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
             # Distinction between type_operation = "plus" or "fois"
             if type_operation == "plus":
                 for sol in msol:
-                    list.append(user.objectiveFunction(sol) + user.objectiveFunctionRegularity(sol, n, m))
+                    list.append(user.makespan(sol) + user.regularity(sol, n, m))
             else:
                 for sol in msol:
-                    list.append(user.objectiveFunction(sol) * user.objectiveFunctionRegularity(sol, n, m))
+                    list.append(user.makespan(sol) * user.regularity(sol, n, m))
         
         else:
             for sol in msol:
-                list.append(user.objectiveFunction(sol))
+                list.append(user.makespan(sol))
 
         if len(list) == 0:
             print("Aucune solution générée à l'itération ", it)
@@ -214,14 +214,14 @@ def main_cb(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
             # Distinction between type_operation = "plus" or "fois"
             if type_operation == "plus":
                 for sol in msol:
-                    list.append(user.objectiveFunction(sol) + user.objectiveFunctionRegularity(sol, n, m))
+                    list.append(user.makespan(sol) + user.regularity(sol, n, m))
             else:
                 for sol in msol:
-                    list.append(user.objectiveFunction(sol) * user.objectiveFunctionRegularity(sol, n, m))
+                    list.append(user.makespan(sol) * user.regularity(sol, n, m))
         
         else:
             for sol in msol:
-                list.append(user.objectiveFunction(sol))
+                list.append(user.makespan(sol))
         if len(list) == 0:
             print("No solution at iteration", it)
             list_min_obj.append(list_min_obj[-1])
@@ -251,7 +251,7 @@ def main_cb(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
         matrix = user.matrix_pref(n, m, display_matrix)
 
         # Testing the order of preferences and the differences between solutions
-        fm.test(n, m, user)
+        fm.test(n, m, user, type_operation)
 
     #------------------ Condition d'arrêt ------------------
         tps += runtime

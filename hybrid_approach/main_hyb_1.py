@@ -66,7 +66,7 @@ def main_hyb_1(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type
     #Get the variables of the model
     variables = solver.get_variables()
 
-    list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
+    list_obj, pref, list_layers= fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
 
     # Vector of the start time of each task of each preference
     starts = user.start_pref(n, m, display_start)
@@ -75,7 +75,7 @@ def main_hyb_1(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type
     matrix = user.matrix_pref(n, m, display_matrix)
 
     # Testing the order of preferences and the differences between solutions
-    fm.test(n, m, user)
+    fm.test(n, m, user, type_operation)
     
     #____________________ End first iteration____________________#
 
@@ -162,14 +162,14 @@ def main_hyb_1(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type
             # Distinction between type_operation = "plus" or "fois"
             if type_operation == "plus":
                 for sol in msol:
-                    list.append(user.objectiveFunction(sol) + user.objectiveFunctionRegularity(sol, n, m))
+                    list.append(user.makespan(sol) + user.regularity(sol, n, m))
             else:
                 for sol in msol:
-                    list.append(user.objectiveFunction(sol) * user.objectiveFunctionRegularity(sol, n, m))
+                    list.append(user.makespan(sol) * user.regularity(sol, n, m))
         
         else:
             for sol in msol:
-                list.append(user.objectiveFunction(sol))
+                list.append(user.makespan(sol))
 
         if len(list) == 0:
             print("No solution at iteration", it)
@@ -188,7 +188,7 @@ def main_hyb_1(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type
         # ------------ Display the result
         fm.display_solution(msol, display_sol)
         # ---------------- Interaction with the user
-        list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
+        list_obj, pref, list_layers = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
         list_min_obj_global.append(min(list_obj))
 
         # Vector of the start time of each task of each preference
@@ -198,7 +198,7 @@ def main_hyb_1(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type
         matrix = user.matrix_pref(n, m, display_matrix)
 
         # Testing the order of preferences and the differences between solutions
-        fm.test(n, m, user)
+        fm.test(n, m, user, type_operation)
 
     #------------------ Condition d'arrêt ------------------
         tps += runtime
@@ -255,14 +255,14 @@ def main_hyb_1(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type
             # Distinction between type_operation = "plus" or "fois"
             if type_operation == "plus":
                 for sol in msol:
-                    list.append(user.objectiveFunction(sol) + user.objectiveFunctionRegularity(sol, n, m))
+                    list.append(user.makespan(sol) + user.regularity(sol, n, m))
             else:
                 for sol in msol:
-                    list.append(user.objectiveFunction(sol) * user.objectiveFunctionRegularity(sol, n, m))
+                    list.append(user.makespan(sol) * user.regularity(sol, n, m))
         
         else:
             for sol in msol:
-                list.append(user.objectiveFunction(sol))
+                list.append(user.makespan(sol))
         if len(list) == 0:
             print("No solution at iteration", it)
             #Par soucis de longueur des listes, si une itération n'a pas de solution, on ajoute la valeur de la dernière itération
@@ -282,7 +282,7 @@ def main_hyb_1(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type
         fm.display_solution(msol, display_sol)
 
         # ---------------- Interaction with the user
-        list_indice, list_obj, pref, list_layers, list_equal = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
+        list_obj, pref, list_layers = fm.user_preferences(msol, user, nb_layers, n, m, type_operation, type_user, optimalval)
 
         list_min_obj_global.append(min(list_obj))
 
@@ -293,7 +293,7 @@ def main_hyb_1(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type
         matrix = user.matrix_pref(n, m, display_matrix)
 
         # Testing the order of preferences and the differences between solutions
-        fm.test(n, m, user)
+        fm.test(n, m, user, type_operation)
 
     #------------------ Condition d'arrêt ------------------
         tps += runtime
@@ -309,7 +309,7 @@ def main_hyb_1(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type
 def main():
     # Code principal du script
     print("Début du programme")
-    list_min_obj, list_min_obj_global = main_hyb_1({}, '../file_with_optimal_val/la04.txt', 2, 60, 15, 700, 10, "plus", type_user ="other")
+    list_min_obj, list_min_obj_global = main_hyb_1({}, '../file_with_optimal_val/la04.txt', 5, 30, 30, 700, 70, "plus", type_user ="other")
     print(list_min_obj)
     print(list_min_obj_global)
 

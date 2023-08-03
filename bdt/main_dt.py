@@ -158,13 +158,13 @@ def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
             # Distinction between type_operation = "plus" or "fois"
             if type_operation == "plus":
                 for sol in msol:
-                    list.append(user.objectiveFunction(sol) + user.objectiveFunctionRegularity(sol, n, m))
+                    list.append(user.makespan(sol) + user.regularity(sol, n, m))
             else:
                 for sol in msol:
-                    list.append(user.objectiveFunction(sol) * user.objectiveFunctionRegularity(sol, n, m))
+                    list.append(user.makespan(sol) * user.regularity(sol, n, m))
         else:
             for sol in msol:
-                list.append(user.objectiveFunction(sol))
+                list.append(user.makespan(sol))
 
         # Treating the case when there is no solution
         if len(list) == 0:
@@ -204,7 +204,7 @@ def main_dt(resultats_globaux, file, nb_layers, k, k_k, tps_max, it_max, type_op
         matrix = user.matrix_pref(n, m, display_matrix)
 
         # Testing the order of preferences and the differences between solutions
-        fm.test(n, m, user)
+        fm.test(n, m, user, type_operation)
 
     #------------------ Stop criterion ------------------
         tps += runtime

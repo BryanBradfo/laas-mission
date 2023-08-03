@@ -60,7 +60,7 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
     matrix = user.matrix_pref(n, m, display_matrix)
 
     # Testing the order of preferences and the differences between solutions
-    fm.test(n, m, user)
+    fm.test(n, m, user, type_operation)
 
     print("list layers : ",list_layers)
 
@@ -215,14 +215,14 @@ def main_nn(resultats_globaux, file, nb_layers, k, k_k, nb_hidden_layers, nb_neu
             # Distinction between type_operation = "plus" or "fois"
             if type_operation == "plus":
                 for sol in msol:
-                    list.append(user.objectiveFunction(sol) + user.objectiveFunctionRegularity(sol, n, m))
+                    list.append(user.makespan(sol) + user.regularity(sol, n, m))
             else:
                 for sol in msol:
-                    list.append(user.objectiveFunction(sol) * user.objectiveFunctionRegularity(sol, n, m))
+                    list.append(user.makespan(sol) * user.regularity(sol, n, m))
         
         else:
             for sol in msol:
-                list.append(user.objectiveFunction(sol))
+                list.append(user.makespan(sol))
         
   
         list_min_obj.append(min(list))
