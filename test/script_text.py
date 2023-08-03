@@ -23,9 +23,9 @@ list_methods = []
 def main():
     #-----------------------------Parameters of every methods-----------------------------#
     #Names of files must be different
-    # list_files = ['../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/ft10.txt', '../file_with_optimal_val/example.data']
-    list_files = ['../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la02.txt']
-    list_plot_name = ['la04', 'la03', 'la02', 'ft10', 'example']
+    # list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la05.txt', '../file_with_optimal_val/la06.txt' ]
+    list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la05.txt']
+    list_plot_name = ['la01', 'la02', 'la03', 'la04', 'la05']
     list_nb_layers = [5, 5, 5, 5, 5]
     list_k = [20, 20, 20, 20, 20]
     list_k_k = [15, 15, 15, 15, 15]
@@ -43,7 +43,7 @@ def main():
     #optimal_value_regularity[0] --> type_operation = "plus"
     #optimal_value_regularity[1] --> type_operation = "plus"
     optimal_value_regularity = [[3100, 2473, 1871], [2952432, 5052960, 3455230]]
-    optimal_value_simple = [590, 597, 655]
+    optimal_value_simple = [666, 655, 597, 590, 593,926]
     #___________________________________________________________________________
 
     #-----------------------------Lengths-----------------------------#
@@ -85,7 +85,7 @@ def main():
             threads.append(t)
             t.start()
         elif i < 4*n:
-            t = threading.Thread(target=mcb.main_cb, args=(resultats_globaux_approche[-1],  list_files[i-3*n], list_nb_layers[i-3*n], list_k[i-3*n], list_k_k[i-3*n], list_tps_max[i-3*n], list_it_max[i-3*n], list_type_operation[i-3*n], list_type_user[i-3*n], 0.80,  list_display_sol[i-3*n], list_display_start[i-3*n], list_display_matrix[i-3*n]))
+            t = threading.Thread(target=mcb.main_cb, args=(resultats_globaux_approche[-1],  list_files[i-3*n], list_nb_layers[i-3*n], list_k[i-3*n], list_k_k[i-3*n], list_tps_max[i-3*n], list_it_max[i-3*n], list_type_operation[i-3*n], list_type_user[i-3*n], 0.87,  list_display_sol[i-3*n], list_display_start[i-3*n], list_display_matrix[i-3*n]))
             threads.append(t)
             t.start()
 
