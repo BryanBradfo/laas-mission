@@ -26,16 +26,16 @@ def main():
     #-----------------------------Parameters of every methods-----------------------------#
     #Names of files must be different
     # list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la05.txt', '../file_with_optimal_val/la06.txt' ]
-    list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt']
-    # list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la05.txt', 
-    #             '../file_with_optimal_val/la06.txt',  '../file_with_optimal_val/la07.txt',  '../file_with_optimal_val/la08.txt', '../file_with_optimal_val/la09.txt', '../file_with_optimal_val/la10.txt',
-    #             '../file_with_optimal_val/la11.txt','../file_with_optimal_val/la12.txt','../file_with_optimal_val/la13.txt','../file_with_optimal_val/la14.txt','../file_with_optimal_val/la15.txt',
-    #             '../file_with_optimal_val/la16.txt','../file_with_optimal_val/la17.txt','../file_with_optimal_val/la18.txt','../file_with_optimal_val/la19.txt','../file_with_optimal_val/la20.txt',
-    #             '../file_with_optimal_val/la21.txt','../file_with_optimal_val/la22.txt','../file_with_optimal_val/la23.txt','../file_with_optimal_val/la24.txt','../file_with_optimal_val/la25.txt',
-    #             '../file_with_optimal_val/la26.txt','../file_with_optimal_val/la27.txt','../file_with_optimal_val/la28.txt','../file_with_optimal_val/la29.txt','../file_with_optimal_val/la30.txt',
-    #             '../file_with_optimal_val/la31.txt','../file_with_optimal_val/la32.txt','../file_with_optimal_val/la33.txt','../file_with_optimal_val/la34.txt','../file_with_optimal_val/la35.txt',
-    #             '../file_with_optimal_val/la36.txt','../file_with_optimal_val/la37.txt','../file_with_optimal_val/la38.txt','../file_with_optimal_val/la39.txt', '../file_with_optimal_val/la40.txt'
-    #             ]
+    # list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt']
+    list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la05.txt', 
+                '../file_with_optimal_val/la06.txt',  '../file_with_optimal_val/la07.txt',  '../file_with_optimal_val/la08.txt', '../file_with_optimal_val/la09.txt', '../file_with_optimal_val/la10.txt',
+                '../file_with_optimal_val/la11.txt','../file_with_optimal_val/la12.txt','../file_with_optimal_val/la13.txt','../file_with_optimal_val/la14.txt','../file_with_optimal_val/la15.txt',
+                '../file_with_optimal_val/la16.txt','../file_with_optimal_val/la17.txt','../file_with_optimal_val/la18.txt','../file_with_optimal_val/la19.txt','../file_with_optimal_val/la20.txt',
+                '../file_with_optimal_val/la21.txt','../file_with_optimal_val/la22.txt','../file_with_optimal_val/la23.txt','../file_with_optimal_val/la24.txt','../file_with_optimal_val/la25.txt',
+                '../file_with_optimal_val/la26.txt','../file_with_optimal_val/la27.txt','../file_with_optimal_val/la28.txt','../file_with_optimal_val/la29.txt','../file_with_optimal_val/la30.txt',
+                '../file_with_optimal_val/la31.txt','../file_with_optimal_val/la32.txt','../file_with_optimal_val/la33.txt','../file_with_optimal_val/la34.txt','../file_with_optimal_val/la35.txt',
+                '../file_with_optimal_val/la36.txt','../file_with_optimal_val/la37.txt','../file_with_optimal_val/la38.txt','../file_with_optimal_val/la39.txt', '../file_with_optimal_val/la40.txt'
+                ]
     list_plot_name = ['la0' + str(i) for i in range (1,len(list_files)+1)]
     list_nb_layers = [5 for i in range (len(list_files))]
     list_k = [20 for i in range (len(list_files))]
