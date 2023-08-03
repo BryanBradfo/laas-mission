@@ -29,11 +29,12 @@ def main():
     list_nb_layers = [5, 5, 5, 5, 5]
     list_k = [20, 20, 20, 20, 20]
     list_k_k = [15, 15, 15, 15, 15]
-    list_tps_max = [300, 300, 300, 100, 100]
+    list_tps_max = [100, 100, 100, 100, 100]
     list_it_max = [40, 40, 40, 40, 20]
-    list_type_operation = ['fois', 'fois', 'fois', 'plus', 'plus']
-    list_type_user = ["oher", "other", "oher", "other", "oher"]
-    # list_type_user = ["user_reg", "user_reg", "user_reg", "user_reg", "user_reg"]
+    # list_type_operation = ['fois', 'fois', 'fois', 'plus', 'plus']
+    list_type_operation = ['plus', 'plus', 'plus', 'plus', 'plus']
+    # list_type_user = ["other", "other", "other", "other", "other"]
+    list_type_user = ["user_reg", "user_reg", "user_reg", "user_reg", "user_reg"]
     list_display_sol = [False, False, False, False, False]
     list_display_start = [False, False, False, False, False]
     list_display_matrix = [False, False, False, False, False]
@@ -42,7 +43,7 @@ def main():
     #-----------------------------Waiting results-----------------------------#
     #optimal_value_regularity[0] --> type_operation = "plus"
     #optimal_value_regularity[1] --> type_operation = "plus"
-    optimal_value_regularity = [[3100, 2473, 1871], [2952432, 5052960, 3455230]]
+    optimal_value_regularity = [[1341, 1455, 1486, 1224, 737, 2811], [2952432, 5052960, 3455230]]
     optimal_value_simple = [666, 655, 597, 590, 593,926]
     #___________________________________________________________________________
 

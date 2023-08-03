@@ -146,11 +146,12 @@ def main():
         opt_val = [{}, {}]
         threads = []
         for i in range(2*n):
-            if i < n:
-                t = threading.Thread(target=main_optval, args=(opt_val[0], list_files[i], tps_max, type_operations[0], type_user))
-                threads.append(t)
-                t.start()
-            else:
+            # if i < n:
+            #     t = threading.Thread(target=main_optval, args=(opt_val[0], list_files[i], tps_max, type_operations[0], type_user))
+            #     threads.append(t)
+            #     t.start()
+            # else:
+            if n<i < 2*n:
                 t = threading.Thread(target=main_optval, args=(opt_val[1], list_files[i-n], tps_max, type_operations[1], type_user))
                 threads.append(t)
                 t.start()
