@@ -120,9 +120,9 @@ def main_optval(resultats_globaux, file, time_limit=500, type_operation="plus", 
 
 
         # Solve the model.
-        msol = model.solve(TimeLimit=time_limit, LogVerbosity="Quiet")
+        msol = model.solve(TimeLimit=time_limit, LogVerbosity="Quiet", SearchType='DepthFirst')
         print("Model solved !")
-        msol.get_status()
+        msol.get_solve_status()
         resultats_globaux.update({file: [msol.get_objective_value()]})
         return msol.get_objective_value()
     else:
@@ -134,12 +134,12 @@ def main():
     print("Début du programme")
 
     #Liste des fichiers dont on veut trouver la solution optimale
-    list_files = ['../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la02.txt']
+    list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la05.txt', '../file_with_optimal_val/la06.txt' ]
     
     #Paramètres de la fonction main_optval_regularity
-    tps_max = 2000
+    tps_max = 3000
     type_operations = ["plus", "fois"]
-    type_user = "other"
+    type_user = "user_reg"
     #Lancement des threads
     n = len(list_files)
     if type_user == "user_reg":
@@ -151,7 +151,7 @@ def main():
                 threads.append(t)
                 t.start()
             else:
-                t = threading.Thread(target=main_optval, args=(opt_val[1], list_files[i-n], tps_max, type_operations[1], typr_user))
+                t = threading.Thread(target=main_optval, args=(opt_val[1], list_files[i-n], tps_max, type_operations[1], type_user))
                 threads.append(t)
                 t.start()
         for t in threads:
