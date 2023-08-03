@@ -134,10 +134,10 @@ def main():
     print("Début du programme")
 
     #Liste des fichiers dont on veut trouver la solution optimale
-    list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la05.txt', '../file_with_optimal_val/la06.txt' ]
+    list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la05.txt', '../file_with_optimal_val/la06.txt', '../file_with_optimal_val/la07.txt', '../file_with_optimal_val/la08.txt', '../file_with_optimal_val/la09.txt', '../file_with_optimal_val/la10.txt', '../file_with_optimal_val/la11.txt', '../file_with_optimal_val/la12.txt', '../file_with_optimal_val/la13.txt', '../file_with_optimal_val/la14.txt', '../file_with_optimal_val/la15.txt', '../file_with_optimal_val/la16.txt', '../file_with_optimal_val/la17.txt', '../file_with_optimal_val/la18.txt', '../file_with_optimal_val/la19.txt', '../file_with_optimal_val/la20.txt', '../file_with_optimal_val/la21.txt', '../file_with_optimal_val/la22.txt', '../file_with_optimal_val/la23.txt', '../file_with_optimal_val/la24.txt', '../file_with_optimal_val/la25.txt', '../file_with_optimal_val/la26.txt', '../file_with_optimal_val/la27.txt', '../file_with_optimal_val/la28.txt', '../file_with_optimal_val/la29.txt', '../file_with_optimal_val/la30.txt', '../file_with_optimal_val/la31.txt', '../file_with_optimal_val/la32.txt', '../file_with_optimal_val/la33.txt', '../file_with_optimal_val/la34.txt', '../file_with_optimal_val/la35.txt', '../file_with_optimal_val/la36.txt', '../file_with_optimal_val/la37.txt', '../file_with_optimal_val/la38.txt', '../file_with_optimal_val/la39.txt', '../file_with_optimal_val/la40.txt']
     
     #Paramètres de la fonction main_optval_regularity
-    tps_max = 3000
+    tps_max = 6000
     type_operations = ["plus", "fois"]
     type_user = "user_reg"
     #Lancement des threads
@@ -146,12 +146,11 @@ def main():
         opt_val = [{}, {}]
         threads = []
         for i in range(2*n):
-            # if i < n:
-            #     t = threading.Thread(target=main_optval, args=(opt_val[0], list_files[i], tps_max, type_operations[0], type_user))
-            #     threads.append(t)
-            #     t.start()
-            # else:
-            if n<i < 2*n:
+            if i < n:
+                t = threading.Thread(target=main_optval, args=(opt_val[0], list_files[i], tps_max, type_operations[0], type_user))
+                threads.append(t)
+                t.start()
+            else:
                 t = threading.Thread(target=main_optval, args=(opt_val[1], list_files[i-n], tps_max, type_operations[1], type_user))
                 threads.append(t)
                 t.start()
@@ -170,7 +169,19 @@ def main():
     else:
         print("Plus : ", opt_val[0])
         print("Fois : ", opt_val[1])
+        fichier_txt = "Plus: "
+        fichier_txt += "\n"
+        fichier_txt += str(opt_val[0])
+        fichier_txt += "\n"
+        fichier_txt += "\n"
+        fichier_txt += "Fois:"
+        fichier_txt += "\n"
+        fichier_txt += str(opt_val[1])
+        fichier_txt += "\n"
         print("Fin du programme")
+
+    with open("resultats.txt", "a") as file:
+        file.write(fichier_txt)
 
 # Appeler la fonction main() si ce fichier est le point d'entrée du programme
 if __name__ == "__main__":
