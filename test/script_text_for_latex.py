@@ -19,31 +19,49 @@ resultats_globaux_approche = []
 resultats_globaux_files = []
 list_methods = []
 
+def ligne_latex(values):
+    return " & ".join(str(val) for val in values) + " \\\\"
 
 def main():
     #-----------------------------Parameters of every methods-----------------------------#
     #Names of files must be different
-    # list_files = ['../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/ft10.txt', '../file_with_optimal_val/example.data']
-    list_files = ['../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la02.txt']
-    list_plot_name = ['la04', 'la03', 'la02', 'ft10', 'example']
-    list_nb_layers = [5, 5, 5, 5, 5]
-    list_k = [20, 20, 20, 20, 20]
-    list_k_k = [15, 15, 15, 15, 15]
-    list_tps_max = [300, 300, 300, 100, 100]
-    list_it_max = [10, 10, 10, 10, 10]
-    list_type_operation = ['fois', 'fois', 'fois', 'plus', 'plus']
-    list_type_user = ["oher", "other", "oher", "other", "oher"]
+    # list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la05.txt', '../file_with_optimal_val/la06.txt' ]
+    list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt']
+    # list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la05.txt', 
+    #             '../file_with_optimal_val/la06.txt',  '../file_with_optimal_val/la07.txt',  '../file_with_optimal_val/la08.txt', '../file_with_optimal_val/la09.txt', '../file_with_optimal_val/la10.txt',
+    #             '../file_with_optimal_val/la11.txt','../file_with_optimal_val/la12.txt','../file_with_optimal_val/la13.txt','../file_with_optimal_val/la14.txt','../file_with_optimal_val/la15.txt',
+    #             '../file_with_optimal_val/la16.txt','../file_with_optimal_val/la17.txt','../file_with_optimal_val/la18.txt','../file_with_optimal_val/la19.txt','../file_with_optimal_val/la20.txt',
+    #             '../file_with_optimal_val/la21.txt','../file_with_optimal_val/la22.txt','../file_with_optimal_val/la23.txt','../file_with_optimal_val/la24.txt','../file_with_optimal_val/la25.txt',
+    #             '../file_with_optimal_val/la26.txt','../file_with_optimal_val/la27.txt','../file_with_optimal_val/la28.txt','../file_with_optimal_val/la29.txt','../file_with_optimal_val/la30.txt',
+    #             '../file_with_optimal_val/la31.txt','../file_with_optimal_val/la32.txt','../file_with_optimal_val/la33.txt','../file_with_optimal_val/la34.txt','../file_with_optimal_val/la35.txt',
+    #             '../file_with_optimal_val/la36.txt','../file_with_optimal_val/la37.txt','../file_with_optimal_val/la38.txt','../file_with_optimal_val/la39.txt', '../file_with_optimal_val/la40.txt'
+    #             ]
+    list_plot_name = ['la0' + str(i) for i in range (1,len(list_files)+1)]
+    list_nb_layers = [5 for i in range (len(list_files))]
+    list_k = [20 for i in range (len(list_files))]
+    list_k_k = [15 for i in range (len(list_files))]
+    list_tps_max = [100 for i in range (len(list_files))]
+    list_it_max = [6 for i in range (len(list_files))]
+    list_type_operation = ['plus' for i in range (len(list_files))]
+    list_type_user = ["other" for i in range (len(list_files))]
     # list_type_user = ["user_reg", "user_reg", "user_reg", "user_reg", "user_reg"]
-    list_display_sol = [False, False, False, False, False]
-    list_display_start = [False, False, False, False, False]
-    list_display_matrix = [False, False, False, False, False]
+    list_display_sol = [False for i in range (len(list_files))]
+    list_display_start = [False for i in range (len(list_files))]
+    list_display_matrix = [False for i in range (len(list_files))]
     #__________________________________________________________________
 
     #-----------------------------Waiting results-----------------------------#
     #optimal_value_regularity[0] --> type_operation = "plus"
     #optimal_value_regularity[1] --> type_operation = "plus"
     optimal_value_regularity = [[3100, 2473, 1871], [2952432, 5052960, 3455230]]
-    optimal_value_simple = [590, 597, 655]
+    optimal_value_simple = [666, 655, 597, 590, 593,
+                            926, 890, 863, 951, 958,
+                            1222, 1039, 1150, 1292, 1207,
+                            945, 784, 848, 842, 902,
+                            1046, 927, 1032, 935, 977,
+                            1218, 1235, 1216, 1152, 1355,
+                            1784, 1850, 1717, 1721, 1888,
+                            1268, 1397, 1196, 1233, 1222]
     #___________________________________________________________________________
 
     #-----------------------------Lengths-----------------------------#
@@ -85,7 +103,7 @@ def main():
             threads.append(t)
             t.start()
         elif i < 4*n:
-            t = threading.Thread(target=mcb.main_cb, args=(resultats_globaux_approche[-1],  list_files[i-3*n], list_nb_layers[i-3*n], list_k[i-3*n], list_k_k[i-3*n], list_tps_max[i-3*n], list_it_max[i-3*n], list_type_operation[i-3*n], list_type_user[i-3*n], 0.80,  list_display_sol[i-3*n], list_display_start[i-3*n], list_display_matrix[i-3*n]))
+            t = threading.Thread(target=mcb.main_cb, args=(resultats_globaux_approche[-1],  list_files[i-3*n], list_nb_layers[i-3*n], list_k[i-3*n], list_k_k[i-3*n], list_tps_max[i-3*n], list_it_max[i-3*n], list_type_operation[i-3*n], list_type_user[i-3*n], 0.87,  list_display_sol[i-3*n], list_display_start[i-3*n], list_display_matrix[i-3*n]))
             threads.append(t)
             t.start()
 
@@ -135,13 +153,19 @@ def main():
             plt.plot([k for k in range(max_iteration_by_file[i])], [optimal_value_simple[i] for k in range(max_iteration_by_file[i])], label="Opt_val_simple")
 
         plt.xlabel("Iteration")
-        plt.ylabel("resultat_a_chaque_iteration_"+list_plot_name[i])
+        plt.ylabel("Resultat à chaque itération pour "+list_plot_name[i])
         plt.xticks(range(max_iteration_by_file[i]))
         plt.title("resultat_a_chaque_iteration_"+list_plot_name[i])
         plt.legend()
         plt.show()
         plt.savefig("plot_resultat_a_chaque_iteration_"+list_plot_name[i]+".png")
-       
+
+    nombre_colonnes = m + 2
+
+    tableau_latex = "\\begin{tabular}{" + "|c" * nombre_colonnes + "|}\n "
+    tableau_latex += "  \hline \n"
+    tableau_latex += " File & Optimal & DT & DT 2 & Agglomerative clustering & Binary clustering & NN \\\\ \n"
+    tableau_latex += "  \hline \n" 
     for i in range(n):
         plt.figure(figsize=(10, 8))
         for j in range(m):
@@ -163,21 +187,53 @@ def main():
         plt.show()
         plt.savefig("plot_resultat_globaux_"+list_plot_name[i]+".png")
         #___________________________________________________________________________
+
+        variable_latex = []
+
+        file = list_files[i]
+        new_file = file.split("/")[-1]
+        print("File: ", new_file)
+        variable_latex.append(new_file)
+
+        if list_type_user[i] == "user_reg":
+            #Print aussi le résultat même calculé dans main_opt_val (renseigné dans optimal_value_regularity)
+            if list_type_operation[i] == "plus":
+                optimal_val = optimal_value_regularity[0][i]    
+            else:
+                optimal_val = optimal_value_regularity[1][i]
+        else:
+            optimal_val = optimal_value_simple[i]
         
-        
-        print("File: ", list_files[i])
-        optimal_val = optimal_value_regularity[0][i]
         print("Optimal value: ", optimal_val)
+        variable_latex.append(optimal_val)
+
         for j in range(len(nb_tree)):
-            print( str(j) + " decision trees: ", optimal_val/min(resultats_globaux_files[i][j][1]))
+            print( str(j) + " decision trees: ", round(optimal_val/min(resultats_globaux_files[i][j][1]),4))
+            variable_latex.append(round(optimal_val/min(resultats_globaux_files[i][j][1]),4))
 
-        print("Agglomertaive clustering", optimal_val/min(resultats_globaux_files[i][len(nb_tree)+1][1]))
-        print("Neural network ", optimal_val/min(resultats_globaux_files[i][len(nb_tree)+2][1]))
-        print("Binary clustering", optimal_val/min(resultats_globaux_files[i][len(nb_tree)+3][1]))
+        print("Agglomertaive clustering", round(optimal_val/min(resultats_globaux_files[i][len(nb_tree)][1]),4))
+        variable_latex.append(round(optimal_val/min(resultats_globaux_files[i][len(nb_tree)][1]),4))
+        print("Neural network ", round(optimal_val/min(resultats_globaux_files[i][len(nb_tree)+1][1]),4))
+        variable_latex.append(round(optimal_val/min(resultats_globaux_files[i][len(nb_tree)+1][1]),4))
+        print("Binary clustering", round(optimal_val/min(resultats_globaux_files[i][len(nb_tree)+2][1]),4))
+        variable_latex.append(round(optimal_val/min(resultats_globaux_files[i][len(nb_tree)+2][1]),4))
+        
+  
+        colonnes = [variable_latex[i:i + nombre_colonnes] for i in range(0, len(variable_latex), nombre_colonnes)]
 
+        tableau_latex += "  "
+        for colonne in colonnes:
+            tableau_latex += ligne_latex(colonne) + "\n"
+        tableau_latex += " \hline \n"
+    tableau_latex += "\\end{tabular}"
+
+    # Écrire le tableau dans le fichier tableau_results.txt
+    with open("tableau_results.txt", "w") as fichier:
+        fichier.write(tableau_latex)
 
 if __name__ == "__main__":
     main()
+
 
 
 
