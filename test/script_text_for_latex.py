@@ -28,7 +28,7 @@ def ligne_latex(values):
 def main():
     #-----------------------------Parameters of every methods-----------------------------#
     #Names of files must be different
-    list_files = ['../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la05.txt', '../file_with_optimal_val/la06.txt' ]
+    list_files = ['../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt']
     # list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt']
     # list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la05.txt', 
                 # '../file_with_optimal_val/la06.txt',  '../file_with_optimal_val/la07.txt',  '../file_with_optimal_val/la08.txt', '../file_with_optimal_val/la09.txt', '../file_with_optimal_val/la10.txt',
@@ -42,9 +42,9 @@ def main():
     list_plot_name = ['la0' + str(i) for i in range (1,len(list_files)+1)]
     list_nb_layers = [5 for i in range (len(list_files))]
     list_k = [20 for i in range (len(list_files))]
-    list_k_k = [15 for i in range (len(list_files))]
-    list_tps_max = [100 for i in range (len(list_files))]
-    list_it_max = [20 for i in range (len(list_files))]
+    list_k_k = [25 for i in range (len(list_files))]
+    list_tps_max = [500 for i in range (len(list_files))]
+    list_it_max = [50 for i in range (len(list_files))]
     list_type_operation = ['plus' for i in range (len(list_files))]
     list_type_user = ["user_reg" for i in range (len(list_files))]
     # list_type_user = ["user_reg", "user_reg", "user_reg", "user_reg", "user_reg"]
