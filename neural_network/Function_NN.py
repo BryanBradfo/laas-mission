@@ -82,15 +82,17 @@ def find_perfect_NN(file, sol_layers, nb_hidden_layers, nb_neurons):
     # msol = model.solve(TimeLimit=20)
 
     # Get the list of all the solutions
+    list_sol = []
     list_sol = msol.get_all_var_solutions()
-    print(len(list_sol))
+    # print(len(list_sol))
 
     NN = []
 
     # if there is no solution, we increase the number of neurons and we try again
-    if len(list_sol) == 0:
+    if list_sol == None:
         print("No perfect neural network found, increase the number of neurons")
         nb_neurons[0] += 1
+        print(nb_neurons)
         return find_perfect_NN(file, sol_layers, nb_hidden_layers, nb_neurons)
             
     # Are the neural networks perfect ?

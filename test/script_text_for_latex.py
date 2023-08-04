@@ -11,6 +11,9 @@ sys.path.append("../neural_network")
 import main_nn as mnn
 sys.path.append("../optimal_value")
 import main_optval as mov
+sys.path.append("../hybrid_approach")
+import main_hyb_1 as mha1
+import main_hyb_nn as mha2
 
 import random
 random.seed(10)
@@ -25,8 +28,7 @@ def ligne_latex(values):
 def main():
     #-----------------------------Parameters of every methods-----------------------------#
     #Names of files must be different
-    list_files = ['../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la05.txt', '../file_with_optimal_val/la06.txt', '../file_with_optimal_val/la07.txt',  '../file_with_optimal_val/la08.txt', 
-                  '../file_with_optimal_val/la09.txt', '../file_with_optimal_val/la10.txt', '../file_with_optimal_val/la11.txt','../file_with_optimal_val/la12.txt' ]
+    list_files = ['../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt']
     # list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt']
     # list_files = ['../file_with_optimal_val/la01.txt', '../file_with_optimal_val/la02.txt', '../file_with_optimal_val/la03.txt', '../file_with_optimal_val/la04.txt', '../file_with_optimal_val/la05.txt', 
                 # '../file_with_optimal_val/la06.txt',  '../file_with_optimal_val/la07.txt',  '../file_with_optimal_val/la08.txt', '../file_with_optimal_val/la09.txt', '../file_with_optimal_val/la10.txt',
@@ -40,9 +42,9 @@ def main():
     list_plot_name = ['la0' + str(i) for i in range (1,len(list_files)+1)]
     list_nb_layers = [5 for i in range (len(list_files))]
     list_k = [20 for i in range (len(list_files))]
-    list_k_k = [15 for i in range (len(list_files))]
-    list_tps_max = [2000 for i in range (len(list_files))]
-    list_it_max = [200 for i in range (len(list_files))]
+    list_k_k = [25 for i in range (len(list_files))]
+    list_tps_max = [500 for i in range (len(list_files))]
+    list_it_max = [50 for i in range (len(list_files))]
     list_type_operation = ['plus' for i in range (len(list_files))]
     list_type_user = ["user_reg" for i in range (len(list_files))]
     # list_type_user = ["user_reg", "user_reg", "user_reg", "user_reg", "user_reg"]
@@ -54,7 +56,7 @@ def main():
     #-----------------------------Waiting results-----------------------------#
     #optimal_value_regularity[0] --> type_operation = "plus"
     #optimal_value_regularity[1] --> type_operation = "fois"
-    optimal_value_regularity = [[1341, 1455, 1486, 1224, 737, 2811, 2026, 1542, 1560, 2006, 4960, 2324, 2594, 3540, 6216, 19459, 13866, 15630, 18390, 16451, 30553, 30039, la23, la24, 25841, 26482, 23883, 34420, 42152, 38370], [2952432, 5052960, 3455230]]
+    optimal_value_regularity = [[1341, 1455, 1486, 1224, 737, 2811, 2026, 1542, 1560, 2006, 4960, 2324, 2594, 3540, 6216, 19459, 13866, 15630, 18390, 16451, 30553, 30039, 22185, 24789, 25841, 26482, 23883, 34420, 42152, 38370, 44144, 33451, 38507, 40841, 46339, 69182, 76531, 80373, 75815, 66098], [2952432, 5052960, 3455230]]
     optimal_value_simple = [666, 655, 597, 590, 593,
                             926, 890, 863, 951, 958,
                             1222, 1039, 1150, 1292, 1207,
@@ -67,12 +69,27 @@ def main():
 
     #-----------------------------Lengths-----------------------------#
     n = len(list_files)
-    #On a 4 principales approches: neural_network, clustering_binaire, clustering_agglo et decision_tree
+    #___________________________________________________________________________
+
+    #-----------------------------Approachs without hybrid approachs-----------------------------#
+    #On a 4 principales approches: neural_network, clustering_binaire, clustering_agglo, decision_tree
     nb_approach = 4
     #Nombre d'arbre pour chaque approche decision tree
     nb_tree = [1,3]
-    m = nb_approach -1 + len(nb_tree)
+    nb_dt_approach = len(nb_tree)
+    m = nb_approach + (nb_dt_approach-1)*1
+
     #___________________________________________________________________________
+
+    #-----------------------------Approachs with hybrid approachs-----------------------------#
+    # #On a 4 principales approches: neural_network, clustering_binaire, clustering_agglo, decision_tree, hybrid method 1, hybrid method 2
+    # nb_approach = 6
+    # #Nombre d'arbre pour chaque approche decision tree
+    # nb_tree = [1,3]
+    # nb_dt_approach = len(nb_tree)
+    # m = nb_approach + (nb_dt_approach-1)*3
+    #___________________________________________________________________________
+    
     
     #-----------------------------Fill-in list_methods and preparation of where we will put ours results-----------------------------#
     for i in range(m):
@@ -82,6 +99,10 @@ def main():
     list_methods.append('ca')
     list_methods.append('nn')
     list_methods.append('cb')
+    for i in range(nb_dt_approach):
+        list_methods.append('hyb_1_'+str(nb_tree[i]))
+    for i in range(nb_dt_approach):
+        list_methods.append('hyb_2_'+str(nb_tree[i]))
     list_methods.append('Opt_val')
 
     nb_hidden_layers, nb_neurons = 1, [1,1]
@@ -107,6 +128,16 @@ def main():
             t = threading.Thread(target=mcb.main_cb, args=(resultats_globaux_approche[-1],  list_files[i-3*n], list_nb_layers[i-3*n], list_k[i-3*n], list_k_k[i-3*n], list_tps_max[i-3*n], list_it_max[i-3*n], list_type_operation[i-3*n], list_type_user[i-3*n], 0.87,  list_display_sol[i-3*n], list_display_start[i-3*n], list_display_matrix[i-3*n]))
             threads.append(t)
             t.start()
+        elif i < 5*n:
+            for j in range(nb_dt_approach):
+                t = threading.Thread(target=mha1.main_hyb_1, args=(resultats_globaux_approche[nb_dt_approach+3+j],  list_files[i-4*n], list_nb_layers[i-4*n], list_k[i-4*n], list_k_k[i-4*n], list_tps_max[i-4*n], list_it_max[i-4*n], list_type_operation[i-4*n], list_type_user[i-4*n], nb_tree[j], 0.85,  list_display_sol[i-4*n], list_display_start[i-4*n], list_display_matrix[i-4*n]))
+                threads.append(t)
+                t.start()
+        elif i < 6*n:
+            for j in range(nb_dt_approach):
+                t = threading.Thread(target=mha2.main_hyb_nn, args=(resultats_globaux_approche[2*nb_dt_approach+3+j],  list_files[i-5*n], list_nb_layers[i-5*n], list_k[i-5*n], list_k_k[i-5*n], nb_hidden_layers, nb_neurons, list_tps_max[i-5*n], list_it_max[i-5*n], list_type_operation[i-5*n], list_type_user[i-5*n], nb_tree[j],0.6, list_display_sol[i-5*n], list_display_start[i-5*n], list_display_matrix[i-5*n]))
+                threads.append(t)
+                t.start()
 
         
             
