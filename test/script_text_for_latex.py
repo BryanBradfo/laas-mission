@@ -73,21 +73,21 @@ def main():
 
     #-----------------------------Approachs without hybrid approachs-----------------------------#
     #On a 4 principales approches: neural_network, clustering_binaire, clustering_agglo, decision_tree
-    # nb_approach = 4
-    # #Nombre d'arbre pour chaque approche decision tree
-    # nb_tree = [1,3]
-    # nb_dt_approach = len(nb_tree)
-    # m = nb_approach + (nb_dt_approach-1)*1
+    nb_approach = 4
+    #Nombre d'arbre pour chaque approche decision tree
+    nb_tree = [1,3]
+    nb_dt_approach = len(nb_tree)
+    m = nb_approach + (nb_dt_approach-1)*1
 
     #___________________________________________________________________________
 
     #-----------------------------Approachs with hybrid approachs-----------------------------#
-    #On a 4 principales approches: neural_network, clustering_binaire, clustering_agglo, decision_tree, hybrid method 1, hybrid method 2
-    nb_approach = 6
-    #Nombre d'arbre pour chaque approche decision tree
-    nb_tree = [1,3]
-    nb_dt_approach = len(nb_tree)
-    m = nb_approach + (nb_dt_approach-1)*3
+    # #On a 4 principales approches: neural_network, clustering_binaire, clustering_agglo, decision_tree, hybrid method 1, hybrid method 2
+    # nb_approach = 6
+    # #Nombre d'arbre pour chaque approche decision tree
+    # nb_tree = [1,3]
+    # nb_dt_approach = len(nb_tree)
+    # m = nb_approach + (nb_dt_approach-1)*3
     #___________________________________________________________________________
     
     
