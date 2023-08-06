@@ -10,8 +10,7 @@ To  try out the code, follow these steps:
 
 1. Clone the project repository from GitHub.
 2. Install the required dependencies, including docplex, numpy, and matplotlib. You can install docplex by running the command pip install docplex in your command prompt or terminal. (for a restricted version of docplex otherwise you can follow (*) below)
-3. Launch the Jupyter Notebook file ITellYouWhatYouLike.ipynb.
-4. You are now ready to run and explore the project.
+3. You are now ready to run and explore the project.
 
 (*) In order to have a unrestricted version, you can install the academic version of docplex. For this, you can do it as follows : 
 - Go to https://www.ibm.com/products/ilog-cplex-optimization-studio?_gl=1*1m090s2*_ga*MTczODI4NjA2MC4xNjgzMDYwMTI1*_ga_FYECCCS21D*MTY5MDE4NzExOS4zOS4wLjE2OTAxODcxMTkuMC4wLjA and enter your student e-mail address.
